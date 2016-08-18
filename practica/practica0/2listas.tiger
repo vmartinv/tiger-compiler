@@ -1,5 +1,28 @@
 let
-    type lista = {item: int, resto:lista}
+    type lista = {item: int, resto:lista}    
+    function length(l:lista):int = 
+                        if l<>nil then 1+largo(l.resto) else 0
+    function long(l:lista):int = 
+                        let
+                            var r:=0
+                        in
+                            while l<>nil do(
+                            r:=r+1;
+                            l:=l.resto
+                            );
+                            r
+                        end
+    function cons (x:int, xs:lista):lista=
+                        lista{item=x, resto=xs}
+    function concat (x:lista, y:lista):lista = 
+                        if x<>nil 
+                        then
+                        cons(x.item, concat(x.resto,y))
+                        else
+                        y
+    
 in
+    print(chr(largo(Lista{item=1,resto=lista{item=2,resto=nil}})+ord("A")));
+    print(chr(largo1(Lista{item=1,resto=lista{item=2,resto=nil}})+ord("A")));
     0
 end
