@@ -1,0 +1,11 @@
+load "Process";
+local
+	val ed   = ref "vi"
+	val arch = ref ""
+in
+	fun sete e = ed:=e
+	fun e s =
+		(if s<>"" then arch:=s else ();
+		Process.system (!ed^""^(!arch));
+		use(!arch)
+end
