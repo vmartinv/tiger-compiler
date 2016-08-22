@@ -1,0 +1,166 @@
+
+git clone https://github.com/mvpossum/compiler
+
+Un compilador puede ser:
+    broad
+            cada etapa se aplica a todo el fuente
+            Ventaja: Sensillo
+            Desventaja: compila fuentes "pequeñas"
+    narrow
+            cada etapa se aplica a la minima secuencia que permita ser compilada.
+            Ventaja: Compila fuentes grandes.
+            Desventaja: logica compleja
+
+Tiger será broad, con una sola excepcion (hacerlo sencillo, no es necerio elegancia)
+
+Etapas de scanning y parsing
+    El Scanning consume el fuente (secuencia de ASCII) y trata de reconocer ciertas secuencias 
+    (palabras clave, constante, identificaores, etc) y las convierte en tokens.
+    
+    El Parsing consume tokens y verifica que la secuencia corresponda a un prorama cumpla con 
+    la sintaxis del lenguajes
+
+
+Jerarquía de Chomsky
+
+0- Gramatica generales (maquina de turing)
+1- Gramatia sencible al contxto (automata lineales)
+2- Gramatica ibre de contexto (automata de pila)
+3- Expresiones regulares
+
+
+trabajaremos con las dos ultimas
+
+
+Expresiones regulares 
+=====================
+Dado un alfabeto A
+
+1- Un carater c en A es una E.R.
+2- Si e1 y e2 son E.R. entonces e1e2 es una expresion regular
+3- Si e1 y e2 son E.R. entonces la alternacia e1/e2 son expresiones regulares
+4- Si e es una E.R., e* es una E.R.
+ 
+Precedencia: concatenacion, alternacion, estrella
+
+Agregamos:
+
+-Clausura positiva e+ (una o más repeticiones de e)
+-Clases (c1 .. ck in A)
+    [c1c2..ck]=c1/c2/../ck
+-Clases negadas
+    [^c1c2..ck]=c1'/c2'/..cn' , ci' in A/{c1,..,ck}
+    
+Automata finito
+
+    Un AF está formado por un conjunto finito de transiciones entre estados, y dos distinguidos begin y end
+    
+    IMAGEN 1
+    IMAGEN 2
+    
+Un AF puede tener muchos más estados pero el numero de estos estados pero el numero de ests estados ,una vez 
+hechos, es fijo.
+
+Supongamos que tenemos un AF con N estados. Si este AF reconoce strings S con (size S)>N tendremos  al menos un ciclo
+
+    IMAGEN 3
+
+Si reconoce a la string ABC, también reconoce a AB^mC (Lema de INyeccion o Pumping lemma)
+Este lema permite demostrar que no existe ninguna e.r. que sólo reconozco strings de este tipo:
+((...()...)), ningun ) antes de (, k arbitrario
+|____||____|
+   k    k
+
+
+Gramatizas Libres de contexto
+=============================
+
+Una GLC está formada por:
+
+-Un conjunto finito T  de terminales o tokens.
+-Un conjunto finito NT de no terminales tal que NT y T no tengan elementos en común.
+-Un elemento distinguido start en NT
+-Un conjunto finito de reglas de produccion de la forma
+
+    a:secuencia de 0 o màs B
+    a in NT , B in T U NT
+    
+    
+Ejemplo: una GLC que reconoce (((..()..))) y ninun ) antes de (
+                              I__k_II_k__I
+                              
+    T  = {(,)}
+    NT = S
+    
+    Reglas 
+    1- S:     /*vacio*/
+    2- S:(S)
+    
+Prueba entrada 
+    ((())) 2 (())
+     (())  2  ()
+      ()   2   
+           1 
+           
+Por supuesto aparecen problemas nuevos.
+
+Un GCL para operaciones aritmeticas
+
+T  = {NRO, +, *, (, )}
+NT = {expr}
+
+start = expr
+R de P
+        expr    : NRO
+                | expr + expr
+                | expr * expr
+                
+Por ejemplo 2 + 3 + 4 tiene mas de un arbol, este problema se conoce como shift-reduce
+y es típico de una gramática ambigua.
+Vamos a buscar que no haya shift reduce
+
+En este caso es un problema de asociatividad (pues los dos terminales son el mismo)
+En el caso de 2 + 3 * 4 el problema seria de precedencia
+
+Posibles soluciones:
+1- Ignorar el shift-reduce
+2- Reescribir la gramatica, agregando no terminales y reglas de producción
+3- Usar directivas, indicando como resolver la ambigüedad.
+
+Agregamos a la GLC esta directiva
+
+%left +
+%left *
+
+(precedencia creciente hacia abajo)
+otras directivas
+
+%rigth          a derecha
+%nonassoc       no asociativo
+
+a=b=c; en c asocia a derecha
+1::2::3::[] e haskell asocia a derecha
+
+a<b<c en c no aocia
+
+Otro problema mucho más grave es cuando GLC tiene 2 o más reglas
+
+a1 : B
+a2 : B
+Ej (en C, identificadores de tipos o de variables?):
+type : id
+var : id
+
+Hay un conflicto reduce/reduce.
+Nuestra solución: No distinguir entre variables y tipos durante el scanning.
+
+Otro problema: break. Como reconocemos si el break es válido cuando el while/for puede estar mucho más arriba? El break puede estar metido adentro de muchos ifs, lets y otras cosas.
+Como no podemos hacerlo durante el scanning, lo dejamos para más adelante.
+
+{expresiones regulares p/ los tokens} -> mosmllex -> AF
+
+
+Dado un especio en blanco, lo ignoro o no? (es decir si va a quedar en el ejecutable) Depende si el espacio en blanco está dentro de una string o no. Tambien tendría que importarnos los caracteres de escape.
+Poner todo esto dentro del scanning general lo ensucia. Por lo tanto hacemos un scanning aparte que procese las strings. Cuando nos encontramos con unas comillas, pasamos al scanner de strings que está separado del scanner principal del lenguaje.
+
+
