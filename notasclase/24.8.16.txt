@@ -1,0 +1,19 @@
+Thou shall not make lateral effects
+
+Strings en Tiger (similar a ML)
+Se encierran entre "". Los caracteres imprimibles van tal cual. Admite también:
+\n \t \" \\
+También
+\^c = chr(ord(c)-ord("@"))  ( \^@ = 0, \^A=1) 
+\ddd = chr(ddd)
+ |_|
+3 digitos decimales
+
+Una string puede "partirse" así:
+"...\espacios\..."
+     |______|
+    blancos, \n, \t
+
+"abc\
+\def\
+\xyz'   = "abcdefxyz"
