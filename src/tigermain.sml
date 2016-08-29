@@ -19,8 +19,9 @@ fun main(args) =
 		val (code, l5)		= arg(l4, "-code") 
 		val (flow, l6)		= arg(l5, "-flow") 
 		val (inter, l7)		= arg(l6, "-inter") 
+		val (countprints, l8)= arg(l7, "-countprints") 
 		val entrada =
-			case l7 of
+			case l8 of
 			[n] => ((open_in n)
 					handle _ => raise Fail (n^" no existe!"))
 			| [] => std_in
@@ -29,6 +30,7 @@ fun main(args) =
 		val expr = prog Tok lexbuf handle _ => errParsing lexbuf
 		val _ = findEscape(expr)
 		val _ = if arbol then tigerpp.exprAst expr else ()
+		val _ = if countprints then tigerpp.countprints expr else ()
 	in
 		transProg(expr);
 		print "yes!!\n"

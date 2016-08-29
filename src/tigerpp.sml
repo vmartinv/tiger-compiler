@@ -218,3 +218,38 @@ fun exprAst e =
 	(ppexpr ppstrm e;
 	flush_ppstream ppstrm;
 	TextIO.output(TextIO.stdOut, "\n"))
+
+fun maxList xs = foldr Int.max 0 xs
+
+fun countprints e =
+    let
+        fun cpf{name,escape,typ} = 0
+            and cpd(FunctionDec flist) = maxList (map (fn e => cpe(#body (#1 e))) flist)
+            | cpd(VarDec({name, escape, typ, init}, _)) = cpe(init)
+            | cpd(TypeDec tlist) = 0
+            and cpt(NameTy s) = 0
+            | cpt(RecordTy fieldlist) = 0
+            | cpt(ArrayTy s) = 0
+            and cpv(SimpleVar s) = 0
+            | cpv(FieldVar(v, s)) = 0
+            | cpv(SubscriptVar(v, e)) = cpe(e)
+	    and cpe(UnitExp _) = 0
+	        | cpe(NilExp _) = 0
+	        | cpe(IntExp(n, _)) = 0
+	        | cpe(StringExp(s, _)) = 0
+	        | cpe(BreakExp _) = 0
+	        | cpe(VarExp(v, _)) = cpv(v)
+	        | cpe(OpExp({left, oper, right}, _)) = maxList [cpe(left), cpe(right)]
+	        | cpe(WhileExp({test, body}, _)) = maxList [cpe(test), cpe(body)]
+	        | cpe(ForExp({var, escape, lo, hi, body}, _)) = maxList [cpe(lo), cpe(hi), cpe(body)]
+	        | cpe(AssignExp({var, exp}, _)) = maxList [cpv(var), cpe(exp)]
+	        | cpe(IfExp({test, then', else'}, _)) = maxList [cpe(test), cpe(then'), cpe(else')]
+	        | cpe(CallExp({func, args}, _)) = 
+	        | cpe(SeqExp(explist, _)) =
+		        maxList (map (fn e => cpe(#1 e)) explist)
+	        | cpe(RecordExp({fields, typ}, _)) =
+		        maxList (map (fn e => cpe(#2 e)) fields)
+	        | cpe(ArrayExp({typ, size, init}, _)) =
+		        maxList [cpe(size), cpe(init)]
+	        | cpe(LetExp({decs, body}, _)) =
+		        maxList [cpd(decs), cpe(body)]

@@ -1,1 +1,4 @@
 practica/tiger-compiler
+*.ui
+*.uo
+src/tiger
