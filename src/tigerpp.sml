@@ -243,13 +243,18 @@ fun countprints e =
 	        | cpe(WhileExp({test, body}, _)) = maxList [cpe(test), cpe(body)]
 	        | cpe(ForExp({var, escape, lo, hi, body}, _)) = maxList [cpe(lo), cpe(hi), cpe(body)]
 	        | cpe(AssignExp({var, exp}, _)) = maxList [cpv(var), cpe(exp)]
-	        | cpe(IfExp({test, then', else'}, _)) = maxList [cpe(test), cpe(then'), cpe(else')]
+	        | cpe(IfExp({test, then', else'}, _)) = maxList [cpe(test), cpe(then'), case else' of SOME e => cpe(e) | NONE => 0 ]
 	        | cpe(CallExp({func, args}, _)) = 
+                maxList ((if func="print" then List.length args else 0)::(map (fn e => cpe(e)) args))
 	        | cpe(SeqExp(explist, _)) =
-		        maxList (map (fn e => cpe(#1 e)) explist)
+		        maxList (map (fn e => cpe(e)) explist)
 	        | cpe(RecordExp({fields, typ}, _)) =
 		        maxList (map (fn e => cpe(#2 e)) fields)
 	        | cpe(ArrayExp({typ, size, init}, _)) =
 		        maxList [cpe(size), cpe(init)]
 	        | cpe(LetExp({decs, body}, _)) =
-		        maxList [cpd(decs), cpe(body)]
+		        maxList (cpe(body)::(map (fn d => cpd(d)) decs))
+    in
+       print("Cantidad maxima de argumentos de print: " ^ Int.toString (cpe e) ^ "\n");
+       ()
+    end

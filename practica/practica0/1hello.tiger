@@ -1,1 +1,1 @@
-(print ("Hello World");0)
+(print ("Hello World\n");print ("Hello World\n", "a");0)

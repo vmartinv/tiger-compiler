@@ -1,0 +1,11 @@
+let
+    type T = {i:int}
+    var r1:T := nil
+    var r2:T := nil
+    type T={i:int}
+    var r3:T := nil
+in
+    r1 := r2;
+    r1 := r3;
+    0
+end
