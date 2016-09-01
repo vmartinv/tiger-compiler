@@ -4,9 +4,9 @@ struct
 type symbol = string
 type pos = int
 
-datatype var = SimpleVar of symbol
-	| FieldVar of var * symbol
-	| SubscriptVar of var * exp
+datatype var = SimpleVar of symbol (* x *)
+	| FieldVar of var * symbol (* x.y *)
+	| SubscriptVar of var * exp (* x[y] *)
 
 and exp = VarExp of var * pos
 	| UnitExp of pos

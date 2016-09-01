@@ -137,10 +137,20 @@ fun transExp(venv, tenv) =
 				val exprs = map (fn{exp, ty} => exp) lexti
 				val {exp, ty=tipo} = hd(rev lexti)
 			in	{ exp=(), ty=tipo } end
-		| trexp(AssignExp({var=SimpleVar s, exp}, nl)) =
-			{exp=(), ty=TUnit} (*COMPLETAR*)
+		| trexp(AssignExp({var=SimpleVar s, exp}, nl)) = (*COMPLETARc*)
+			let
+				val {exp=_, ty=tye} = trexp exp
+				val {exp=_, ty=tyv} = trvar (SimpleVar s, nl)
+				val tyr = case tabBusca(s, venv) of
+					SOME t => if tiposIguales tye tyv
+								then tye
+								else error("Error de tipos", nl)
+					| NONE => error("Variable inexistente ("^s^")", nl)
+			in
+				{exp=(), ty=tyr}
+			end
 		| trexp(AssignExp({var, exp}, nl)) =
-			{exp=(), ty=TUnit} (*COMPLETAR*)
+			{exp=(), ty=TUnit} (*COMPLETAR este deberia ser mas simple*)
 		| trexp(IfExp({test, then', else'=SOME else'}, nl)) =
 			let val {exp=testexp, ty=tytest} = trexp test
 			    val {exp=thenexp, ty=tythen} = trexp then'
