@@ -6,3 +6,11 @@ Currificador de funciones:
 fun curry f x y = f (x, y)
 Ejemplo: curry Int.max
 
+
+
+x:{A:Ini;B:String;C:bool}
+val x = {A=10; B="hola"; C=true} 
+	los identificadoes en vez de letras pueden ser numeros
+
+
+#C(x) retorna el argunmento C de x (true)
