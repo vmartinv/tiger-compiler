@@ -137,20 +137,29 @@ fun transExp(venv, tenv) =
 				val exprs = map (fn{exp, ty} => exp) lexti
 				val {exp, ty=tipo} = hd(rev lexti)
 			in	{ exp=(), ty=tipo } end
-		| trexp(AssignExp({var=SimpleVar s, exp}, nl)) = (*COMPLETARc*)
+		| trexp(AssignExp({var=SimpleVar s, exp}, nl)) = (*COMPLETAR_TO_TEST*)
 			let
 				val {exp=_, ty=tye} = trexp exp
 				val {exp=_, ty=tyv} = trvar (SimpleVar s, nl)
 				val tyr = case tabBusca(s, venv) of
-					SOME t => if tiposIguales tye tyv
-								then tye
-								else error("Error de tipos", nl)
+					  SOME VIntro => error("Variable de solo lectura ("^s^")", nl)
+					| SOME (Func _) => error("No es una variable ("^s^")", nl)
+					| SOME (Var _) => if tiposIguales tye tyv
+									  then tye
+									  else error("Error de tipos en asignación", nl)
 					| NONE => error("Variable inexistente ("^s^")", nl)
 			in
-				{exp=(), ty=tyr}
+				{exp=(), ty=tyr} (* que tipo devuelve? *)
 			end
-		| trexp(AssignExp({var, exp}, nl)) =
-			{exp=(), ty=TUnit} (*COMPLETAR este deberia ser mas simple*)
+		| trexp(AssignExp({var, exp}, nl)) = (*COMPLETAR_TO_TEST*)
+			let
+				val {exp=_, ty=tye} = trexp exp
+				val {exp=_, ty=tyv} = trvar (var, nl)
+			in
+				if tiposIguales tye tyv
+				then {exp=(), ty=tye} (* que tipo devuelve? *)
+				else error("Error de tipos en asignación", nl)
+			end
 		| trexp(IfExp({test, then', else'=SOME else'}, nl)) =
 			let val {exp=testexp, ty=tytest} = trexp test
 			    val {exp=thenexp, ty=tythen} = trexp then'
@@ -175,8 +184,16 @@ fun transExp(venv, tenv) =
 				else if tipoReal(#ty ttest, tenv) <> TInt then error("Error de tipo en la condición", nl)
 				else error("El cuerpo de un while no puede devolver un valor", nl)
 			end
-		| trexp(ForExp({var, escape, lo, hi, body}, nl)) =
-			{exp=(), ty=TUnit} (*COMPLETAR*)
+		| trexp(ForExp({var, escape, lo, hi, body}, nl)) = (*COMPLETAR_*)
+			let
+				val {exp=_, ty=tyl} = trexp lo
+				val {exp=_, ty=tyh} = trexp hi
+				val _ = if tiposIguales tyl TInt andalso tiposIguales tyh TInt
+						then ()
+						else error("Las cotas del for deben ser de tipo int", nl)
+			in (* falta variable y ver que tipo es un for*)
+				{exp=(), ty=TUnit}
+			end		
 		| trexp(LetExp({decs, body}, _)) =
 			let
 				val (venv', tenv', _) = List.foldl (fn (d, (v, t, _)) => trdec(v, t) d) (venv, tenv, []) decs

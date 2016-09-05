@@ -1,0 +1,6 @@
+Trabajando en:
+- tigerseman.sml
+
+Pendientes:
+- Testear trexp caso AssignExp (duda tipo retorno)
+- Completar trexp caso for (duda)
