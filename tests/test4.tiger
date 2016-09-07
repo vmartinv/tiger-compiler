@@ -1,0 +1,9 @@
+/*Resultado:
+
+*/
+let
+	type arr = array of int
+in
+	arr [3] of "hola";
+	0
+end

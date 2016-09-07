@@ -1,0 +1,73 @@
+Consideracion para procesar declaraciones de tipos
+
+Tenemos dos espacios de tipos>
+
+    datatype Tipo = TUnit
+                  | TNil
+                  | TInt
+                  | TString
+                  | TArray of Tipo ref  * unique
+                  | TRecord of (string * Tipo ref * int) list * unique
+                  | TTipo of string 
+
+    with unique = unit ref
+
+Por otr lado el entorno de tipos 
+
+    string*Tipo
+
+1) int y string NO son reservados
+2) Tratamiento de sinónimos
+    
+    batch1
+    type I=int 
+    var i := 10
+
+    batch2
+    type j=k
+    type k=I // se refiere al I del batch1
+ 
+Ahora
+    batch1    
+    type I=int
+    var i := 10
+    
+    batch2
+    type j=I // se refiere al I de abajo (pq esta en el mismo batch)
+    type I=string
+
+Si hay dependecias de definiciones estas se tratan de resolver en el batch, antes de buscar afuera.
+
+3)Dependencias circulares
+
+    type A = B
+    type B = C
+    type C = D
+    type D = A
+es un error(decisión de diseño)
+Trataremos de reconocer las dependencias circulares con una excepción.
+
+    type R = {next:R}
+ó
+    type R1 = {next:R2}
+    type R2 = {next:R1}
+
+(Obs: ML permite definiciones circulares
+
+    datatype Void = Void of Void
+)
+
+Sort Topologico Dado un conjunto de elementos
+Dado un conjunto de elementos
+    e1,e2,..,en
+y un conjunto de pares pred/suc
+    (ei,ej)
+trata de encontrar una secuencia
+    e1',e2',..,en'
+de modo que si ei' está antes de ej' no existe ningun par (ej',ei')
+
+Proxima tarea: cómo generar los pares de dependencia??
+type id1 = id2 genera (id2,id1)
+type id1 = array of id2 genera (id2,id1)
+type id1 = {_:id2,_:id3,_:id4} genera (id2,id1)(id3,id1)(id4,id1)
+siempre que ei no sea tipo TRecord en el batch

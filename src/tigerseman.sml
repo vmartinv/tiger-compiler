@@ -137,7 +137,7 @@ fun transExp(venv, tenv) =
 				val exprs = map (fn{exp, ty} => exp) lexti
 				val {exp, ty=tipo} = hd(rev lexti)
 			in	{ exp=(), ty=tipo } end
-		| trexp(AssignExp({var=SimpleVar s, exp}, nl)) = (*COMPLETAR_TO_TEST*)
+		| trexp(AssignExp({var=SimpleVar s, exp}, nl)) = (*COMPLETAR_DONE*)
 			let
 				val {exp=_, ty=tye} = trexp exp
 				val {exp=_, ty=tyv} = trvar (SimpleVar s, nl)
@@ -149,15 +149,15 @@ fun transExp(venv, tenv) =
 									  else error("Error de tipos en asignación", nl)
 					| NONE => error("Variable inexistente ("^s^")", nl)
 			in
-				{exp=(), ty=tyr} (* que tipo devuelve? TUnit?*)
+				{exp=(), ty=TUnit}
 			end
-		| trexp(AssignExp({var, exp}, nl)) = (*COMPLETAR_TO_TEST*)
+		| trexp(AssignExp({var, exp}, nl)) = (*COMPLETAR_DONE*)
 			let
 				val {exp=_, ty=tye} = trexp exp
 				val {exp=_, ty=tyv} = trvar (var, nl)
 			in
 				if tiposIguales tye tyv
-				then {exp=(), ty=tye} (* que tipo devuelve? *)
+				then {exp=(), ty=TUnit}
 				else error("Error de tipos en asignación", nl)
 			end
 		| trexp(IfExp({test, then', else'=SOME else'}, nl)) =
@@ -184,16 +184,18 @@ fun transExp(venv, tenv) =
 				else if tipoReal(#ty ttest, tenv) <> TInt then error("Error de tipo en la condición", nl)
 				else error("El cuerpo de un while no puede devolver un valor", nl)
 			end
-		| trexp(ForExp({var, escape, lo, hi, body}, nl)) = (*COMPLETAR_*)
+		| trexp(ForExp({var, escape, lo, hi, body}, nl)) = (*COMPLETAR_DONE*)
 			let
 				val {exp=_, ty=tyl} = trexp lo
 				val {exp=_, ty=tyh} = trexp hi
 				val _ = if tiposIguales tyl TInt andalso tiposIguales tyh TInt
 						then ()
 						else error("Las cotas del for deben ser de tipo int", nl)
-			in (* falta variable y ver que tipo es un for*)
-				{exp=(), ty=TUnit}
-			end		
+				val venv' = tabRInserta(var, VIntro, venv)
+				val {exp=_, ty=tyb} = transExp (venv', tenv) body
+			in
+				if tiposIguales tyb TUnit then {exp=(), ty=TUnit} else error("El cuerpo de un for no debe devolver valor", nl)
+			end
 		| trexp(LetExp({decs, body}, _)) =
 			let
 				val (venv', tenv', _) = List.foldl (fn (d, (v, t, _)) => trdec(v, t) d) (venv, tenv, []) decs
@@ -202,9 +204,26 @@ fun transExp(venv, tenv) =
 				{exp=(), ty=tybody}
 			end
 		| trexp(BreakExp nl) =
-			{exp=(), ty=TUnit} (*COMPLETAR*)
+			{exp=(), ty=TUnit} (*COMPLETAR_DONE*)
 		| trexp(ArrayExp({typ, size, init}, nl)) =
-			{exp=(), ty=TUnit} (*COMPLETAR*)
+			let
+				val _ = error("asdadasdasd", nl)
+				val (tya, cs) = case tabBusca(typ, tenv) of
+						  SOME t => (case tipoReal(t,tenv) of
+									   TArray (cs, u) => (TArray (cs, u), cs)
+							         | _ => error(typ^" no es de tipo array", nl))
+						| NONE => error("Tipo inexistente ("^typ^")", nl)
+				val {exp=_, ty=tys} = trexp size
+				val {exp=_, ty=tyi} = trexp init
+				val _ = if (tiposIguales tys TInt)
+						then ()
+						else error("El tamaño del arreglo debe ser de tipo int", nl)
+				val _ = if tiposIguales tyi (!cs)
+						then ()
+						else error("El valor inicial no corresponde con el tipo del arreglo", nl)
+			in
+				{exp=(), ty=tya} (*COMPLETAR*)
+			end
 		and trvar(SimpleVar s, nl) =
 			{exp=(), ty=TUnit} (*COMPLETAR*)
 		| trvar(FieldVar(v, s), nl) =
@@ -213,11 +232,11 @@ fun transExp(venv, tenv) =
 			{exp=(), ty=TUnit} (*COMPLETAR*)
 		and trdec (venv, tenv) (VarDec ({name,escape,typ=NONE,init},pos)) = 
 			(venv, tenv, []) (*COMPLETAR*)
-		| trdec (venv,tenv) (VarDec ({name,escape,typ=SOME s,init},pos)) =
+		| trdec (venv, tenv) (VarDec ({name,escape,typ=SOME s,init},pos)) =
 			(venv, tenv, []) (*COMPLETAR*)
-		| trdec (venv,tenv) (FunctionDec fs) =
+		| trdec (venv, tenv) (FunctionDec fs) =
 			(venv, tenv, []) (*COMPLETAR*)
-		| trdec (venv,tenv) (TypeDec ts) =
+		| trdec (venv, tenv) (TypeDec ts) =
 			(venv, tenv, []) (*COMPLETAR*)
 	in trexp end
 fun transProg ex =
@@ -225,6 +244,6 @@ fun transProg ex =
 				LetExp({decs=[FunctionDec[({name="_tigermain", params=[],
 								result=NONE, body=ex}, 0)]],
 						body=UnitExp 0}, 0)
-		val _ = transExp(tab_vars, tab_tipos) main
+		val _ = transExp(tab_vars, tab_tipos) ex (*ojo*)
 	in	print "bien!\n" end
 end

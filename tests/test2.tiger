@@ -1,0 +1,10 @@
+/*test para for*/
+/*Resultado:
+Fail: Error -- línea 7: Las cotas del for deben ser de tipo int
+*/
+let
+
+in
+	for i := 5 to () do ();
+	0
+end
