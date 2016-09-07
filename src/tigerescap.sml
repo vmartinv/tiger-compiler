@@ -6,6 +6,9 @@ open tigertab
 
 type depth = int
 type escEnv = (string, depth * bool ref) tigertab.Tabla
+(* string -> nombre
+depth -> profundidad en la que se lo declaró
+bool ref -> si escapó o no*)
 
 fun travVar env d s =
 	case s of

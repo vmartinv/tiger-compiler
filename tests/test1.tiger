@@ -1,0 +1,6 @@
+/* probando assign */
+
+let var a := 5
+	var b := 3
+in b
+end

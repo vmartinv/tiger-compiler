@@ -149,7 +149,7 @@ fun transExp(venv, tenv) =
 									  else error("Error de tipos en asignación", nl)
 					| NONE => error("Variable inexistente ("^s^")", nl)
 			in
-				{exp=(), ty=tyr} (* que tipo devuelve? *)
+				{exp=(), ty=tyr} (* que tipo devuelve? TUnit?*)
 			end
 		| trexp(AssignExp({var, exp}, nl)) = (*COMPLETAR_TO_TEST*)
 			let
