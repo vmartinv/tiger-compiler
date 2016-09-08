@@ -11,7 +11,7 @@ type tenv = (string, Tipo) tigertab.Tabla
 
 val tab_tipos : (string, Tipo) Tabla = tabInserList(
 	tabNueva(),
-	[("int", TInt), ("string", TString)])
+	[("int", TInt), ("string", TString), ("arr", TArray (ref TInt, ref ()))]) (* ACORDARSE DE SACAR EL arr *)
 
 val tab_vars : (string, EnvEntry) Tabla = tabInserList(
 	tabNueva(),
@@ -205,9 +205,8 @@ fun transExp(venv, tenv) =
 			end
 		| trexp(BreakExp nl) =
 			{exp=(), ty=TUnit} (*COMPLETAR_DONE*)
-		| trexp(ArrayExp({typ, size, init}, nl)) =
+		| trexp(ArrayExp({typ, size, init}, nl)) = (*COMPLETAR_DONE*) (* testeo con tipo arr trucho *)
 			let
-				val _ = error("asdadasdasd", nl)
 				val (tya, cs) = case tabBusca(typ, tenv) of
 						  SOME t => (case tipoReal(t,tenv) of
 									   TArray (cs, u) => (TArray (cs, u), cs)
@@ -222,10 +221,17 @@ fun transExp(venv, tenv) =
 						then ()
 						else error("El valor inicial no corresponde con el tipo del arreglo", nl)
 			in
-				{exp=(), ty=tya} (*COMPLETAR*)
+				{exp=(), ty=tya}
 			end
-		and trvar(SimpleVar s, nl) =
-			{exp=(), ty=TUnit} (*COMPLETAR*)
+		and trvar(SimpleVar s, nl) = (*COMPLETAR_arreglar*)
+			let
+				val tyv = case tabBusca (s,venv) of
+							  NONE => error("Variable inexistente ("^s^")", nl)
+							| SOME (Var ty) => ty
+							| _ => error(s^" no es una variable." , nl)
+			in
+				{exp=(), ty=tyv}
+			end
 		| trvar(FieldVar(v, s), nl) =
 			{exp=(), ty=TUnit} (*COMPLETAR*)
 		| trvar(SubscriptVar(v, e), nl) =

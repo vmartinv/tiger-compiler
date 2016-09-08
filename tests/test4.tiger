@@ -5,5 +5,6 @@ let
 	type arr = array of int
 in
 	arr [3] of "hola";
+	/*arr [3] of 5;*/
 	0
 end
