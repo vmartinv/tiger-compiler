@@ -1,0 +1,51 @@
+Sort Topológico
+
+Definición: 
+    dados e_i y pares (ei,ej) se llama secuencia lineal a
+        ei1, ei2,.., eik
+    que cumple que, para todo par ij, ik j<k
+    no existe par (eik,eij)
+
+Usaremos algunas funciones auxiliares
+    infix re ls -- ---
+    fun x ls f = fn y => f(x,y)
+    fun f rs y = fn x => f(x,y)
+    fun l -- e = List.filter(op<>rs e) l (* elimina un elem de de una lista *)
+    fun lp --- e = List.filter((op<>rs e)o fst) lp (* elimina un par de de una lista *)
+    and fst(x,y)=x
+
+exception.Ciclo
+(*P:pares, E:Elemento, St:stack de no tratados, Res: resultados *)
+
+fun topSort P =
+    let fun elementos lt =
+        List.foldr(f((x,y),l) =>
+            let val l1 => case List.find(op=rs x) l of
+                    NONE => x::l
+                    | _  => l
+                val l2 => case  List.find(op=rs y) l1 of
+                    NONE => x::l1
+                    | _  => l1)[] lt
+            in l2 end
+            fun candidato E P = 
+                List.filter(fn e=>List.all((op<>rs e)o snd)P)E
+            and snd(x,y)=y
+            fun tsort P  [] Res = rev Res
+            |   tsort [] st Res = rev (St@R)
+            |   tsrot P  (St as (h::t)) Res = 
+                    let val x = (hd(candidatos P))
+                                    handle Empty => raise Ciclo
+                    in tsort (P --- x) (St -- x) (x::res) end
+    in tsort P (elementos P) [] end 
+    
+(*asdsd*)
+
+fun elementos lp =
+	let fun esta e l = Lost.find(op=e) l
+	in List.foldr(fn(x,y)=>
+			case (esta c,l, esta y l) of
+				 (NONE  , NONE  )=>x::y::l
+				|(SOME _, NONE  )=>y::l
+				|(NONE  , SOME _)=>x::l
+				|_ => l) [] lp
+	end
