@@ -1,0 +1,30 @@
+Tenemos un problema: definimos dos datatypes en tigertree, exp y stm.
+Pero para interactuar con tigerseman necesitamosun solo tipo; esto lo 
+solucionamos enpaquetando exp y stm en un datatype.
+
+Esto loo soluciona otro problema:
+    supongamos tener esto:
+        a<b
+        ¿En qué conteto se va a usar?
+        Podría ser:
+            if a<b then .. acá tiene que guiar un salto
+            c:=a<b tiene que generar 0 o 1
+            print(chr(65+(a<b))) tiene que generar 0 o 1
+
+Definimos
+    datatype exp = Ex of tigertree.exp
+                 | Nx of tigertree.stm
+                 | Cx of tiger.label * tigertemp.label->tigertree.stm
+                 
+
+Los desempaquetamos de exp
+
+    fun unEx(Ex  x) = x
+       |unEx(N x _) = raise Fail "error interno nro 15"
+       |unEx(Cx c)  = 
+                let val(lv,lf,te) =(newlabel(),newlabel(),newlabel())
+                    val tmp = newTmp()
+                in
+                    ESEQ(seq(C(lv,lf),LABEL lv,MOVE(TEMP temp,CONST 1),
+                    JUMP(LABEL le,[LABEL le]), LABEL lf, 
+                    MOVE(tmp,CONS 0), LABEL le),TEMP tmp)

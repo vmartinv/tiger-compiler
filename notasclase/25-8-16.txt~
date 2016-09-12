@@ -1,8 +1,0 @@
-Para cargar interprete con todos los modulos:
-mosml -P full
-
-
-Currificador de funciones:
-fun curry f x y = f (x, y)
-Ejemplo: curry Int.max
-
