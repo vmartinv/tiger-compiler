@@ -28,3 +28,77 @@ Los desempaquetamos de exp
                     ESEQ(seq(C(lv,lf),LABEL lv,MOVE(TEMP temp,CONST 1),
                     JUMP(LABEL le,[LABEL le]), LABEL lf, 
                     MOVE(tmp,CONS 0), LABEL le),TEMP tmp)
+
+Activation Frames (Marcos de activación)
+
+Toda función, durante su ejecución , crea y mantiene un marco de 
+activación (que llamaremos denámico). con todo lo que necesita. 
+Tipicamente este marco viene definido por el lenguaje.
+El marco de activación debe tener:
+    -Direccion de retorno
+    -Si admite recursión los parametros y variables locales, 
+referenciadas por un temprano en particular (fp o FramePointer.ebp en el
+ 386)
+    -Funciones anidadas con acceso a los valores de las anidantes. El 
+marco debe tener información para estos accesos.
+    -Interacción con otros lenguajes.
+    
+¿Cómo podemos hacer esto?
+
+(Aldi lo tiene y está en la pagina 131)
+
+
+El creador de Pascal también hizo Oberon que es un lenguaje que permite funciones anidadas.
+PROCEDURA f(i:INTEGER):INTEGER
+    PROCEDURE g(j:INTEGER):INTEGER
+        PROCEDURE h():integer
+        BEGIN
+            RETURN i+j
+        END H
+    END G
+END F
+
+Unos alemanes hicieron un convertidor que transforma Oberon a C. Como lo hicieron?
+Usando una técnica ya expuesta en Functional Programming, de Field & Harrison, llamada Lambda Lifting.
+
+\x . \y . \y
+
+Tratemos de liftear esta lambda:
+F = \(y, x). \y
+\x . F(y, x)
+
+Volvamos al C correspondiente al programa Oberon:
+int h_(int *i, int *j){
+    return *i+*j;
+}
+
+int g_(int j, int *i){
+    h_(i, &j);
+}
+
+int f_(int i){
+    return g_(&i);
+}
+Es una técnica cara (imaginemos una función con 30 niveles de anidamiento y que acceda a 50 valores)/
+
+Podemos abaratar esto?
+Sí. En lugar de pasar un puntero por cada variable de funciones exteriores, puedo empaquetar las variables en una struct (la struct contiene el frame de la función). Ahora sólo tengo que pasarle un puntero a la struct para poder acceder a todas las variables de esa función.
+Para cada función exterior necesito un puntero, por lo que voy a tener una lista de punteros para acceder a las varibles de cada función exterior. Esto se conoce como Tabla Display (Dijkstra).
+g_(struct V_1 &s1, struct V_2 &s2, struct V_3 &s3, ..., struct V_n &sn)
+
+Ventajas: viene en hardware de 386. Existe una instrucción de x386 para construirla a partir de los fp.
+Desventajas: no es usado por otras arquitecturas, el hardware tiene limitaciones.
+
+Búsquemos otra cosa:
+En vez de tener un puntero a todas las funciónes exteriores, sólo tengo el puntero al frame de la función exterior más cercana. A este puntero lo llamamos STATIC-LINK. Los static-links van a conformar así una lista anidada. 
+
+Un MARCO DE ACTIVACIÓN ESTÁTICO es una estructura manejada por el compilador para poder generar código que cree y gestione durante la ejecución los marcos dinámicos. Contentrá el nivel de anidación de la función, cantidad de argumentos, cantidad de variables locales, etc.
+
+Necesitaremos poder representar variables que están en un registro ó en memoria.
+datatype var = Reg of tigertemp.temp
+            |  Mem of int (*offset con respecto al fp*)
+                            positivo p/ parámetros
+                            negativo p/ locales
+                            
+En el frame estático deberemos guardar los últimos offsets usados.
+Podemos hacer que los 4 tipos de tiger(int, string, records, arrays) tengan el mismo tamaño, así facilitar el calculo de offsets.
