@@ -8,7 +8,7 @@ open tigertips
 infix rs ls -- ---
 fun x ls f = fn y => f(x, y)
 fun f rs y = fn x => f(x, y)
-fun l -- e = List.filter (op<> rs e) l
+fun l -- e = List.filter (op<> rs e) l 
 fun fst(x, _) = x and snd(_, y) = y
 fun lp --- e = List.filter ((op<> rs e) o fst) lp
 exception Ciclo

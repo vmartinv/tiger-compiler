@@ -1,6 +1,6 @@
 /* probando assign y trdec caso VarDec */
 
-let var a := 5
+let var a:int := 5
 	var b := 3
 in b
 end

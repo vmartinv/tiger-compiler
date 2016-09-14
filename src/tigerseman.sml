@@ -72,8 +72,8 @@ fun transExp(venv, tenv) =
 		| trexp(NilExp _)= {exp=(), ty=TNil}
 		| trexp(IntExp(i, _)) = {exp=(), ty=TInt}
 		| trexp(StringExp(s, _)) = {exp=(), ty=TString}
-		| trexp(CallExp({func, args}, nl)) =
-			{exp=(), ty=TUnit} (*COMPLETAR*)
+		| trexp(CallExp({func, args}, nl)) = (*COMPLETAR*)
+			{exp=(), ty=TUnit}
 		| trexp(OpExp({left, oper=EqOp, right}, nl)) =
 			let
 				val {exp=_, ty=tyl} = trexp left
@@ -203,8 +203,8 @@ fun transExp(venv, tenv) =
 			in 
 				{exp=(), ty=tybody}
 			end
-		| trexp(BreakExp nl) =
-			{exp=(), ty=TUnit} (*COMPLETAR_DONE*)
+		| trexp(BreakExp nl) = (*COMPLETAR_DONE*)
+			{exp=(), ty=TUnit}
 		| trexp(ArrayExp({typ, size, init}, nl)) = (*COMPLETAR_DONE*) (* testeo con tipo arr trucho *)
 			let
 				val (tya, cs) = case tabBusca(typ, tenv) of
@@ -257,12 +257,32 @@ fun transExp(venv, tenv) =
 			in
 				{exp=(), ty=(!t)}
 			end
-		and trdec (venv, tenv) (VarDec ({name,escape,typ=NONE,init},pos)) = 
-			(venv, tenv, []) (*COMPLETAR*)
-		| trdec (venv, tenv) (VarDec ({name,escape,typ=SOME s,init},pos)) =
-			(venv, tenv, []) (*COMPLETAR*)
+		and trdec (venv, tenv) (VarDec ({name,escape,typ=NONE,init},pos)) =  (*COMPLETAR_TEST*)
+			let
+                val _ = case init of
+                          (NilExp _) => error("En una declaración debe indicarse el tipo si el valor inicial es nil", pos)
+                        | _ => ()
+                val {exp=_, ty=tyi} = trexp init
+                val entry = Var {ty = tyi}
+                val venv' = tabRInserta(name, entry, venv)
+            in
+                (venv', tenv, []) (*lista vacia, que es? para dsp, para llevar los efectos laterales*)
+            end            
+		| trdec (venv, tenv) (VarDec ({name,escape,typ=SOME s,init},pos)) =  (*COMPLETAR_DONE*)
+			let
+                val {exp=_, ty=tyi} = trexp init
+                val _ = case tabBusca(s, tenv) of
+                          NONE => error("El tipo "^s^" no esta declarado", pos)
+                        | SOME t => if tiposIguales t tyi
+                                    then ()
+                                    else error("Los tipos de la declaracion no coinciden", pos)                        
+                val entry = Var {ty = tyi}
+                val venv' = tabRInserta(name, entry, venv)
+            in
+                (venv', tenv, [])
+            end
 		| trdec (venv, tenv) (FunctionDec fs) =
-			(venv, tenv, []) (*COMPLETAR*)
+			(venv, tenv, []) (*COMPLETAR_hacer en dos pasadas*)
 		| trdec (venv, tenv) (TypeDec ts) =
 			(venv, tenv, []) (*COMPLETAR*)
 	in trexp end

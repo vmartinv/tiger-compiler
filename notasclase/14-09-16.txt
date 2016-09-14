@@ -1,0 +1,9 @@
+Casos con los que hay que tener cuidado:
+
+for i:=0 to 10 do
+    let function f() = break /*error, deben estar en el mismo marco de activación*/
+    in () end
+    
+for i:=1 to 10 do
+    let var j:=i /* j no puede tener el tipo de i por ser de solo lectura*/
+    in j:=j+1 end
