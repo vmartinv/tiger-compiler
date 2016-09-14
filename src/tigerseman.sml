@@ -223,19 +223,40 @@ fun transExp(venv, tenv) =
 			in
 				{exp=(), ty=tya}
 			end
-		and trvar(SimpleVar s, nl) = (*COMPLETAR_arreglar*)
+		and trvar(SimpleVar s, nl) = (*COMPLETAR_TO_TEST*)
 			let
 				val tyv = case tabBusca (s,venv) of
-							  NONE => error("Variable inexistente ("^s^")", nl)
-							| SOME (Var ty) => ty
-							| _ => error(s^" no es una variable." , nl)
+						    NONE => error("Variable inexistente ("^s^")", nl)
+						  | SOME VIntro => TInt
+						  | SOME (Var {ty}) => ty
+				   	      | _ => error(s^" no es una variable." , nl)
 			in
 				{exp=(), ty=tyv}
 			end
-		| trvar(FieldVar(v, s), nl) =
-			{exp=(), ty=TUnit} (*COMPLETAR*)
-		| trvar(SubscriptVar(v, e), nl) =
-			{exp=(), ty=TUnit} (*COMPLETAR*)
+		| trvar(FieldVar(v, s), nl) = (*COMPLETAR_TO_TEST*)
+			let
+				val {exp=_, ty=tyv} = trvar(v, nl)
+				val t = (case tyv of
+						   TRecord (l, _) => (case List.filter (fn x => #1 x = s) l of
+						                       [] => error(s^" no es un campo del record", nl)
+						                     | (c::_) => #2 c)
+						 | _ => error("No es una variable de tipo record, no se puede indexar" , nl))
+			in
+				{exp=(), ty=(!t)}
+			end
+		| trvar(SubscriptVar(v, e), nl) = (*COMPLETAR_TO_TEST*)
+			let
+				val {exp=_, ty=tyv} = trvar(v, nl)
+				val t = (case tyv of
+						   TArray (tr, _) => tr
+						 | _ => error("No es una variable de tipo array, no se puede indexar" , nl))
+				val {exp=_, ty=tye} = trexp e
+				val _ = if tiposIguales tye TInt
+						then ()
+						else error("El indice no es de tipo entero" , nl)
+			in
+				{exp=(), ty=(!t)}
+			end
 		and trdec (venv, tenv) (VarDec ({name,escape,typ=NONE,init},pos)) = 
 			(venv, tenv, []) (*COMPLETAR*)
 		| trdec (venv, tenv) (VarDec ({name,escape,typ=SOME s,init},pos)) =
