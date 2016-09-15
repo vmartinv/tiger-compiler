@@ -1,0 +1,13 @@
+let
+    type l = {elem:init, next:l}
+    Var L:l:=nil
+in
+    L.next.next.next.next.next.elem
+end
+
+(*
+in 
+    do i:=0 to 10000 do l:=l.next
+    l.elem
+end
+*)
