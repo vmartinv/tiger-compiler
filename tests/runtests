@@ -24,7 +24,7 @@ TMPFILE=testing_tmp.out
 for tfile in $(find "${DIR}" -name "*.tig"); do
 	correct=${tfile%.*}.out
 	if [ -f "${correct}" ]; then
-		echo Testing case "${tfile#$DIR/}"...
+		printf "Testing case "${tfile#$DIR/}"... "
 		"${TIGER}" "${tfile}" > $TMPFILE 2>&1
 		diff $TMPFILE "${correct}"
 		if [ $? -eq 0 ]; then
@@ -32,6 +32,6 @@ for tfile in $(find "${DIR}" -name "*.tig"); do
 		fi
 	fi
 done
-printf "Finishing..."
+printf "Finishing... "
 rm -f $TMPFILE || true
 OK
