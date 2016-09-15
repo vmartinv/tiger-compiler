@@ -12,6 +12,10 @@ function OK(){
 	echo -e "${GREEN}OK${NC}"
 }
 
+function BAD(){
+	echo -e "${RED}BAD${NC}"
+}
+
 echo ${DIR}
 printf "Compiling... "
 make -C "${TIGER_DIR}"
@@ -28,7 +32,9 @@ for tfile in $(find "${DIR}" -name "*.tig"); do
 		"${TIGER}" "${tfile}" > $TMPFILE 2>&1
 		diff $TMPFILE "${correct}"
 		if [ $? -eq 0 ]; then
-    			OK
+    		OK
+        else
+            BAD
 		fi
 	fi
 done
