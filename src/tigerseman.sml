@@ -257,27 +257,25 @@ fun transExp(venv, tenv) =
 			in
 				{exp=(), ty=(!t)}
 			end
-		and trdec (venv, tenv) (VarDec ({name,escape,typ=NONE,init},pos)) =  (*COMPLETAR_TEST*)
+		and trdec (venv, tenv) (VarDec ({name,escape,typ=NONE,init},pos)) =  (*COMPLETAR_DONE*)
 			let
-                val _ = case init of
-                          (NilExp _) => error("En una declaración debe indicarse el tipo si el valor inicial es nil", pos)
+                val {exp=_, ty=tyi} = transExp (venv, tenv) init
+                val _ = case tyi of
+                          TNil => error("No se puede inferir el tipo de nil en la declaracion de "^name, pos)
                         | _ => ()
-                val {exp=_, ty=tyi} = trexp init
-                val entry = Var {ty = tyi}
-                val venv' = tabRInserta(name, entry, venv)
+                val venv' = tabRInserta(name, Var {ty = tyi}, venv)
             in
                 (venv', tenv, []) (*lista vacia, que es? para dsp, para llevar los efectos laterales*)
             end            
 		| trdec (venv, tenv) (VarDec ({name,escape,typ=SOME s,init},pos)) =  (*COMPLETAR_DONE*)
 			let
-                val {exp=_, ty=tyi} = trexp init
+                val {exp=_, ty=tyi} = transExp (venv, tenv) init
                 val _ = case tabBusca(s, tenv) of
-                          NONE => error("El tipo "^s^" no esta declarado", pos)
+                          NONE => error("El tipo "^s^" no esta declarado.", pos)
                         | SOME t => if tiposIguales t tyi
                                     then ()
                                     else error("Los tipos de la declaracion no coinciden", pos)                        
-                val entry = Var {ty = tyi}
-                val venv' = tabRInserta(name, entry, venv)
+                val venv' = tabRInserta(name, Var {ty = tyi}, venv)
             in
                 (venv', tenv, [])
             end
