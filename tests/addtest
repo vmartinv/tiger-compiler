@@ -20,11 +20,15 @@ if [ $? -ne 0 ]; then
 fi
 OK
 
-if [ -f "${1}" ]; then
-	correct=${1%.*}.out
-	echo Adding case "${1#$DIR/}"...
-	"${TIGER}" "${1}" > "${correct}" 2>&1;
-	OK
-else
-	echo -e "${RED}File not found.${NC}"
-fi
+while [ $# -ne 0 ]
+  do
+    if [ -f "${1}" ]; then
+        correct=${1%.*}.out
+        echo Adding case "${1#$DIR/}"...
+        "${TIGER}" "${1}" > "${correct}" 2>&1;
+        OK
+    else
+        echo -e "${RED}File not found.${NC}"
+    fi
+    shift
+done
