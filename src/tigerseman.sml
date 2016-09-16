@@ -281,8 +281,24 @@ fun transExp(venv, tenv) =
             end
 		| trdec (venv, tenv) (FunctionDec fs) =
 			(venv, tenv, []) (*COMPLETAR_hacer en dos pasadas*)
-		| trdec (venv, tenv) (TypeDec ts) =
-			(venv, tenv, []) (*COMPLETAR*)
+		| trdec (venv, tenv) (TypeDec ts) =(*COMPLETAR_TO_TEST*)(*CORREGIR*)
+			(*let (*TypeDec of ({name: symbol, ty: ty} * pos) list*)
+				fun rep xs = case xs of
+								[] => ()
+							  | ((t,pos)::tss) => if (List.exists (fn (x,y) => x#name=t#name) tss) (*verifica que no se declaren dos tipos con el mismo nombre*)
+													then error("El tipo "^t#name^" se define m",pos)(*lo escribimos asi o ponemos todas las ubicaciones*)
+													else rep tss
+				val _ = rep ts
+				fun tyf (t, pos) = case tabBusca(t#name, tenv) of(*verifica que un tipo no exista*)
+										NONE => () (* en SOME t - ver que onda, como manejar que está dentro de un LET (en ese caso no estaría mal)*)
+									  | SOME ty => error("El tipo "^t#name^" ya fue declarado", pos)   
+				val _ = map (fn (x,y) => tyf x) ts
+				val t = map (fn (x,y) => x) ts
+				val tenv' = tabInserList(tenv, t)
+			in
+				(venv, tenv', []) 
+			end*)
+			(venv, tenv, []) 
 	in trexp end
 fun transProg ex =
 	let	val main =
