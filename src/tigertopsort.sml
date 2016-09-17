@@ -25,8 +25,8 @@ fun topsort P =
 		| tsort P (St as (h::t)) Res =
 			let	val x = (hd(candidato St P)) handle Empty => raise Ciclo
 			in	tsort (P --- x) (St -- x) (x::Res) end
-	fun elementos lt =
-		List.foldr (fn((x, y), l) =>
+		fun elementos lt =
+			List.foldr (fn((x, y), l) =>
 			let	val l1 = case List.find (op= rs x) l of
 							NONE => x::l | _ => l
 				val l2 = case List.find (op= rs y) l1 of
