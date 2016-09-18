@@ -279,9 +279,72 @@ fun transExp(venv, tenv) =
             in
                 (venv', tenv, [])
             end
-		| trdec (venv, tenv) (FunctionDec fs) =
-			(venv, tenv, []) (*COMPLETAR_hacer en dos pasadas*)
-		| trdec (venv, tenv) (TypeDec ts) =(*COMPLETAR_TO_TEST*)(*CORREGIR*)
+		| trdec (venv, tenv) (FunctionDec fs) = (* fs = ({name: symbol, params: field list, result: symbol option, body: exp} * pos) list*)   (*COMPLETAR_hacer en dos pasadas*)
+			let
+				(* checkeo de repetición de nombres: no se pueden sobreescribir funciones dentro de un mismo batch. Era así, no? *)
+				fun reps [] = false
+				|   reps (({name = n,params, result, body},pos)::f) =
+						if (List.foldl (fn (a, b) => a orelse b) false (List.map (fn x => (#name (#1 x) = n)) f)) then true else reps f
+
+				val _ = if reps fs
+						then raise Fail "No se permite la repetición de nombre de función en un mismo batch\n"
+						else ()
+				
+				(* 1ra pasada: checkeo de tipo de los parametros formales y retorno para actualizar venv *)
+				fun toTipoR r = case r of
+								  NONE => TUnit
+								| SOME s => case tabBusca(s, tenv) of
+											  NONE => raise Fail ("El tipo "^s^" es inexistente\n")
+											| SOME t => t
+
+				fun toTipoP [] = []
+                |   toTipoP ({name, escape, typ=NameTy s} :: ps) =
+						(case tabBusca(s, tenv) of
+					 	   SOME t => (t :: toTipoP ps)
+						 | _ => raise Fail ("El tipo "^s^" es inexistente\n"))
+                |   toTipoP _ = raise Fail ("Error en los tipos de los parametros.\n") (* La sintaxis de tiger no permite que los argumentos tengan explicitamente tipo record o array, no? *)
+
+				fun newVenv venv' [] = venv'
+				|   newVenv venv' (({name = n, params = p, result = r, body},pos)::f) =
+						let
+							val entry = Func {level = (), label = tigertemp.newlabel(), formals = toTipoP p, result = toTipoR r, extern = false}
+							val venv'' = tabRInserta (n, entry, venv')
+						in
+							newVenv venv'' f
+						end
+				
+				val venv' = newVenv venv fs
+				
+				(* 2da pasada: checkeo de tipo de retorno y cuerpo de la función *)
+				fun checkBody venv' [] = ()
+				|   checkBody venv' (({name = n, params = p, result = r, body = b},pos)::f) =
+						let
+							val tipos = toTipoP p
+							val nombres = map #name p
+							fun zipadd [] [] v = v
+							|   zipadd (n::ns) (t::ts) v = zipadd ns ts (tabRInserta(n,Var{ty=t},v))
+							|   zipadd _ _ _ = error("Error",pos)
+							val venv'' = zipadd nombres tipos venv'
+							val {ty = tipoB,...} = transExp (venv'',tenv) b
+							val tipoR = case tabBusca(n,venv') of
+										  NONE => error("Error",pos)
+                                        | SOME (Func{level, label, formals, result=r, extern}) => r
+                                        | SOME _ => error("Error",pos)
+							val _ = if tiposIguales tipoB tipoR
+									then ()
+									else error("El tipo de retorno de la funcion y el de su definición no coinciden", pos)
+						in
+							checkBody venv' f
+						end
+				
+				val _ = checkBody venv' fs
+				
+			in
+				(venv', tenv, [])
+			end
+		| trdec (venv, tenv) (TypeDec ts) =(*COMPLETAR_CORREGIR*)
+		(venv, tenv, [])
+		(*
 			let (*TypeDec of ({name: symbol, ty: ty} * pos) list*)
 				fun tyf (t, pos) = case tabBusca(#name t, tenv) of(*verifica que un tipo no exista*)
 										NONE => () (* en SOME t - ver que onda, como manejar que está dentro de un LET (en ese caso no estaría mal)*)
@@ -296,7 +359,7 @@ fun transExp(venv, tenv) =
 
 			in
 				(venv, tenv', []) 
-			end
+			end*)
 			
 	in trexp end
 fun transProg ex =
