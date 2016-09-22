@@ -34,7 +34,7 @@ fun topsort P =
 			in	l2 end) [] lt
 	in	tsort P (elementos P) [] end
 
-fun buscaArrRecords lt =
+fun buscaArrRecords lt = (*Genera Tipo para cada uno de los arreglos y records, poniendo TTipo*)
 	let	fun buscaRecs [] res = res
 		| buscaRecs({name, ty=RecordTy lf}::t) res =
 			let	fun genrecs [] _ = []
@@ -45,9 +45,9 @@ fun buscaArrRecords lt =
 		| buscaRecs({name, ty=ArrayTy ty}::t) res = buscaRecs t ((name, TArray(ref(TTipo ty), ref()))::res)
 		| buscaRecs(_::t) res = buscaRecs t res
 	in	buscaRecs lt [] end
-fun genPares lt =
+fun genPares lt = (*Genera los pares (nombre, tipo) para el toposort*)
 	let
-		val lrecs = buscaArrRecords lt
+		val lrecs = buscaArrRecords lt (*no usado, borrar!*)
 		fun genP [] res = res
 		| genP ({name, ty=NameTy s'}::t) res = (print("NameTy "^s'^"\n"); genP t ((s', name)::res)   )
 		| genP ({name, ty=ArrayTy s'}::t) res = genP t ((s', name)::res)

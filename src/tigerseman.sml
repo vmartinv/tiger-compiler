@@ -3,6 +3,7 @@ struct
 
 open tigerabs
 open tigersres
+open tigertopsort
 
 type expty = {exp: unit, ty: Tipo}
 
@@ -340,23 +341,11 @@ fun transExp(venv, tenv) =
 				(venv', tenv, [])
 			end
 		| trdec (venv, tenv) (TypeDec ts) =(*COMPLETAR_CORREGIR*)
-		(venv, tenv, [])
-		(*
-			let (*TypeDec of ({name: symbol, ty: ty} * pos) list*)
-				fun tyf (t, pos) = case tabBusca(#name t, tenv) of(*verifica que un tipo no exista*)
-										NONE => () (* en SOME t - ver que onda, como manejar que está dentro de un LET (en ese caso no estaría mal)*)
-									  | SOME ty => error("El tipo "^(#name t)^" ya fue declarado", pos)   
-				val _ = map (fn x => tyf x) ts
-				fun trty ty = case ty of
-									NameTy sy   => () (*hacer*)
-								  | RecordTy fl => ()
-								  | ArrayTy sy  => () 
-				val t = map (fn (x,y) => (#name x, (#ty x))) ts
-				val tenv' = tabInserList(tenv, t)
-
-			in
-				(venv, tenv', []) 
-			end*)
+            let
+                val tenv' = tigertopsort.fijaTipos (map #1 ts) tenv
+            in
+                (venv, tenv', [])
+            end
 			
 	in trexp end
 fun transProg ex =
