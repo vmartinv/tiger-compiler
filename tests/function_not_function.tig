@@ -1,0 +1,6 @@
+let
+    var h := 0
+in
+    h(0, 2, 3)
+end
+

@@ -66,6 +66,14 @@ fun tiposIguales (TRecord _) TNil = true
 		(* end *)raise Fail "No debería pasar! (2)"
   | tiposIguales a b = (a=b)
 
+fun zip [] [] = []
+|   zip (x::xs) (y::ys) = (x,y)::zip xs ys
+|   zip _ _ = raise Fail "No deberia pasar\n"
+
+fun join [] sep = ""
+|   join (x::[]) sep = x
+|   join (x::y::xs) sep = x^sep^join (y::xs) sep
+
 fun transExp(venv, tenv) =
 	let fun error(s, p) = raise Fail ("Error -- línea "^Int.toString(p)^": "^s^"\n")
 		fun trexp(VarExp v) = trvar(v)
@@ -74,8 +82,21 @@ fun transExp(venv, tenv) =
 		| trexp(IntExp(i, _)) = {exp=(), ty=TInt}
 		| trexp(StringExp(s, _)) = {exp=(), ty=TString}
 		| trexp(CallExp({func, args}, nl)) = (*COMPLETAR*)
-			{exp=(), ty=TUnit}
-		| trexp(OpExp({left, oper=EqOp, right}, nl)) =
+            let
+                val (typR, typArgs) = case tabBusca(func,venv) of
+                                          NONE => error("Funcion inexistente ("^func^")",nl)
+                                        | SOME (Func{result=typR,formals=typArgs,...}) => (typR, typArgs)
+                                        | SOME _ => error(func^" no es una función",nl)
+                val callArgs:Tipo list = map #ty (map trexp args)
+                val _ = if typArgs = callArgs
+                        then ()
+                        else error("Los argumentos deberían ser: "^join (map tigermuestratipos.tipoToString typArgs) "->"^"\n"
+                                 ^ "y se recibio: "^join (map tigermuestratipos.tipoToString callArgs) "->", nl)
+                
+            in
+                {exp=(), ty=typR}
+            end
+        | trexp(OpExp({left, oper=EqOp, right}, nl)) =
 			let
 				val {exp=_, ty=tyl} = trexp left
 				val {exp=_, ty=tyr} = trexp right
@@ -311,11 +332,7 @@ fun transExp(venv, tenv) =
 				
                 val venv' = foldl agregaHeader venv (map haceHeader fs)
                 
-				(* 2da pasada: checkeo de tipo de retorno y cuerpo de la función *)
-                fun zip [] [] = []
-                |   zip (x::xs) (y::ys) = (x,y)::zip xs ys
-				|   zip _ _ = raise Fail "No deberia pasar\n"
-                
+				(* 2da pasada: checkeo de tipo de retorno y cuerpo de la función *)                
 				fun checkFunc ({name = n, params = p, result = r, body = b},nl) =
 						let
 							val tipos = toTipoArgs nl p

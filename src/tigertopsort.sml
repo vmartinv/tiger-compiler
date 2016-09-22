@@ -49,7 +49,7 @@ fun genPares lt = (*Genera los pares (nombre, tipo) para el toposort*)
 	let
 		val lrecs = buscaArrRecords lt (*no usado, borrar!*)
 		fun genP [] res = res
-		| genP ({name, ty=NameTy s'}::t) res = (print("NameTy "^s'^"\n"); genP t ((s', name)::res)   )
+		| genP ({name, ty=NameTy s'}::t) res = (genP t ((s', name)::res)   )
 		| genP ({name, ty=ArrayTy s'}::t) res = genP t ((s', name)::res)
 		| genP ({name, ty=RecordTy lf}::t) res = genP t res
 	in	genP lt [] end
@@ -108,6 +108,8 @@ fun fijaTipos batch env =
 		val env' = procesa orden batch env recs
 		val env'' = agregarecs env' recs
 		val env''' = fijaNONE (tabAList env'') env''
+(*
 val _ = tigermuestratipos.printTTipos(tabAList env'')
+*)
 	in	env''' end
 end

@@ -1,0 +1,6 @@
+let
+    function f(x:int):int = x
+in
+    f(0)
+end
+
