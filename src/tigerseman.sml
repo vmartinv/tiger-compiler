@@ -292,43 +292,40 @@ fun transExp(venv, tenv) =
                                                 #2 (valOf (List.find (fn y => x = (#name (#1 y))) (rev fs))))
 				
 				(* 1ra pasada: checkeo de tipo de los parametros formales y retorno para actualizar venv *)
-				fun toTipoR nl r = case r of
-								  NONE => TUnit
-								| SOME typ => case tabBusca(typ, tenv) of
-											    NONE => error("Tipo inexistente ("^typ^")", nl)
-											  | SOME t => t
+				fun toTipoRet nl r = case r of
+                                        NONE => TUnit
+                                      | SOME typ => case tabBusca(typ, tenv) of
+                                                    NONE => error("Tipo inexistente ("^typ^")", nl)
+                                                  | SOME t => t
 
-				fun tipoArg nl {name, escape, typ=NameTy typ} =
+				fun toTipoArg nl {name, escape, typ=NameTy typ} =
 						(case tabBusca(typ, tenv) of
 					 	   SOME t => t
 						 | _ => error("Tipo inexistente ("^typ^")", nl))
-                |   tipoArg nl _ = error("Error en los tipos de los parametros.", nl) (* La sintaxis de tiger no permite que los argumentos tengan explicitamente tipo record o array *)
+                |   toTipoArg nl _ = error("Error en los tipos de los parametros.", nl) (* La sintaxis de tiger no permite que los argumentos tengan explicitamente tipo record o array *)
                 
-                fun toTipoP nl xs  = map (tipoArg nl) xs
-				fun agregaFunc (({name = n, params = p, result = r, body},nl), venv) =
-						let
-							val entry = Func {level = (), label = tigertemp.newlabel(), formals = toTipoP nl p , result = toTipoR nl r, extern = false}
-						in
-							tabRInserta (n, entry, venv)
-						end
+                fun toTipoArgs nl xs  = map (toTipoArg nl) xs
+                fun haceHeader ({name = n, params = p, result = r,...},nl) =
+                    (n, Func {level = (), label = tigertemp.newlabel(), formals = toTipoArgs nl p , result = toTipoRet nl r, extern = false})
+                fun agregaHeader ((name, header), venv) = tabRInserta (name, header, venv)
 				
-                val venv' = foldl agregaFunc venv fs
+                val venv' = foldl agregaHeader venv (map haceHeader fs)
                 
+				(* 2da pasada: checkeo de tipo de retorno y cuerpo de la función *)
                 fun zip [] [] = []
                 |   zip (x::xs) (y::ys) = (x,y)::zip xs ys
 				|   zip _ _ = raise Fail "No deberia pasar\n"
                 
-				(* 2da pasada: checkeo de tipo de retorno y cuerpo de la función *)
 				fun checkFunc ({name = n, params = p, result = r, body = b},nl) =
 						let
-							val tipos = toTipoP nl p
+							val tipos = toTipoArgs nl p
 							val nombres = map #name p
                             fun agregaArg ((name, typ), venv) = tabRInserta (name, Var{ty=typ}, venv)
                             val venv'' = foldl agregaArg venv' (zip nombres tipos)
 							val {ty = tipoB,...} = transExp (venv'',tenv) b
 							val tipoR = case tabBusca(n,venv') of
 										  NONE => error("No deberia pasar",nl)
-                                        | SOME (Func{level, label, formals, result=r, extern}) => r
+                                        | SOME (Func{result=r,...}) => r
                                         | SOME _ => error("No deberia pasar",nl)
 							val _ = if tiposIguales tipoB tipoR
 									then ()
