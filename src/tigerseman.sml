@@ -281,64 +281,61 @@ fun transExp(venv, tenv) =
             end
 		| trdec (venv, tenv) (FunctionDec fs) = (* fs = ({name: symbol, params: field list, result: symbol option, body: exp} * pos) list*)   (*COMPLETAR_hacer en dos pasadas*)
 			let
-				(* checkeo de repetición de nombres: no se pueden sobreescribir funciones dentro de un mismo batch. Era así, no? *)
-				fun reps [] = false
-				|   reps (({name = n,params, result, body},pos)::f) =
-						if (List.foldl (fn (a, b) => a orelse b) false (List.map (fn x => (#name (#1 x) = n)) f)) then true else reps f
-
-				val _ = if reps fs
-						then raise Fail "No se permite la repetición de nombre de función en un mismo batch\n"
-						else ()
+				(* checkeo de repetición de nombres: no se pueden sobreescribir funciones dentro de un mismo batch. *)
+				fun reps [] = NONE
+                  | reps (x::xs) = if List.exists (fn y => x = y) xs then SOME x else reps xs
+                
+				val _ = case reps (map (fn x => (#name (#1 x))) fs) of
+                            NONE => ()
+                        |   SOME x => error("No se permite la repetición de nombre de función en un mismo batch",
+                                                #2 (valOf (List.find (fn y => x = (#name (#1 y))) (rev fs))))
 				
 				(* 1ra pasada: checkeo de tipo de los parametros formales y retorno para actualizar venv *)
-				fun toTipoR r = case r of
+				fun toTipoR nl r = case r of
 								  NONE => TUnit
-								| SOME s => case tabBusca(s, tenv) of
-											  NONE => raise Fail ("El tipo "^s^" es inexistente\n")
-											| SOME t => t
+								| SOME typ => case tabBusca(typ, tenv) of
+											    NONE => error("Tipo inexistente ("^typ^")", nl)
+											  | SOME t => t
 
-				fun toTipoP [] = []
-                |   toTipoP ({name, escape, typ=NameTy s} :: ps) =
-						(case tabBusca(s, tenv) of
-					 	   SOME t => (t :: toTipoP ps)
-						 | _ => raise Fail ("El tipo "^s^" es inexistente\n"))
-                |   toTipoP _ = raise Fail ("Error en los tipos de los parametros.\n") (* La sintaxis de tiger no permite que los argumentos tengan explicitamente tipo record o array, no? *)
-
-				fun newVenv venv' [] = venv'
-				|   newVenv venv' (({name = n, params = p, result = r, body},pos)::f) =
+				fun tipoArg nl {name, escape, typ=NameTy typ} =
+						(case tabBusca(typ, tenv) of
+					 	   SOME t => t
+						 | _ => error("Tipo inexistente ("^typ^")", nl))
+                |   tipoArg nl _ = error("Error en los tipos de los parametros.\n", nl) (* La sintaxis de tiger no permite que los argumentos tengan explicitamente tipo record o array, no? *)
+                
+                fun toTipoP nl xs  = map (tipoArg nl) xs
+				fun agregaFunc (({name = n, params = p, result = r, body},nl), venv) =
 						let
-							val entry = Func {level = (), label = tigertemp.newlabel(), formals = toTipoP p, result = toTipoR r, extern = false}
-							val venv'' = tabRInserta (n, entry, venv')
+							val entry = Func {level = (), label = tigertemp.newlabel(), formals = toTipoP nl p , result = toTipoR nl r, extern = false}
 						in
-							newVenv venv'' f
+							tabRInserta (n, entry, venv)
 						end
 				
-				val venv' = newVenv venv fs
-				
+                val venv' = foldl agregaFunc venv fs
+                
+                fun zip [] [] = []
+                |   zip (x::xs) (y::ys) = (x,y)::zip xs ys
+				|   zip _ _ = raise Fail "No deberia pasar\n"
+                
 				(* 2da pasada: checkeo de tipo de retorno y cuerpo de la función *)
-				fun checkBody venv' [] = ()
-				|   checkBody venv' (({name = n, params = p, result = r, body = b},pos)::f) =
+				fun checkFunc ({name = n, params = p, result = r, body = b},nl) =
 						let
-							val tipos = toTipoP p
+							val tipos = toTipoP nl p
 							val nombres = map #name p
-							fun zipadd [] [] v = v
-							|   zipadd (n::ns) (t::ts) v = zipadd ns ts (tabRInserta(n,Var{ty=t},v))
-							|   zipadd _ _ _ = error("Error",pos)
-							val venv'' = zipadd nombres tipos venv'
+                            fun agregaArg ((name, typ), venv) = tabRInserta (name, Var{ty=typ}, venv)
+                            val venv'' = foldl agregaArg venv' (zip nombres tipos)
 							val {ty = tipoB,...} = transExp (venv'',tenv) b
 							val tipoR = case tabBusca(n,venv') of
-										  NONE => error("Error",pos)
+										  NONE => error("No deberia pasar",nl)
                                         | SOME (Func{level, label, formals, result=r, extern}) => r
-                                        | SOME _ => error("Error",pos)
+                                        | SOME _ => error("No deberia pasar",nl)
 							val _ = if tiposIguales tipoB tipoR
 									then ()
-									else error("El tipo de retorno de la funcion y el de su definición no coinciden", pos)
+									else error("El tipo de retorno de la funcion y el de su definición no coinciden", nl)
 						in
-							checkBody venv' f
+							()
 						end
-				
-				val _ = checkBody venv' fs
-				
+				val _ = map checkFunc fs
 			in
 				(venv', tenv, [])
 			end
