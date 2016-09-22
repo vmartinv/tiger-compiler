@@ -5,6 +5,7 @@ TIGER="${TIGER_DIR}"/tiger
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
 cd "${DIR}"
@@ -16,10 +17,10 @@ function BAD(){
 	echo -e "${RED}BAD${NC}"
 }
 
-echo ${DIR}
-printf "Compiling... "
-make -C "${TIGER_DIR}"
+printf "Compiling Tiger... "
+make -C "${TIGER_DIR}" >/dev/null
 if [ $? -ne 0 ]; then
+    BAD
     exit 1
 fi
 OK
@@ -30,14 +31,19 @@ for tfile in $(find "${DIR}" -name "*.tig"); do
 	if [ -f "${correct}" ]; then
 		printf "Testing case "${tfile#$DIR/}"... "
 		"${TIGER}" "${tfile}" > $TMPFILE 2>&1
-		diff $TMPFILE "${correct}"
+		diff $TMPFILE "${correct}" > /dev/null
 		if [ $? -eq 0 ]; then
     		OK
         else
             BAD
+            echo -e "${PURPLE}Source code:${NC}"
+            cat "${tfile}"
+            echo -e "${PURPLE}Output:${NC}"
+            cat $TMPFILE
+            echo -e "${PURPLE}Expected Output:${NC}"
+            cat "${correct}"
 		fi
+        rm -f $TMPFILE || true
 	fi
 done
-printf "Finishing... "
-rm -f $TMPFILE || true
-OK
+echo Finished!
