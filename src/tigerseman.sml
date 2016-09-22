@@ -302,7 +302,7 @@ fun transExp(venv, tenv) =
 						(case tabBusca(typ, tenv) of
 					 	   SOME t => t
 						 | _ => error("Tipo inexistente ("^typ^")", nl))
-                |   tipoArg nl _ = error("Error en los tipos de los parametros.\n", nl) (* La sintaxis de tiger no permite que los argumentos tengan explicitamente tipo record o array, no? *)
+                |   tipoArg nl _ = error("Error en los tipos de los parametros.", nl) (* La sintaxis de tiger no permite que los argumentos tengan explicitamente tipo record o array *)
                 
                 fun toTipoP nl xs  = map (tipoArg nl) xs
 				fun agregaFunc (({name = n, params = p, result = r, body},nl), venv) =
@@ -342,7 +342,7 @@ fun transExp(venv, tenv) =
 			end
 		| trdec (venv, tenv) (TypeDec ts) =(*COMPLETAR_CORREGIR*)
             let
-                val tenv' = tigertopsort.fijaTipos (map #1 ts) tenv
+                val tenv' = tigertopsort.fijaTipos (map #1 ts) tenv handle Ciclo => error("Hay un ciclo en la declaracion de tipos", #2 (hd ts))
             in
                 (venv, tenv', [])
             end
