@@ -1,0 +1,162 @@
+structure tigertrans :> tigertrans =
+struct
+
+open tigerabs
+open tigersres
+
+fund ifThenElse(test, t, e) = 
+    let val test' = unCx test
+        val t' = unEx t
+        val e' = unEx e
+        val (lv, lf, le) = (newLabel(), newLabel(), newLabel())
+        val tmp = newTemp()
+    in
+        Ex(ESEQ(seq[test'(lv, lf),
+                   LABEL lv, MOVE(TEMP tmp, t'), JUMP(LABEL le, [le]),
+                   LABEL lf, MOVE(TEMP tmp, e');
+                   LABEL le],
+                   TEMP tmp))
+(**)
+
+fun cmpOp(oper, l, r) = 
+    let val l' = = unEx l
+        val r' = unEx r
+        val oper' = case oper of
+                        GeOp => GE
+                    |   
+    in
+        Ex(fun(v, f) = CJUMP(oper', l', r', v, f)
+end
+
+
+| trexp(OpExp({left, oper, right}, nl)) = 
+			let
+				val {exp=_, ty=tyl} = trexp left
+				val {exp=_, ty=tyr} = trexp right
+			in
+				if tiposIguales tyl tyr then
+                    case tipoReal(tyl, tend) of
+                    TInt =>
+                        case oper of
+                            PlusOp => {exp=(),ty=TInt}
+                            | MinusOp => {exp=(),ty=TInt}
+                            | TimesOp => {exp=(),ty=TInt}
+                            | DivideOp => {exp=(),ty=TInt}
+                            | LtOp => {exp=(),ty=TInt}
+                            | LeOp => {exp=(),ty=TInt}
+                            | GtOp => {exp=(),ty=TInt}
+                            | GeOp => {exp=cmpOp(GeOp, leftexp, rightexp), ty=TInt}
+                            | _ => raise Fail "No debería pasar! (3)"
+                    | TString =>
+                        case oper of
+                            PlusOp => {exp=(),ty=TInt}
+                            | MinusOp => error("Error de tipos", nl)
+                            | TimesOp => error("Error de tipos", nl)
+                            | DivideOp => error("Error de tipos", nl)
+                            | LtOp => {exp=(),ty=TInt}
+                            | LeOp => {exp=(),ty=TInt}
+                            | GtOp => {exp=(),ty=TInt}
+                            | GeOp => {exp=strcmpOp(GeOp, leftexp, rightexp),ty=TInt}
+                            | _ => raise Fail "No debería pasar! (3)"
+                    _ => raise Fail "Error de tipos, nl"
+				else error("Error de tipos", nl)
+			end
+
+fun strcmpOp(oper, l, r) = 
+    let val l' = unEx l
+        val r' = unEx r
+        val oper' = case oper of
+    in
+        Cx(fn(v,f) => CJUMP(oper', CALL(NAME "_strcmp", [l', r']), CONST 0, v, f))
+    end
+    
+    
+break y while. COmo detectar un break fuera de un do while o for.
+
+como implementar break: es un jump a una teiqueta al final de ciclo correspondientes.
+
+tenemos que llevar cuenta de las etiquetas en el caso de whiles anidados.
+Esto lo representamos mediante una pila.
+Si llamamos a una función, entonces la pila de whiles ya no es válida (los whiles anteriores estan en otro marco de activación). necesitamos una nueva pila.
+por esto necesitamos hacer una pila de pilas.
+
+fun preWhileFor() = 
+    pushLabel(newLabel())
+    
+fun postWhileFor() = 
+    popLabel()
+
+| trexp(WhileExp({test, body}, nl)) = 
+    let val {ty=testy, exp = testexp} = trexp test
+        val _ = preWhileFor()
+        val {tr = bodyty, exp = bodyexp} = trexp body
+        val _ = postWhileFor()
+        val _ = if esInt testy then () else error("test", nl)
+        val _ = if bodyty <> TInt then error("body", nl) else ()
+    in
+        {ty=TUnit, exp=WhileExp(testexp, bodyexp)}
+    end
+
+En trans:
+fun whileExp(t, b) = 
+    let val t' = unCx t
+        val b' = unNx b
+        val (lsigue, lv, lfin) = (newLabel(), newLabel(), topLabel())
+    in
+        Nx(seq[LABEL lsigue, t'(lv, lfin),
+               LABEL lv, b',
+               JUMP(LABEL lsigue, [lsigue]),
+               LABEL lfin])
+    end
+    
+| trexp(BreakExp, nl) = 
+    {ty = TUnit, exp = breakExp()}
+    handle Empty => error("break fuera de ciclo", nl)
+
+En trans:
+fun breakExp() = 
+    let val lfin = topLabel()
+    in
+        Nx(JUMP(LABEL lfin, [lfin]))
+    end
+
+Pasamos a ocuparnos de otra cosa: acceso a records y arreglos.
+En el caso general, los siguientes problemas no pueden ser chequeados
+en caso de compilación (equiv al problema de la parada):
+    r.i --> r no debe ser nil
+    a[n] --> Un negativo o mas grande que la cantidad de elementos
+Que hacemos? Lo chequeamos durante el tiempo de ejecución.
+
+let type A = aray of int
+    var a := A[1] of 0
+    var n := getint()
+in
+    a := A[n] of 0,
+    0
+end
+
+Necesitamos guardar 
+
+fun unCx(CONST 0) = fn(_, f) => JUMP(LABEL f, [f])
+|   unCx(CONST _) = fn(v, _) => JUMP(LABEL v, [v])
+|   unCx(Cx c) = c
+|   unCx(Exp e) = fn(v, f) => CJUMP(EQ, e, CONST 0, f, v)
+|   unCx(Nx _) = raise Fail "error interno nro 3.14159" 
+
+|trexp(UnitExp, nl) = 
+    {ty=TUnit, exp=unitExp()}
+
+En trans
+fun unitExp() = Ex(CONST 0)
+
+| trexp(StringExp(s, nl)) = 
+    {tr=TString, exp=stringExp s}
+En trans
+fun stringExp s = 
+    let val ls = newLabel()
+        val _ = guardamos el par (ls, s) en el frame estático
+    in
+        Ex(NAME ls)
+    end
+
+
