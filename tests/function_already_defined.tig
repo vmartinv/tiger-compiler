@@ -1,0 +1,10 @@
+let
+    function h() = 0
+    function f() = 1
+    function f() = 2
+    function g() = 3
+    function asd() = 4
+in
+    0
+end
+

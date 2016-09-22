@@ -1,0 +1,6 @@
+let
+    function f(x: {name:string}) = 0
+in
+    0
+end
+

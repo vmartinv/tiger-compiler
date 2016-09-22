@@ -1,0 +1,6 @@
+let
+    function f():string = 0
+in
+    0
+end
+

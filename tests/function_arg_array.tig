@@ -1,0 +1,6 @@
+let
+    function f(x: array of int) = 0
+in
+    0
+end
+
