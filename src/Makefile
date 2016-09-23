@@ -1,9 +1,14 @@
 # Unix makefile for tigermain example
 
+<<<<<<< HEAD
 HOME=/usr/bin
 # Decia: HOME=/usr/local/bin pero no me andaba
+=======
+BASEDIR=/usr/local
+HOME=${BASEDIR}/bin
+>>>>>>> cc88ff192072bdd2564fbadd034f66d0a2dd9831
 MOSMLHOME=${HOME}
-MOSMLTOOLS=camlrunm /usr/local/share/mosml/tools
+MOSMLTOOLS=camlrunm ${BASEDIR}/share/mosml/tools
 MOSMLLEX=mosmllex
 MOSMLYACC=mosmlyac -v
 
