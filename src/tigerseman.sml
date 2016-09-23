@@ -292,12 +292,12 @@ fun transExp(venv, tenv) =
 		| trdec (venv, tenv) (VarDec ({name,escape,typ=SOME s,init},pos)) =  (*COMPLETAR_DONE*)
 			let
                 val {exp=_, ty=tyi} = transExp (venv, tenv) init
-                val _ = case tabBusca(s, tenv) of
+                val t = case tabBusca(s, tenv) of
                           NONE => error("El tipo "^s^" no esta declarado.", pos)
                         | SOME t => if tiposIguales t tyi
-                                    then ()
+                                    then t
                                     else error("Los tipos de la declaracion no coinciden", pos)                        
-                val venv' = tabRInserta(name, Var {ty = tyi}, venv)
+                val venv' = tabRInserta(name, Var {ty = t}, venv)
             in
                 (venv', tenv, [])
             end
