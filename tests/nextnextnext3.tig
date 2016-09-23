@@ -2,5 +2,6 @@ let
     type l = {elem:init, next:l}
     var L:l:=nil
 in
-    0
+    do i:=0 to 10000 do l:=l.next
+    l.elem
 end

@@ -2,5 +2,5 @@ let
     type l = {elem:init, next:l}
     var L:l:=nil
 in
-    0
+    L.next.next.next.next.next.elem
 end
