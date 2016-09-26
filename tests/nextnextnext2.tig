@@ -1,5 +1,5 @@
 let
-    type l = {elem:init, next:l}
+    type l = {elem:int, next:l}
     var L:l:=nil
 in
     L.next.next.next.next.next.elem
