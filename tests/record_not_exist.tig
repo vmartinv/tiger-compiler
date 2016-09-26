@@ -1,0 +1,5 @@
+let
+    type l = {elem:tipoinexistente, next:l}
+in
+    0
+end
