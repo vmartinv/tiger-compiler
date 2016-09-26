@@ -1,0 +1,36 @@
+
+1er caso)
+Nivel_llamante = Nivel_llamada
+=> SL_llamada = SL_llamante
+
+val tmp = newtemp()
+Ex(ESEQ(MOVE(TEMP tmp, MEM(OPER(ADD, TEMP fp, 2*wSz), TEMP tmp)))
+
+2do caso)
+Nivel_llamante > Nivel_llamada
+Debe ser Nivel_llamada = Nivel_llamante+1
+=> SL_llamada = FP_llamante
+
+Ex(ESEQ(MOVE(TEMP tmp, TEMP fp), TEMP tmp))
+
+3er caso)
+Nivel_llamante < Nivel_llamada
+
+let
+    val dif = Nivel_llamante - Nivel_llamada
+    val tmp = newtemp()
+    fun genera 0 = []
+    |   genera d = 
+            seq[MOVE(TEMP tmp, OPER(ADD, TEMP tmp, CONST = 2*wSz)).
+                MOVE(TEMP tmp, MEM(TEMP tmp))] @ genera (d-1)
+in
+    Ex(ESEQ(seq(MOVE(TEMP tmp, TEMP fp)::genera dif),
+        TEMP tmp))
+end
+
+
+------------------
+Posibles optimizaciones en Tree (no es obligatorio implementarlas)
+Una optimización busca más eficiencia en algún sentido (tiempo, espacio, etc)
+
+
