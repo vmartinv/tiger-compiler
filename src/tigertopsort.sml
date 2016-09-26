@@ -67,7 +67,7 @@ fun procesa [] pares env _ = env: (string, Tipo) Tabla
 						SOME (n, tr) =>
 								(tabRInserta(h, tr, env);
 								SOME tr) (* OJOOOOOOOOOOOOOOOO *)
-						| _ => raise Fail (h^" **no existe!!!")
+						| _ => raise noExisteS h
 		val env' = case ttopt of
 					SOME tt =>
 						List.foldr
@@ -92,7 +92,7 @@ fun fijaNONE [] env = env
 	| SOME ras => (ar := ras; fijaNONE t env))
 | fijaNONE((name, TRecord(lf, u))::t) env =
 	let	fun busNONE(s, ar as (ref(TTipo t)), _) =
-			(ar := tabSaca(t, env) handle _ => raise noExiste)
+			(ar := tabSaca(t, env) handle _ => raise noExisteS t)
 		| busNONE _ = ()
 		val _ = List.app busNONE lf
 	in	fijaNONE t env end

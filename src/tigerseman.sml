@@ -88,7 +88,7 @@ fun transExp(venv, tenv) =
                                         | SOME (Func{result=typR,formals=typArgs,...}) => (typR, typArgs)
                                         | SOME _ => error(func^" no es una función",nl)
                 val callArgs:Tipo list = map #ty (map trexp args)
-                val _ = if typArgs = callArgs
+                val _ = if length typArgs = length callArgs andalso List.all (fn (ta,ca) => tiposIguales ta ca) (zip typArgs callArgs)
                         then ()
                         else error("Los argumentos deberían ser: "^join (map tigermuestratipos.tipoToString typArgs) "->"^"\n"
                                  ^ "y se recibio: "^join (map tigermuestratipos.tipoToString callArgs) "->", nl)
@@ -356,7 +356,14 @@ fun transExp(venv, tenv) =
 			end
 		| trdec (venv, tenv) (TypeDec ts) =(*COMPLETAR_CORREGIR*)
             let
-                val tenv' = tigertopsort.fijaTipos (map #1 ts) tenv handle Ciclo => error("Hay un ciclo en la declaracion de tipos", #2 (hd ts))
+                fun hasName n (ArrayTy x) = n=x
+                |   hasName n (RecordTy fields) = List.exists (hasName n) (map #typ fields)
+                |   hasName n (NameTy x) = n=x
+                
+                val tenv' = (tigertopsort.fijaTipos (map #1 ts) tenv
+                        handle Ciclo => error("Hay un ciclo en la declaracion de tipos", #2 (hd ts)))
+                        handle noExisteS name => error("Tipo inexistente ("^name^")", (#2 o valOf) (List.find ((hasName name) o #ty o #1) ts)
+                                handle Option => raise Fail "error interno 4576")
             in
                 (venv, tenv', [])
             end
