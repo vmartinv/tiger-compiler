@@ -1,14 +1,13 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-TIGER_DIR="${DIR}"/../src
-TIGER="${TIGER_DIR}"/tiger
+TIGER_DIR="$DIR"/../src
+TIGER="$TIGER_DIR"/tiger
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
-cd "${DIR}"
 function OK(){
 	echo -e "${GREEN}OK${NC}"
 }
@@ -17,25 +16,129 @@ function BAD(){
 	echo -e "${RED}BAD${NC}"
 }
 
-printf "Compiling Tiger... "
-make -C "${TIGER_DIR}" >/dev/null 2>&1
-if [ $? -ne 0 ]; then
-    BAD
-    make -C "${TIGER_DIR}"
-    exit 1
-fi
-OK
+function compile(){
+    printf "Compiling Tiger... "
+    make -C "$TIGER_DIR" >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        BAD
+        make -C "$TIGER_DIR"
+        exit 1
+    fi
+    OK
+}
 
-while [ $# -ne 0 ]
-  do
-    if [ -f "${1}" ]; then
-    
+function print_case(){
+    if [ -f "$1" ]; then
         echo -e "${PURPLE}Source code:${NC}"
-        cat "${1}"
+        cat "$1"
         echo -e "${PURPLE}Output:${NC}"
-        "${TIGER}" "${1}"
+        "$TIGER" "$1"
+    fi
+    correct=${1%.*}.out
+    if [ "$#" -ne 1 ] && [ -f "$correct" ]; then
+        echo -e "${PURPLE}Expected Output:${NC}"
+        cat "$correct"
+    fi
+    echo
+}
+
+function add_case(){
+    if [ -f "$1" ]; then
+        print_case "$1"
+        read -p "Add this output? (y/n) " -n 1 -r
+        echo    # (optional) move to a new line
+        if [[ $REPLY =~ ^[YysS]$ ]]
+        then
+            correct=${1%.*}.out
+            echo Adding case "${1#$DIR/}"...
+            "$TIGER" "$1" > "$correct" 2>&1
+            OK
+        fi
     else
         echo -e "${RED}File not found.${NC}"
     fi
-    shift
-done
+}
+
+function del_case(){
+    correct=${1%.*}.out
+    if [ -f "$correct" ]; then
+        echo Removing case "${correct#$DIR/}"...
+        print_case "$1" show_expected_output
+        read -p "Remove this output? (y/n) " -n 1 -r
+        echo    # (optional) move to a new line
+        if [[ $REPLY =~ ^[YysS]$ ]]
+        then
+            rm "$correct"
+        fi
+    else
+        echo -e "${RED}Output not found.${NC}"
+    fi
+}
+
+function run_case(){
+    if [ -f "$1" ]; then
+        correct=${1%.*}.out
+        printf "Testing case "${1#$DIR/}"... "
+        if [ -f "$correct" ]; then
+            "$TIGER" "$1" 2>&1 | diff - "$correct" > /dev/null
+            if [ $? -eq 0 ]; then
+                OK
+                if [ "$#" -ne 1 ]; then
+                    print_case "$1" show_expected_output
+                fi
+            else
+                BAD
+                print_case "$1" show_expected_output
+            fi
+        else
+            echo
+            print_case "$1"
+        fi
+    else
+        echo -e "${RED}File $1 not found.${NC}"
+    fi
+}
+
+
+cd "$DIR"
+verb="$1"
+shift
+case "$verb" in
+    run)
+        compile
+        if [ "$#" -ne 1 ]; then
+            for tfile in $(find "$DIR" -name "*.tig"); do
+                correct=${tfile%.*}.out
+                if [ -f "$correct" ]; then
+                    run_case "$tfile"
+                fi
+            done
+        else
+            while [ $# -ne 0 ]
+              do
+                run_case "$1" force_output
+                shift
+            done
+        fi
+        ;;
+     
+    add)
+        compile
+        while [ $# -ne 0 ]
+          do
+            add_case "$1"
+            shift
+        done
+        ;;
+     
+    del)
+        while [ $# -ne 0 ]
+          do
+            del_case "$1"
+            shift
+        done
+        ;;
+    *)
+        echo $"Usage: $0 {run|add|del} [case.tig]"
+        exit 1
+esac
