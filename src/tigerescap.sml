@@ -10,18 +10,21 @@ type escEnv = (string, depth * bool ref) tigertab.Tabla
 depth -> profundidad en la que se lo declaró
 bool ref -> si escapó o no*)
 
-fun travVar env d s =
-	case s of
-	SimpleVar s =>
-		(case tabBusca(s, env) of
-		SOME (dd, b) => if d>dd then b:=true else ()
-		| NONE => raise Fail ("escape?? "^s^" inexist."))
-	| FieldVar(v, s) => travVar env d v
-	| SubscriptVar(v, e) =>
-		(travVar env d v; travExp env d e)
+fun travVar env d (s, nl) =
+	let fun error(s, p) = raise Fail ("Error -- línea "^Int.toString(p)^": "^s^"\n")
+    in
+        case s of
+        SimpleVar s =>
+            (case tabBusca(s, env) of
+            SOME (dd, b) => if d>dd then b:=true else ()
+            | NONE => error("Variable inexistente ("^s^")", nl))
+        | FieldVar(v, s) => travVar env d (v, nl)
+        | SubscriptVar(v, e) =>
+            (travVar env d (v, nl); travExp env d e)
+    end
 and travExp env d s =
 	case s of
-	VarExp(v, _) => travVar env d v
+	VarExp(v, nl) => travVar env d (v, nl)
 	| CallExp({func, args}, nl) => travExp env d (SeqExp(args, nl))
 	| OpExp({left, oper, right}, _) =>
 		(travExp env d left; travExp env d right)
@@ -30,8 +33,8 @@ and travExp env d s =
 	| SeqExp(le, nl) =>
 		(List.foldl (fn (e, (v, d)) => (travExp v d e; (v, d)))
 			(env, d) le; ())
-	| AssignExp({var, exp}, _) =>
-		(travVar env d var; travExp env d exp)
+	| AssignExp({var, exp}, nl) =>
+		(travVar env d (var, nl); travExp env d exp)
 	| IfExp({test, then', else'=NONE}, _) =>
 		(travExp env d test; travExp env d then')
 	| IfExp({test, then', else'=SOME e}, _) =>
