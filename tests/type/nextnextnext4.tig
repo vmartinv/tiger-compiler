@@ -1,7 +1,7 @@
 let
     type l = {elem:int, next:l}
-    var L:l:=nil
+    var l:l:=nil
 in
-    for i:=0 to 10000 do L:=L.next;
+    for i:=0 to 10000 do L:=l.next;
     L.elem
 end
