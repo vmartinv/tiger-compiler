@@ -1,0 +1,6 @@
+let
+    function f(x:int, y:int):int = x
+in
+    f(0, 2, 3, "arg")
+end
+

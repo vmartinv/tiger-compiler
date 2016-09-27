@@ -1,0 +1,7 @@
+let
+    type persona = {edad:int, dni:int, nombre:string}
+    function f(p:persona):int = p.edad
+in
+    f(nil)
+end
+

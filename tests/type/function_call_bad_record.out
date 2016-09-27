@@ -1,0 +1,3 @@
+Fail: Error -- línea 7: Los argumentos deberían ser: record[int, int, string]
+y se recibio: record[int, int, string]
+
