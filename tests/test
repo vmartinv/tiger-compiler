@@ -16,6 +16,11 @@ function BAD(){
 	echo -e "${RED}BAD${NC}"
 }
 
+function usage(){
+    echo $"Usage: $0 {run|add|del} [case.tig]"
+    exit 1
+}
+
 function compile(){
     printf "Compiling Tiger... "
     make -C "$TIGER_DIR" >/dev/null 2>&1
@@ -26,6 +31,7 @@ function compile(){
     fi
     OK
 }
+
 
 function print_case(){
     if [ -f "$1" ]; then
@@ -132,6 +138,7 @@ case "$verb" in
         ;;
      
     add)
+        [ "$#" -eq 0 ] && usage
         compile
         while [ $# -ne 0 ]
           do
@@ -141,6 +148,7 @@ case "$verb" in
         ;;
      
     del)
+        [ "$#" -eq 0 ] && usage
         while [ $# -ne 0 ]
           do
             del_case "$1"
@@ -148,6 +156,5 @@ case "$verb" in
         done
         ;;
     *)
-        echo $"Usage: $0 {run|add|del} [case.tig]"
-        exit 1
+        usage
 esac
