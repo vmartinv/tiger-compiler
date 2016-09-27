@@ -4,3 +4,7 @@ practica/tiger-compiler
 *~
 src/tiger
 src/Makefile
+src/tigergrm.output
+src/tigergrm.sig
+src/tigergrm.sml
+src/tigerlex.sml
