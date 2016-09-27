@@ -2,7 +2,7 @@
 Tiger compiler written in ML for Computer Science course
 
 ## Agregar extensiones al geany:
-> sed -ie 's/^\(CAML=\).*/\1*.ml;*.mli;*.sml;*.sig/g'  ~/.config/geany/filetype_extensions.conf
+> sed -ie 's/^\(CAML=\).\*/\1\*.ml;\*.mli;\*.sml;\*.sig/g'  ~/.config/geany/filetype_extensions.conf
 
 ## Links útiles
 * Pagina para aprender git:
