@@ -61,6 +61,10 @@ fun ppexpr pps e0 =
 				tlist;
 			add_string pps "])"; add_break pps (0, 0);
 			end_block pps)
+		| ppd(ImportDec ({name}, _)) =
+			(begin_block pps INCONSISTENT 0;
+			add_string pps ("ImportDec("^name^")"); add_break pps (0, 0);
+			end_block pps)
 		and ppt(NameTy s) =
 			(begin_block pps INCONSISTENT 0;
 			add_string pps ("NameTy("^s^")"); add_break pps (0, 0);

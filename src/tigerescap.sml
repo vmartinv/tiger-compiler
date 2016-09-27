@@ -65,6 +65,7 @@ and travDecs env d [] = env
 			| VarDec({name, escape, typ, init}, _) =>
 				(travExp env d init; tabRInserta(name, (d, escape), env))
 			| TypeDec _ => env
+            | ImportDec _ => raise Fail "error interno (importdec345)"
 		val env' = aux s
 	in	travDecs env' d t end
 

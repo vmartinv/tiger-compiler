@@ -386,6 +386,7 @@ fun transExp(venv, tenv) =
             in
                 (venv, tenv', [])
             end
+        | trdec _ (ImportDec _) = raise Fail "error interno (importdec234)"
 			
 	in trexp end
 fun transProg ex =

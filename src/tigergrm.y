@@ -15,7 +15,7 @@ fun fundeLFunTipos(TypeDec[dt], (TypeDec(hdt))::t) =
 
 %}
 %token EOF
-%token TYPE ARRAY OF VAR FUNCTION
+%token TYPE IMPORT ARRAY OF VAR FUNCTION
 %token LET IN END IF THEN ELSE WHILE DO FOR TO BREAK
 %token PTO DOSP DOSPIG COMA PCOMA IGUAL PI PD CI CD LI LD
 %token AMPER PIPE MENOR MENIG MAYOR MAYIG DIST
@@ -49,6 +49,7 @@ fun fundeLFunTipos(TypeDec[dt], (TypeDec(hdt))::t) =
 %left MAS MENOS
 %left POR DIV
 
+%start decs
 %start prog
 %%
 prog : exp EOF				{ $1 }
@@ -108,6 +109,8 @@ decs : dec decs				{ fundeLFunTipos($1, $2) }
 	|						{ [] }
 	;
 dec : TYPE id IGUAL ty		{ TypeDec[({name=$2, ty=$4}, P())] }
+	| IMPORT id				{ ImportDec({name=$2}, P()) }
+	| vardec				{ $1 }
 	| vardec				{ $1 }
 	| fundec				{ $1 }
 	;

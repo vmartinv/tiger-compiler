@@ -28,7 +28,7 @@ EXEFILE=
 
 GRALOBJS= tigerabs.uo tigergrm.uo tigerlex.uo tigermain.uo \
  	tigernlin.uo tigerpp.uo tigerescap.uo tigertab.uo tigerseman.uo tigertemp.uo tigertopsort.uo tigerutils.uo tigertree.uo \
- 	tigerframe.uo tigertrans.uo tigerit.uo tigerpila.uo
+ 	tigerframe.uo tigertrans.uo tigerit.uo tigerpila.uo tigerimport.uo
 
 all: tiger
 
@@ -61,7 +61,7 @@ clean:
 	$(MOSMLC) $<
 
 depend: tigerabs.sml tigergrm.sml tigerlex.sml tigermain.sml \
-	tigernlin.sml tigerpp.sml tigertopsort.sml tigerutils.sml
+	tigernlin.sml tigerpp.sml tigertopsort.sml tigerutils.sml tigerimport.sml
 	$(REMOVE) Makefile.bak
 	$(MOVE) Makefile Makefile.bak
 	$(MOSMLTOOLS)/cutdeps < Makefile.bak > Makefile
@@ -89,9 +89,11 @@ tigersres.uo: tigertab.ui tigertips.uo tigertemp.ui tigerabs.uo \
     tigertrans.ui 
 tigertab.uo: tigertab.ui 
 tigermain.uo: tigerseman.ui tigerescap.ui tigergrm.ui tigerlex.uo \
-    tigerpp.uo 
+    tigerpp.uo tigerimport.ui
 tigertemp.uo: tigertemp.ui 
 tigerlex.uo: tigergrm.ui tigernlin.uo 
 tigertopsort.ui: tigertab.ui tigertips.uo tigerabs.uo 
 tigertopsort.uo: tigertopsort.ui tigertab.ui tigertips.uo tigerabs.uo
 tigerutils.uo: tigerutils.ui
+tigerimport.ui: tigerabs.ui
+tigerimport.uo: tigerimport.ui tigerabs.ui

@@ -31,6 +31,7 @@ and dec = FunctionDec of ({name: symbol, params: field list,
 	| VarDec of {name: symbol, escape: bool ref,
 		     typ: symbol option, init: exp} * pos
 	| TypeDec of ({name: symbol, ty: ty} * pos) list
+	| ImportDec of {name: symbol} * pos
 
 and ty = NameTy of symbol
 	| RecordTy of field list
