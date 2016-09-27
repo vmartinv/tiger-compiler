@@ -1,6 +1,0 @@
-let
-    import asdf
-    var a := 0
-in
-    0
-end

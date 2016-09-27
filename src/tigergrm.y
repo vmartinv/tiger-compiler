@@ -37,6 +37,7 @@ fun fundeLFunTipos(TypeDec[dt], (TypeDec(hdt))::t) =
 %type<tigerabs.dec> vardec
 %type<tigerabs.dec> fundec 
 %type<tigerabs.dec list> decs 
+%type<tigerabs.dec list> modu 
 
 %nonassoc THEN 
 %left ELSE
@@ -49,10 +50,12 @@ fun fundeLFunTipos(TypeDec[dt], (TypeDec(hdt))::t) =
 %left MAS MENOS
 %left POR DIV
 
-%start decs
 %start prog
+%start modu
 %%
 prog : exp EOF				{ $1 }
+	;
+modu : decs EOF				{ $1 }
 	;
 exp : NRO					{ IntExp($1, P()) }
 	| PI PD					{ UnitExp(P()) }
@@ -110,7 +113,6 @@ decs : dec decs				{ fundeLFunTipos($1, $2) }
 	;
 dec : TYPE id IGUAL ty		{ TypeDec[({name=$2, ty=$4}, P())] }
 	| IMPORT id				{ ImportDec({name=$2}, P()) }
-	| vardec				{ $1 }
 	| vardec				{ $1 }
 	| fundec				{ $1 }
 	;
