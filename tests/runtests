@@ -18,9 +18,10 @@ function BAD(){
 }
 
 printf "Compiling Tiger... "
-make -C "${TIGER_DIR}" >/dev/null
+make -C "${TIGER_DIR}" >/dev/null 2>&1
 if [ $? -ne 0 ]; then
     BAD
+    make -C "${TIGER_DIR}"
     exit 1
 fi
 OK

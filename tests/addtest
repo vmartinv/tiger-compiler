@@ -14,9 +14,10 @@ function OK(){
 }
 
 printf "Compiling Tiger... "
-make -C "${TIGER_DIR}" >/dev/null
+make -C "${TIGER_DIR}" >/dev/null 2>&1
 if [ $? -ne 0 ]; then
     BAD
+    make -C "${TIGER_DIR}"
     exit 1
 fi
 OK
@@ -34,7 +35,7 @@ while [ $# -ne 0 ]
         then
             correct=${1%.*}.out
             echo Adding case "${1#$DIR/}"...
-            "${TIGER}" "${1}" > "${correct}" 2>&1;
+            "${TIGER}" "${1}" > "${correct}" 2>&1
             OK
         fi
     else
