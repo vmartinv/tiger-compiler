@@ -77,7 +77,7 @@ fun unCx (Nx s) = raise Fail ("Error (UnCx(Nx..))")
 fun Ir(e) =
 	let	fun aux(Ex e) = tigerit.tree(EXP e)
 		| aux(Nx s) = tigerit.tree(s)
-		| aux _ = raise Fail "bueno, a completar!"
+		| aux _ = raise Fail "bueno, a COMPLETAR_EXP!"
 		fun aux2(PROC{body, frame}) = aux(Nx body)
 		| aux2(STRING(l, "")) = l^":\n"
 		| aux2(STRING("", s)) = "\t"^s^"\n"
@@ -139,12 +139,12 @@ fun nilExp() = Ex (CONST 0)
 fun intExp i = Ex (CONST i)
 
 fun simpleVar(acc, nivel) =
-	Ex (CONST 0) (*COMPLETAR*)
+	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 fun varDec(acc) = simpleVar(acc, getActualLev())
 
 fun fieldVar(var, field) = 
-	Ex (CONST 0) (*COMPLETAR*)
+	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 fun subscriptVar(arr, ind) =
 let
@@ -161,7 +161,7 @@ in
 end
 
 fun recordExp l =
-	Ex (CONST 0) (*COMPLETAR*)
+	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 fun arrayExp{size, init} =
 let
@@ -172,13 +172,13 @@ in
 end
 
 fun callExp (name,external,isproc,lev:level,ls) = 
-	Ex (CONST 0) (*COMPLETAR*)
+	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 fun letExp ([], body) = Ex (unEx body)
  |  letExp (inits, body) = Ex (ESEQ(seq inits,unEx body))
 
 fun breakExp() = 
-	Ex (CONST 0) (*COMPLETAR*)
+	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 fun seqExp ([]:exp list) = Nx (EXP(CONST 0))
 	| seqExp (exps:exp list) =
@@ -214,16 +214,16 @@ in
 end
 
 fun forExp {lo, hi, var, body} =
-	Ex (CONST 0) (*COMPLETAR*)
+	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 fun ifThenExp{test, then'} =
-	Ex (CONST 0) (*COMPLETAR*)
+	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 fun ifThenElseExp {test,then',else'} =
-	Ex (CONST 0) (*COMPLETAR*)
+	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 fun ifThenElseExpUnit {test,then',else'} =
-	Ex (CONST 0) (*COMPLETAR*)
+	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 fun assignExp{var, exp} =
 let
@@ -234,13 +234,13 @@ in
 end
 
 fun binOpIntExp {left, oper, right} = 
-	Ex (CONST 0) (*COMPLETAR*)
+	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 fun binOpIntRelExp {left,oper,right} =
-	Ex (CONST 0) (*COMPLETAR*)
+	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 fun binOpStrExp {left,oper,right} =
-	Ex (CONST 0) (*COMPLETAR*)
+	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 
 end
