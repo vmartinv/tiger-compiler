@@ -5,6 +5,8 @@ struct
 
 open tigerabs
 open PP
+open tigertips
+open tigerutils
 
 fun ppexpr pps e0 = 
 	let
@@ -219,6 +221,19 @@ fun exprAst e =
 	flush_ppstream ppstrm;
 	TextIO.output(TextIO.stdOut, "\n"))
 
+fun tipoToString(t) =
+	let
+    	fun prnt TUnit = "unit"
+    	| prnt TNil = "nil"
+    	| prnt TInt = "int"
+    	| prnt TString = "string"
+    	| prnt(TArray(ref t, _)) = "array of "^prnt t
+    	| prnt(TRecord(l, u)) =
+			let fun  aux (sr, ref(ty), ir) = prnt ty
+			in "record[" ^ join (map aux l) ", " ^ "]" end
+		| prnt(TTipo s) = "tipo "^s
+    in prnt t end
+    
 fun maxList xs = foldr Int.max 0 xs
 
 fun countprints e =

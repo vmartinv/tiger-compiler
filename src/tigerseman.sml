@@ -89,8 +89,8 @@ fun transExp(venv, tenv) =
                 val callArgs:Tipo list = map #ty (map trexp args)
                 val _ = if length typArgs = length callArgs andalso List.all (fn (ta,ca) => tiposIguales ta ca) (zip typArgs callArgs)
                         then ()
-                        else error("Los argumentos deberían ser: "^join (map tigermuestratipos.tipoToString typArgs) "->"^"\n"
-                                 ^ "y se recibio: "^join (map tigermuestratipos.tipoToString callArgs) "->", nl)
+                        else error("Los argumentos deberían ser: "^join (map tigerpp.tipoToString typArgs) "->"^"\n"
+                                 ^ "y se recibio: "^join (map tigerpp.tipoToString callArgs) "->", nl)
                 
             in
                 {exp=nilExp(), ty=typR}
