@@ -1,10 +1,7 @@
 structure tigermuestratipos:> tigermuestratipos =
 struct
 open tigertips
-
-fun join [] sep = ""
-|   join (x::[]) sep = x
-|   join (x::y::xs) sep = x^sep^join (y::xs) sep
+open tigerutils
 
 fun tipoToString(t) =
 	let

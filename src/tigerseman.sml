@@ -5,6 +5,7 @@ open tigerabs
 open tigersres
 open tigertrans
 open tigertopsort
+open tigerutils
 
 type expty = {exp: unit, ty: Tipo}
 
@@ -71,14 +72,6 @@ fun tiposIguales (TRecord _) TNil = true
 		(* 	tiposIguales a b *)
 		(* end *)raise Fail "No debería pasar! (2)"
   | tiposIguales a b = (a=b)
-
-fun zip [] [] = []
-|   zip (x::xs) (y::ys) = (x,y)::zip xs ys
-|   zip _ _ = raise Fail "No deberia pasar\n"
-
-fun join [] sep = ""
-|   join (x::[]) sep = x
-|   join (x::y::xs) sep = x^sep^join (y::xs) sep
 
 fun transExp(venv, tenv) =
 	let fun error(s, p) = raise Fail ("Error -- línea "^Int.toString(p)^": "^s^"\n")

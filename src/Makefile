@@ -1,6 +1,6 @@
 # Unix makefile for tigermain example
 
-BASEDIR=/usr
+BASEDIR=/usr/local
 HOME=${BASEDIR}/bin
 MOSMLHOME=${HOME}
 MOSMLTOOLS=camlrunm ${BASEDIR}/share/mosml/tools
@@ -26,7 +26,7 @@ EXEFILE=
 .SUFFIXES : .sig .sml .ui .uo
 
 GRALOBJS= tigerabs.uo tigergrm.uo tigerlex.uo tigermain.uo \
- 	tigernlin.uo tigerpp.uo tigerescap.uo tigertab.uo tigerseman.uo tigertemp.uo tigertopsort.uo tigermuestratipos.uo tigertree.uo \
+ 	tigernlin.uo tigerpp.uo tigerescap.uo tigertab.uo tigerseman.uo tigertemp.uo tigertopsort.uo tigerutils.uo tigermuestratipos.uo tigertree.uo \
  	tigerframe.uo tigertrans.uo tigerit.uo tigerpila.uo
 
 all: tiger
@@ -59,7 +59,7 @@ clean:
 	$(MOSMLC) $<
 
 depend: tigerabs.sml tigergrm.sml tigerlex.sml tigermain.sml \
-	tigernlin.sml tigerpp.sml tigertopsort.sml tigermuestratipos.sml
+	tigernlin.sml tigerpp.sml tigertopsort.sml tigerutils.sml tigermuestratipos.sml
 	$(REMOVE) Makefile.bak
 	$(MOVE) Makefile Makefile.bak
 	$(MOSMLTOOLS)/cutdeps < Makefile.bak > Makefile
@@ -74,7 +74,7 @@ tigerescap.ui: tigerabs.uo
 tigerframe.ui: tigertree.uo tigertemp.ui 
 tigerframe.uo: tigerframe.ui tigertree.uo tigertemp.ui 
 tigergrm.ui: tigerabs.uo tigernlin.uo tigerabs.uo 
-tigerseman.ui: tigersres.uo tigertab.ui tigertips.uo tigerabs.uo tigertopsort.uo
+tigerseman.ui: tigersres.uo tigertab.ui tigertips.uo tigerabs.uo tigertopsort.uo tigerutils.ui
 tigerescap.uo: tigerescap.ui tigertab.ui tigerabs.uo 
 tigerit.uo: tigertree.uo tigertab.ui 
 tigertree.uo: tigertemp.ui 
@@ -93,4 +93,5 @@ tigertopsort.ui: tigertab.ui tigertips.uo tigerabs.uo
 tigertopsort.uo: tigertopsort.ui tigertab.ui tigertips.uo tigerabs.uo \
     tigermuestratipos.ui 
 tigermuestratipos.ui: tigertips.uo 
-tigermuestratipos.uo: tigermuestratipos.ui tigertips.uo 
+tigermuestratipos.uo: tigermuestratipos.ui tigertips.uo tigerutils.ui
+tigerutils.uo: tigerutils.ui
