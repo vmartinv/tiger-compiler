@@ -116,7 +116,7 @@ shift
 case "$verb" in
     run)
         compile
-        if [ "$#" -ne 1 ]; then
+        if [ "$#" -eq 0 ]; then
             passed=0
             tot=0
             for tfile in $(find "$DIR" -name "*.tig"); do

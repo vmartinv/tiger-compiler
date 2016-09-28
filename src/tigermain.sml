@@ -20,6 +20,10 @@ fun main(args) =
 		val (code, l5)		= arg(l4, "-code") 
 		val (flow, l6)		= arg(l5, "-flow") 
 		val (inter, l7)		= arg(l6, "-inter") 
+		val dir =
+			case l7 of
+			[n] => Path.dir n
+			| _ => ""
 		val entrada =
 			case l7 of
 			[n] => ((open_in n)
@@ -28,7 +32,7 @@ fun main(args) =
 			| _ => raise Fail "opcio'n dsconocida!"
 		val lexbuf = lexstream entrada
 		val expr = prog Tok lexbuf handle _ => errParsing lexbuf
-        val expr' = expandImports(expr)
+        val expr' = expandImports dir expr
 		val _ = findEscape(expr')
 		val _ = if arbol then tigerpp.exprAst expr' else ()
 	in

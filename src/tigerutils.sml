@@ -9,6 +9,8 @@ fun zip [] [] = []
 |   zip (x::xs) (y::ys) = (x,y)::zip xs ys
 |   zip _ _ = raise Fail "No deberia pasar\n"
 
+fun flatten xxs = List.foldr (op@) [] xxs
+
 fun error(s, p) = raise Fail ("Error -- línea "^p^": "^s^"\n")
 
 end

@@ -1,4 +1,4 @@
 signature tigerimport =
 sig
-    val expandImports : tigerabs.exp -> tigerabs.exp
+    val expandImports : string -> tigerabs.exp -> tigerabs.exp
 end

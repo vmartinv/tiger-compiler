@@ -13,19 +13,24 @@ fun errParsing fname lbuf = (print("Error parseando archivo "^fname^"!("
 	^(makestring(!num_linea))^
 	")["^(Lexing.getLexeme lbuf)^"]\n"); raise Fail "fin!")
 
-fun expandImports prog =
-	let fun trexp(LetExp({decs, body}, nl)) = LetExp({decs=List.foldr (op@) [] (map trdec decs), body=body}, nl)
-        | trexp x = x
-		and trdec(ImportDec({name}, nl)) =
+fun expandImports dir prog =
+	let fun trdec s (ImportDec({name}, nl)) =
             let
-                val fname = name^".tigd"
-                val entrada = open_in fname
-                                handle _ => error(fname^" no existe!", nl)
+                val fname = Path.concat(dir, name)^".tigd"
+                val _ = if Binaryset.member(s, fname) then error("Ciclo en los imports", nl) else ()
+                val s' = Binaryset.add(s, fname)
+                val entrada = open_in fname handle _ => error(fname^" no existe!", nl)
                 val lexbuf = lexstream entrada
+                val decs = (num_linea := 1; file_name := name^":"; modu Tok lexbuf handle _ => errParsing fname lexbuf)
             in
-                num_linea := 1; file_name := name^":"; modu Tok lexbuf handle _ => errParsing fname lexbuf
+                trdecs s' decs
             end
-        | trdec x = [x]
-	in trexp prog end
+        | trdec _ x = [x]
+        and trdecs s decs = flatten (map (trdec s) decs)
+        and trexp s (LetExp({decs, body}, nl)) = LetExp({decs=trdecs s decs, body=body}, nl)
+        | trexp _ x = x 
+	in
+        trexp (Binaryset.empty String.compare) prog
+    end
 
 end
