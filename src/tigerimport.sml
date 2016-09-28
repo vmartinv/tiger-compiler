@@ -4,6 +4,7 @@ open tigerabs
 open tigerlex
 open tigergrm
 open tigernlin
+open tigerutils
 open BasicIO Nonstdio
 
 fun lexstream(is: instream) =
@@ -13,8 +14,7 @@ fun errParsing fname lbuf = (print("Error parseando archivo "^fname^"!("
 	")["^(Lexing.getLexeme lbuf)^"]\n"); raise Fail "fin!")
 
 fun expandImports prog =
-	let fun error(s, p) = raise Fail ("Error -- línea "^Int.toString(p)^": "^s^"\n")
-		fun trexp(LetExp({decs, body}, nl)) = LetExp({decs=List.foldr (op@) [] (map trdec decs), body=body}, nl)
+	let fun trexp(LetExp({decs, body}, nl)) = LetExp({decs=List.foldr (op@) [] (map trdec decs), body=body}, nl)
         | trexp x = x
 		and trdec(ImportDec({name}, nl)) =
             let
@@ -23,7 +23,7 @@ fun expandImports prog =
                                 handle _ => error(fname^" no existe!", nl)
                 val lexbuf = lexstream entrada
             in
-                num_linea := 1; modu Tok lexbuf handle _ => errParsing fname lexbuf
+                num_linea := 1; file_name := name^":"; modu Tok lexbuf handle _ => errParsing fname lexbuf
             end
         | trdec x = [x]
 	in trexp prog end

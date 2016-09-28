@@ -3,6 +3,7 @@ struct
 
 open tigerabs
 open tigertab
+open tigerutils
 
 type depth = int
 type escEnv = (string, depth * bool ref) tigertab.Tabla
@@ -11,17 +12,14 @@ depth -> profundidad en la que se lo declaró
 bool ref -> si escapó o no*)
 
 fun travVar env d (s, nl) =
-	let fun error(s, p) = raise Fail ("Error -- línea "^Int.toString(p)^": "^s^"\n")
-    in
-        case s of
-        SimpleVar s =>
-            (case tabBusca(s, env) of
-            SOME (dd, b) => if d>dd then b:=true else ()
-            | NONE => error("Variable inexistente ("^s^")", nl))
-        | FieldVar(v, s) => travVar env d (v, nl)
-        | SubscriptVar(v, e) =>
-            (travVar env d (v, nl); travExp env d e)
-    end
+    case s of
+    SimpleVar s =>
+        (case tabBusca(s, env) of
+        SOME (dd, b) => if d>dd then b:=true else ()
+        | NONE => error("Variable inexistente ("^s^")", nl))
+    | FieldVar(v, s) => travVar env d (v, nl)
+    | SubscriptVar(v, e) =>
+        (travVar env d (v, nl); travExp env d e)
 and travExp env d s =
 	case s of
 	VarExp(v, nl) => travVar env d (v, nl)

@@ -74,8 +74,7 @@ fun tiposIguales (TRecord _) TNil = true
   | tiposIguales a b = (a=b)
 
 fun transExp(venv, tenv) =
-	let fun error(s, p) = raise Fail ("Error -- línea "^Int.toString(p)^": "^s^"\n")
-		fun trexp(VarExp v) = trvar(v)
+	let fun trexp(VarExp v) = trvar(v)
 		| trexp(UnitExp _) = {exp=unitExp(), ty=TUnit}
 		| trexp(NilExp _)= {exp=nilExp(), ty=TNil}
 		| trexp(IntExp(i, _)) = {exp=intExp i, ty=TInt}
@@ -392,8 +391,8 @@ fun transExp(venv, tenv) =
 fun transProg ex =
 	let	val main =
 				LetExp({decs=[FunctionDec[({name="_tigermain", params=[],
-								result=NONE, body=ex}, 0)]],
-						body=UnitExp 0}, 0)
+								result=NONE, body=ex}, "0")]],
+						body=UnitExp "0"}, "0")
 		val _ = transExp(tab_vars, tab_tipos) ex
 	in	print "bien!\n" end
 end
