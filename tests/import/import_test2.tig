@@ -1,0 +1,6 @@
+let
+    import dec_test
+    var a := randomfunction(5)
+in
+    0
+end

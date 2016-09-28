@@ -1,0 +1,6 @@
+let
+    extern function afora(x:int):int
+    var x:=afora(5)
+in
+    0
+end
