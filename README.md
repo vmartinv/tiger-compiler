@@ -2,7 +2,7 @@
 Tiger compiler written in ML for Computer Science course
 
 ## Agregar extensiones al geany:
->  mkdir -p ~/.config/geany/colorschemes && wget https://labdcc.fceia.unr.edu.ar/~mvillagra/filetype_extensions.conf -o ~/.config/geany/filetype_extensions.conf && curl -O https://labdcc.fceia.unr.edu.ar/~mvillagra/geany.colors.tar.gz && tar -zxf geany.colors.tar.gz -C ~/.config/geany/colorschemes/ && rm geany.colors.tar.gz
+>  mkdir -p ~/.config/geany/colorschemes && wget https://labdcc.fceia.unr.edu.ar/~mvillagra/filetype_extensions.conf -O ~/.config/geany/filetype_extensions.conf && curl -O https://labdcc.fceia.unr.edu.ar/~mvillagra/geany.colors.tar.gz && tar -zxf geany.colors.tar.gz -C ~/.config/geany/colorschemes/ && rm geany.colors.tar.gz
 
 ## Links útiles
 * Pagina para aprender git:
