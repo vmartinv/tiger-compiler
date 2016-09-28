@@ -11,6 +11,9 @@ fun zip [] [] = []
 
 fun flatten xxs = List.foldr (op@) [] xxs
 
+fun reps [] = NONE
+  | reps (x::xs) = if List.exists (fn y => x = y) xs then SOME x else reps xs
+
 fun error(s, p) = raise Fail ("Error -- línea "^p^": "^s^"\n")
 
 end

@@ -263,7 +263,7 @@ fun transExp(venv, tenv) =
 			in
 				{exp=nilExp(), ty=tya}
 			end
-		and trvar(SimpleVar s, nl) = (*COMPLETAR_TO_TEST COMPLETAR_EXP*)
+		and trvar(SimpleVar s, nl) = (*COMPLETAR_EXP*)
 			let
 				val tyv = case tabBusca (s,venv) of
 						    NONE => error("Variable inexistente ("^s^")", nl)
@@ -273,7 +273,7 @@ fun transExp(venv, tenv) =
 			in
 				{exp=nilExp(), ty=tyv}
 			end
-		| trvar(FieldVar(v, s), nl) = (*COMPLETAR_TO_TEST COMPLETAR_EXP*)
+		| trvar(FieldVar(v, s), nl) = (*COMPLETAR_EXP*)
 			let
 				val {exp=_, ty=tyv} = trvar(v, nl)
 				val t = (case tyv of
@@ -284,7 +284,7 @@ fun transExp(venv, tenv) =
 			in
 				{exp=nilExp(), ty=(!t)}
 			end
-		| trvar(SubscriptVar(v, e), nl) = (*COMPLETAR_TO_TEST COMPLETAR_EXP*)
+		| trvar(SubscriptVar(v, e), nl) = (*COMPLETAR_EXP*)
 			let
 				val {exp=_, ty=tyv} = trvar(v, nl)
 				val t = (case tyv of
@@ -321,10 +321,7 @@ fun transExp(venv, tenv) =
             end
 		| trdec (venv, tenv) (FunctionDec fs) = (* fs = ({name: symbol, params: field list, result: symbol option, body: exp} * pos) list*)   (*COMPLETAR_EXP*)
 			let
-				(* checkeo de repetición de nombres: no se pueden sobreescribir funciones dentro de un mismo batch. *)
-				fun reps [] = NONE
-                  | reps (x::xs) = if List.exists (fn y => x = y) xs then SOME x else reps xs
-                
+				(* checkeo de repetición de nombres: no se pueden sobreescribir funciones dentro de un mismo batch. *)                
 				val _ = case reps (map (fn x => (#name (#1 x))) fs) of
                             NONE => ()
                         |   SOME x => error("No se permite la repetición de nombre de función en un mismo batch",
@@ -372,12 +369,14 @@ fun transExp(venv, tenv) =
 			in
 				(venv', tenv, [])
 			end
-		| trdec (venv, tenv) (TypeDec ts) =(*COMPLETAR_CORREGIR*)
+		| trdec (venv, tenv) (TypeDec ts) =(*COMPLETAR*)
             let
                 fun hasName n (ArrayTy x) = n=x
                 |   hasName n (RecordTy fields) = List.exists (hasName n) (map #typ fields)
                 |   hasName n (NameTy x) = n=x
-                
+                val _ = case reps (map (#name o #1) ts) of
+                            NONE => ()
+                         |  SOME x => error("El tipo "^x^" ya fue definido en el batch",  #2 (valOf (List.find (fn y => x = (#name (#1 y))) (rev ts))))
                 val tenv' = (tigertopsort.fijaTipos (map #1 ts) tenv
                         handle Ciclo => error("Hay un ciclo en la declaracion de tipos", #2 (hd ts)))
                         handle noExisteS name => error("Tipo inexistente ("^name^")", (#2 o valOf) (List.find ((hasName name) o #ty o #1) ts)

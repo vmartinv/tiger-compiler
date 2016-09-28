@@ -1,6 +1,6 @@
 let
     type a = int
-    type a = asdf
+    type b = asdf
 in
     0
 end
