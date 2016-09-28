@@ -64,6 +64,19 @@ fun ppexpr pps e0 =
 		| ppd(ImportDec ({name}, _)) =
 			(begin_block pps INCONSISTENT 0;
 			add_string pps ("ImportDec("^name^")"); add_break pps (0, 0);
+			end_block pps)            
+		| ppd(ExternDec ({name,params,result}, _)) =
+			(begin_block pps INCONSISTENT 0;
+			add_string pps "ImportDec{";
+            add_string pps ("name="^name^",");
+            add_break pps (0, 0);
+            add_string pps "params=[";
+            List.app ppf params;
+            add_string pps "],"; add_break pps (0, 1);
+            add_string pps ("result="^
+                (case result of SOME s => s | _ => "NONE"));
+            add_break pps (0, 0);
+            add_string pps "}"; add_break pps (0, 0);
 			end_block pps)
 		and ppt(NameTy s) =
 			(begin_block pps INCONSISTENT 0;

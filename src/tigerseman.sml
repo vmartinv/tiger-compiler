@@ -386,6 +386,26 @@ fun transExp(venv, tenv) =
                 (venv, tenv', [])
             end
         | trdec _ (ImportDec _) = raise Fail "error interno (importdec234)"
+        | trdec _ (ExternDec ({name = n, params = p, result = r},nl)) =
+            let
+				fun toTipoRet nl r = case r of
+                                        NONE => TUnit
+                                      | SOME typ => case tabBusca(typ, tenv) of
+                                                    NONE => error("Tipo inexistente ("^typ^")", nl)
+                                                  | SOME t => t
+
+				fun toTipoArg nl {name, escape, typ=NameTy typ} =
+						(case tabBusca(typ, tenv) of
+					 	   SOME t => t
+						 | _ => error("Tipo inexistente ("^typ^")", nl))
+                |   toTipoArg nl _ = error("Error en los tipos de los parametros.", nl) (* La sintaxis de tiger no permite que los argumentos tengan explicitamente tipo record o array *)
+                
+                fun toTipoArgs nl xs  = map (toTipoArg nl) xs
+                val header = Func {level = topLevel(), label = tigertemp.newlabel(), formals = toTipoArgs nl p , result = toTipoRet nl r, extern = true} (*COMPLETAR_EXP: level!*)
+                val venv' = tabRInserta (n, header, venv)
+            in
+                (venv', tenv, [])
+            end
 			
 	in trexp end
 fun transProg ex =

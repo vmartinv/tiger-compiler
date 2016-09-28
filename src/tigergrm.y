@@ -15,7 +15,7 @@ fun fundeLFunTipos(TypeDec[dt], (TypeDec(hdt))::t) =
 
 %}
 %token EOF
-%token TYPE IMPORT ARRAY OF VAR FUNCTION
+%token TYPE IMPORT EXTERN ARRAY OF VAR FUNCTION
 %token LET IN END IF THEN ELSE WHILE DO FOR TO BREAK
 %token PTO DOSP DOSPIG COMA PCOMA IGUAL PI PD CI CD LI LD
 %token AMPER PIPE MENOR MENIG MAYOR MAYIG DIST
@@ -139,6 +139,12 @@ fundec : FUNCTION id PI tyflds PD IGUAL exp
 	| FUNCTION id PI tyflds PD DOSP id IGUAL exp
 							{ FunctionDec[({name=$2, params=$4,
 								result=SOME $7, body=$9}, P())] }
+    | EXTERN FUNCTION id PI tyflds PD
+							{ ExternDec({name=$3, params=$5,
+								result=NONE}, P()) }
+	| EXTERN FUNCTION id PI tyflds PD DOSP id
+							{ ExternDec({name=$3, params=$5,
+								result=SOME $8}, P()) }
 	;
 tyfield : id DOSP id		{ {escape=ref false, name=$1, typ=NameTy $3} }
 	;
