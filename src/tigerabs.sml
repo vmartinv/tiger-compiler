@@ -2,7 +2,7 @@ structure tigerabs =
 struct
 
 type symbol = string
-type pos = int
+type pos = string
 
 datatype var = SimpleVar of symbol (* x *)
 	| FieldVar of var * symbol (* x.y *)
