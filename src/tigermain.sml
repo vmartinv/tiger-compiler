@@ -19,13 +19,13 @@ fun main(args) =
 		val (canon, l4)		= arg(l3, "-canon") 
 		val (code, l5)		= arg(l4, "-code") 
 		val (flow, l6)		= arg(l5, "-flow") 
-		val (inter, l7)		= arg(l6, "-inter") 
+		val (inter, resto)		= arg(l6, "-inter") 
 		val dir =
-			case l7 of
+			case resto of
 			[n] => Path.dir n
 			| _ => ""
 		val entrada =
-			case l7 of
+			case resto of
 			[n] => ((open_in n)
 					handle _ => raise Fail (n^" no existe!"))
 			| [] => std_in
@@ -35,8 +35,9 @@ fun main(args) =
         val expr' = expandImports dir expr
 		val _ = findEscape(expr')
 		val _ = if arbol then tigerpp.exprAst expr' else ()
+        val _ = transProg(expr');
+		val _ = if ir then List.app (fn f => (print (tigerpp.ppfrag f); print "\n")) (tigertrans.getResult()) else ()
 	in
-		transProg(expr');
 		print "yes!!\n"
 	end	handle Fail s => print("Fail: "^s^"\n")
 

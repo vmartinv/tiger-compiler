@@ -139,8 +139,8 @@ fun nilExp() = Ex (CONST 0)
 fun intExp i = Ex (CONST i)
 
 fun simpleVar(acc, nivel) =
-	Ex (CONST 0) (*COMPLETAR_EXP*)
-
+	Ex (tigerframe.exp acc)
+    
 fun varDec(acc) = simpleVar(acc, getActualLev())
 
 fun fieldVar(var, field) = 

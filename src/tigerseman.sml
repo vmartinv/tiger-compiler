@@ -265,13 +265,13 @@ fun transExp(venv, tenv) =
 			end
 		and trvar(SimpleVar s, nl) = (*COMPLETAR_EXP*)
 			let
-				val tyv = case tabBusca (s,venv) of
+				val (ty, access, level) = case tabBusca (s,venv) of
 						    NONE => error("Variable inexistente ("^s^")", nl)
-						  | SOME (VIntro _) => TInt
-						  | SOME (Var {ty=ty,...}) => ty
+						  | SOME (VIntro {access=access,level=level}) => (TInt, access, level)
+						  | SOME (Var {ty=ty,access=access,level=level}) => (ty, access, level)
 				   	      | _ => error(s^" no es una variable." , nl)
 			in
-				{exp=nilExp(), ty=tyv}
+				{exp=simpleVar(access, level), ty=ty}
 			end
 		| trvar(FieldVar(v, s), nl) = (*COMPLETAR_EXP*)
 			let
@@ -369,7 +369,7 @@ fun transExp(venv, tenv) =
 			in
 				(venv', tenv, [])
 			end
-		| trdec (venv, tenv) (TypeDec ts) =(*COMPLETAR*)
+		| trdec (venv, tenv) (TypeDec ts) =
             let
                 fun hasName n (ArrayTy x) = n=x
                 |   hasName n (RecordTy fields) = List.exists (hasName n) (map #typ fields)

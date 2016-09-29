@@ -1,0 +1,5 @@
+let
+    var x:="asdsad"
+in
+    x
+end

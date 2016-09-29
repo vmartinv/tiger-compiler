@@ -81,8 +81,8 @@ fun allocLocal (f: frame) b =
 		let	val ret = InFrame(!(#actualLocal f)+localsGap)
 		in	#actualLocal f:=(!(#actualLocal f)-1); ret end
 	| false => InReg(tigertemp.newtemp())
-fun exp(InFrame k) e = MEM(BINOP(PLUS, TEMP(fp), CONST k))
-| exp(InReg l) e = TEMP l
+fun exp(InFrame k) = MEM(BINOP(PLUS, TEMP(fp), CONST k))
+| exp(InReg l) = TEMP l
 fun externalCall(s, l) = CALL(NAME s, l)
 
 fun procEntryExit1 (frame,body) = body

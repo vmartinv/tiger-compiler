@@ -12,6 +12,7 @@ datatype EnvEntry =
 		formals: Tipo list, result: Tipo, extern: bool}
 
 (* level: nivel de anidamiento
+access: dónde está alojada la variable
 label: etiqueta, por posible colision de nombre
 formals: parametros formales
 result: tipo de retorno de la función
