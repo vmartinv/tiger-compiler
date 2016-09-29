@@ -21,7 +21,7 @@ function usage(){
     echo -e "These are the available commands:"
     echo -e "\t${GREEN}add file1.tig file2.tig ...${NC}\tAdd specific cases to the test suite"
     echo -e "\t${GREEN}add [all]${NC}\t\t\tSearch and add cases not in the test suite"
-    echo -e "\t${GREEN}run file1.tig file2.tig ....${NC}\tRun (and check) specific cases"
+    echo -e "\t${GREEN}run file1.tig file2.tig ...${NC}\tRun (and check) specific cases"
     echo -e "\t${GREEN}run [all]${NC}\t\t\tRun the test suite (all added cases)"
     echo -e "\t${GREEN}del file1.tig file2.tig ...${NC}\tRemove specific cases from the test suite"
     echo
