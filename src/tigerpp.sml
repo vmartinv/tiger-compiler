@@ -238,7 +238,7 @@ fun exprAst e =
 	flush_ppstream ppstrm;
 	TextIO.output(TextIO.stdOut, "\n"))
 
-fun tipoToString(t) =
+fun pptipo(t) =
 	let
     	fun prnt TUnit = "unit"
     	| prnt TNil = "nil"

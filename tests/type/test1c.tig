@@ -1,5 +1,7 @@
 /* probando assign y trdec caso VarDec */
 
+(
 for i:=1 to 10 do
     let var j:=i
     in j:=j+1 end
+;0)

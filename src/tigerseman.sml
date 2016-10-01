@@ -88,8 +88,8 @@ fun transExp(venv, tenv) =
                 val callArgs:Tipo list = map #ty (map trexp args)
                 val _ = if length typArgs = length callArgs andalso List.all (fn (ta,ca) => tiposIguales ta ca) (zip typArgs callArgs)
                         then ()
-                        else error("Los argumentos deberían ser: "^join (map tigerpp.tipoToString typArgs) "->"^"\n"
-                                 ^ "y se recibio: "^join (map tigerpp.tipoToString callArgs) "->", nl)
+                        else error("Los argumentos deberían ser: "^join (map tigerpp.pptipo typArgs) "->"^"\n"
+                                 ^ "y se recibio: "^join (map tigerpp.pptipo callArgs) "->", nl)
                 
             in
                 {exp=nilExp(), ty=typR}
@@ -368,7 +368,7 @@ fun transExp(venv, tenv) =
 						in
 							()
 						end
-				val _ = map checkFunc fs
+				val _ = List.app checkFunc fs
 			in
 				(venv', tenv, [])
 			end
@@ -401,7 +401,7 @@ fun transExp(venv, tenv) =
                 |   toTipoArg nl _ = error("Error en los tipos de los parametros.", nl) (* La sintaxis de tiger no permite que los argumentos tengan explicitamente tipo record o array *)
                 
                 fun toTipoArgs nl xs  = map (toTipoArg nl) xs
-                val header = Func {level = topLevel(), label = tigertemp.newlabel(), formals = toTipoArgs nl p , result = toTipoRet nl r, extern = true} (*COMPLETAR_EXP: level!*)
+                val header = Func {level = topLevel(), label = n, formals = toTipoArgs nl p , result = toTipoRet nl r, extern = true} (*COMPLETAR_EXP: level!*)
                 val venv' = tabRInserta (n, header, venv)
             in
                 (venv', tenv, [])
@@ -409,10 +409,9 @@ fun transExp(venv, tenv) =
 			
 	in trexp end
 fun transProg ex =
-	let	val main =
-				LetExp({decs=[FunctionDec[({name="_tigermain", params=[],
-								result=NONE, body=ex}, "0")]],
-						body=UnitExp "0"}, "0")
-		val _ = transExp(tab_vars, tab_tipos) ex
+	let	val {exp=_, ty=rty} = transExp(tab_vars, tab_tipos) ex
+        val _ = case rty of
+                    TInt => ()
+                |   ty => raise Fail ("Todo programa debe devolver un entero, se recibió "^tigerpp.pptipo ty^".\n")
 	in	print "bien!\n" end
 end
