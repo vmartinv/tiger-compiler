@@ -2,7 +2,7 @@ open tigerlex
 open tigergrm
 open tigerescap
 open tigerseman
-open tigerimport
+open tigerinclude
 open BasicIO Nonstdio
 
 fun lexstream(is: instream) =
@@ -32,7 +32,7 @@ fun main(args) =
 			| _ => raise Fail "opcio'n dsconocida!"
 		val lexbuf = lexstream entrada
 		val expr = prog Tok lexbuf handle _ => errParsing lexbuf
-        val expr' = expandImports dir expr
+        val expr' = expandIncludes dir expr
 		val _ = findEscape(expr')
 		val _ = if arbol then tigerpp.exprAst expr' else ()
 	in

@@ -1,5 +1,5 @@
 let
-    import dec_test_nested
+    include dec_test_nested
     var a := asdf(5)
 in
     0

@@ -385,7 +385,7 @@ fun transExp(venv, tenv) =
             in
                 (venv, tenv', [])
             end
-        | trdec _ (ImportDec _) = raise Fail "error interno (importdec234)"
+        | trdec _ (IncludeDec _) = raise Fail "error interno (includedec234)"
         | trdec _ (ExternDec ({name = n, params = p, result = r},nl)) =
             let
 				fun toTipoRet nl r = case r of
