@@ -134,7 +134,6 @@ function run_case(){
 }
 
 
-cd "$DIR"
 verb="$1"
 shift
 case "$verb" in
