@@ -22,7 +22,7 @@ exception noEsta
 val pal_claves = Polyhash.mkPolyTable(20, noEsta)
 val _ = List.app (fn(c, v) => Polyhash.insert pal_claves (c, v))
 	[("type",		TYPE),
-	("import",		IMPORT),
+	("include",		INCLUDE),
 	("extern",		EXTERN),
 	("array",		ARRAY),
 	("of",			OF),

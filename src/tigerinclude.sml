@@ -1,4 +1,4 @@
-structure tigerimport :> tigerimport =
+structure tigerinclude :> tigerinclude =
 struct
 open tigerabs
 open tigerlex
@@ -13,11 +13,11 @@ fun errParsing fname lbuf = (print("Error parseando archivo "^fname^"!("
 	^(makestring(!num_linea))^
 	")["^(Lexing.getLexeme lbuf)^"]\n"); raise Fail "fin!")
 
-fun expandImports dir prog =
-	let fun trdec s (ImportDec({name}, nl)) =
+fun expandIncludes dir prog =
+	let fun trdec s (IncludeDec({name}, nl)) =
             let
                 val fname = Path.concat(dir, name)^".tigd"
-                val _ = if Binaryset.member(s, fname) then error("Ciclo en los imports", nl) else ()
+                val _ = if Binaryset.member(s, fname) then error("Ciclo en los includes", nl) else ()
                 val s' = Binaryset.add(s, fname)
                 val entrada = open_in fname handle _ => error(fname^" no existe!", nl)
                 val lexbuf = lexstream entrada

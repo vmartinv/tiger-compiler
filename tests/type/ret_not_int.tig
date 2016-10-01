@@ -1,0 +1,7 @@
+let
+    type asdf = int
+    type fdsa = asdf
+    var x:fdsa := 0
+in
+    "hola"
+end

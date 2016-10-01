@@ -69,13 +69,13 @@ fun ppexpr pps e0 =
 				tlist;
 			add_string pps "])"; add_break pps (0, 0);
 			end_block pps)
-		| ppd(ImportDec ({name}, _)) =
+		| ppd(IncludeDec ({name}, _)) =
 			(begin_block pps INCONSISTENT 0;
-			add_string pps ("ImportDec("^name^")"); add_break pps (0, 0);
+			add_string pps ("IncludeDec("^name^")"); add_break pps (0, 0);
 			end_block pps)            
 		| ppd(ExternDec ({name,params,result}, _)) =
 			(begin_block pps INCONSISTENT 0;
-			add_string pps "ImportDec{";
+			add_string pps "ExternDec{";
             add_string pps ("name="^name^",");
             add_break pps (0, 0);
             add_string pps "params=[";
@@ -246,7 +246,7 @@ fun exprAst e =
 	flush_ppstream ppstrm;
 	TextIO.output(TextIO.stdOut, "\n"))
 
-fun tipoToString(t) =
+fun pptipo(t) =
 	let
     	fun prnt TUnit = "unit"
     	| prnt TNil = "nil"
