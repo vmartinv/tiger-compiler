@@ -16,7 +16,7 @@ fun errParsing fname lbuf = (print("Error parseando archivo "^fname^"!("
 fun expandIncludes dir prog =
 	let fun trdec s (IncludeDec({name}, nl)) =
             let
-                val fname = Path.concat(dir, name)^".tigd"
+                val fname = Path.concat(dir, name)
                 val _ = if Binaryset.member(s, fname) then error("Ciclo en los includes", nl) else ()
                 val s' = Binaryset.add(s, fname)
                 val entrada = open_in fname handle _ => error(fname^" no existe!", nl)

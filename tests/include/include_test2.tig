@@ -1,5 +1,5 @@
 let
-    include dec_test
+    include "dec_test.tigd"
     var a := randomfunction(5)
 in
     0

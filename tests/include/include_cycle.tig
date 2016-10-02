@@ -1,5 +1,5 @@
 let
-    include dec_test_cycle
+    include "dec_test_cycle.tigd"
     var a := asdf(5)
 in
     0

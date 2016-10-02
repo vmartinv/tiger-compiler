@@ -1,2 +1,2 @@
 function asdf(x:int):int = x
-include dec_test_cycle2
+include "dec_test_cycle2.tigd"

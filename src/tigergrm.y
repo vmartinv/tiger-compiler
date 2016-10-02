@@ -112,7 +112,7 @@ decs : dec decs				{ fundeLFunTipos($1, $2) }
 	|						{ [] }
 	;
 dec : TYPE id IGUAL ty		{ TypeDec[({name=$2, ty=$4}, P())] }
-	| INCLUDE id			{ IncludeDec({name=$2}, P()) }
+	| INCLUDE LITERAL		{ IncludeDec({name=$2}, P()) }
 	| vardec				{ $1 }
 	| fundec				{ $1 }
 	;
