@@ -1,2 +1,2 @@
-Fail: Todo programa debe devolver un entero, se recibió string.
+Fail: Error -- línea 0: El tipo de retorno de la funcion y el de su definición no coinciden
 

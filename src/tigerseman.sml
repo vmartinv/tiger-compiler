@@ -408,9 +408,10 @@ fun transExp(venv, tenv) =
 			
 	in trexp end
 fun transProg ex =
-	let	val {exp=_, ty=rty} = transExp(tab_vars, tab_tipos) ex
-        val _ = case rty of
-                    TInt => ()
-                |   ty => raise Fail ("Todo programa debe devolver un entero, se recibió "^tigerpp.pptipo ty^".\n")
+	let	val main =
+				LetExp({decs=[FunctionDec[({name="_tigermain", params=[],
+								result=SOME "int", body=ex}, "0")]],
+						body=UnitExp "0"}, "0")
+        val _ = transExp(tab_vars, tab_tipos) main
 	in	print "bien!\n" end
 end
