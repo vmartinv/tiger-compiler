@@ -385,7 +385,7 @@ fun transExp(venv, tenv) =
                 (venv, tenv', [])
             end
         | trdec _ (IncludeDec _) = raise Fail "error interno (includedec234)"
-        | trdec _ (ExternDec ({name = n, params = p, result = r},nl)) =
+        | trdec (venv, tenv) (ExternDec ({name = n, params = p, result = r},nl)) =
             let
 				fun toTipoRet nl r = case r of
                                         NONE => TUnit
