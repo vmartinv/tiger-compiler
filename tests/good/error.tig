@@ -1,0 +1,7 @@
+let
+    var n := 1
+in
+    if -n=n then print("son iguales") else print("son diferentes");
+    print("\n");
+    0
+end
