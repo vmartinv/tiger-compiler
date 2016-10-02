@@ -1,3 +1,4 @@
+/*TIGER_ARGS=-arbol -ir*/
 let
     var x:=0
 in
