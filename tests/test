@@ -71,7 +71,7 @@ function print_case(){
 function add_case(){
     source=${1%.*}.tig
     if [ -f "$source" ]; then
-        printf "Running case "${source#$DIR/}"... "
+        echo "Running case "${source#$DIR/}"... "
         print_case "$source"
         read -p "Add this output? (y/n) " -n 1 -r
         echo
@@ -125,7 +125,7 @@ function run_case(){
         else
             echo
             print_case "$source"
-            return 0
+            return 1
         fi
     else
         echo -e "${RED}File $source not found.${NC}"
