@@ -44,7 +44,8 @@ function gen_output(){
     exe="./a.out"
     rm -f $exe || true
     source=${1%.*}.tig
-    "$TIGER" "$source" 2>&1
+    args=$(sed -r 's/^\s*\/\*TIGER_ARGS\s*=\s*(.*)\*\//\1/;tx;d;:x' $source)
+    "$TIGER" $args "$source" 2>&1
     if [ -f "$exe" ]; then
         $exe
         echo Return code: $?
@@ -142,7 +143,7 @@ case "$verb" in
         passed=0
         tot=0
         if [ "$#" -eq 0 ] || [ "$1" = "all" ]; then
-            for tfile in $(find "$DIR" -name "*.tig"); do
+            for tfile in $(find "$DIR" -name "*.tig" | sort); do
                 correct=${tfile%.*}.out
                 if [ -f "$correct" ]; then
                     run_case "$tfile"
@@ -165,7 +166,7 @@ case "$verb" in
     add)
         compile_tiger
         if [ "$#" -eq 0 ] || [ "$1" = "all" ]; then
-            for tfile in $(find "$DIR" -name "*.tig"); do
+            for tfile in $(find "$DIR" -name "*.tig" | sort); do
                 correct=${tfile%.*}.out
                 if [ ! -f "$correct" ]; then
                     add_case "$tfile"
