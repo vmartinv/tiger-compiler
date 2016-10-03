@@ -9,13 +9,6 @@ open tigertips
 open tigerutils
 open tigerframe
 
-(*
-PROC of {body: tigertree.stm, frame: frame}
-	| STRING of tigertemp.label * string
-*)
-fun ppfrag (PROC({body=body, frame=frame})) = tigerit.tree(body)
-  | ppfrag (STRING(label, s)) = "label "^label^" = "^s 
-
 fun ppexpr pps e0 = 
 	let
 		fun ppf{name,escape,typ} =
