@@ -1,0 +1,54 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+PURPLE='\033[0;35m'
+NC='\033[0m' # No Color
+
+EDITOR=geany
+RUN=make
+
+function lista(){
+    for f in $(ls *.sml | sort | sed 's/\.sml//' | sed 's/tiger//'); do
+        if [ -f "tiger${f}.sig" ]; then
+            printf ${GREEN}
+        else
+            printf ${PURPLE}
+        fi
+        printf $f
+        printf " ${NC}"
+    done
+    echo
+}
+
+echo -e "${PURPLE}Abridor de archivos 1.0!${NC} No hace falta escribir tiger ni .sml."
+echo -e "Ingresando una línea vacía se ejecuta make."
+echo -e "Se listan los archivos. Los archivos en ${GREEN}verde${NC} tienen sml y sig."
+echo
+lista
+while IFS='' read -r line || [[ -n "$line" ]]; do
+    if [ -z "$line" ]; then
+        eval $RUN
+    elif [[ $line == run\ * ]]; then
+        RUN=${line:4}
+        eval $RUN
+    else
+        if [ -f "${line}.sml" ]; then
+            file="${line}.sml"
+        elif [ -f "tiger${line}.sml" ]; then
+            file="tiger${line}.sml"
+        elif [ -f "${line}sml" ]; then
+            file="${line}sml"
+        elif [ -f "tiger${line}" ]; then
+            file="tiger${line}"
+        elif [ -f "${line}" ]; then
+            file="$line"
+        else
+            echo File not found
+        fi
+        if [ -f "$file" ]; then
+            $EDITOR "$file"
+        fi
+    fi
+    lista
+done
