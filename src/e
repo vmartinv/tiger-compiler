@@ -60,7 +60,7 @@ while read -p "$PROMPT" -e line; do
         elif [ -f "${line}" ]; then
             file="$line"
         else
-            echo File not found
+            eval $RUN
         fi
         if [ -f "$file" ]; then
             $EDITOR "$file"
