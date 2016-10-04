@@ -18,7 +18,7 @@ function lista(){
         fi
         printf $f
         printf " ${NC}"
-    done | fold -w 100 -s
+    done | fold -w 140 -s
     echo
 }
 
@@ -41,9 +41,6 @@ while read -p "$PROMPT" -e line; do
     fi
     if [ -z "$line" ]; then
         eval $RUN
-    elif [[ $line == run\ * ]]; then
-        RUN=${line:4}
-        eval $RUN
     else
         if [ -f "${line}.sml" ]; then
             file="${line}.sml"
@@ -60,7 +57,8 @@ while read -p "$PROMPT" -e line; do
         elif [ -f "${line}" ]; then
             file="$line"
         else
-            eval $RUN
+            file=""
+            eval $line && RUN=$line
         fi
         if [ -f "$file" ]; then
             $EDITOR "$file"
