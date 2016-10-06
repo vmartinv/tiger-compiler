@@ -1,0 +1,39 @@
+Segunda etapa:
+
+let funtion fact(n:int):int=
+    if x=0 then 1 else x*fact(x-1)
+in
+    fact(5)
+end
+
+Genera dos fragmentos
+Cuerpo de _tigermain
+    MOVE / TEMPRV,CALL / NAME "fac123" , [TEMP FP,ONST 5]
+                                          static link
+                                          
+Cuerpo del fact
+            (* supongamos que "x" está en el registro T33 *)
+    CJUMP(EQ, TEMPP T33, CONST 0, "lt","lf")
+        lt: (LABEL "lt")
+            MOVE(TEMP T34,CONS 1)
+            JUMP "fin"
+        lf: 
+            MOVE(TEMO T34, BINOP(MUL, TEMP T33, CALL(NAME "fact123", [BINOP(MINUS, TEMP T33, CONST 1)])))
+        fin:],                                                       (* static link: MEM(BINOP(PLUS,TEMP FR, CONST -1)) *)
+            TEMP T34))
+            
+tigerframe tiene  varias partes
+    1)  Constantes utiles - Modificar y usar a gusto
+    2)  Funciones útiles 
+            exp(a:access)
+            string(l,s)
+            externalCall() (* Permite hacer llamadas a funciones de biblioteca *)
+    3)  datatype access
+        datatype frag       (* estos dos quedan como están*)
+    4)  datatype frame y funciones relacionadas
+            name(f:frame)
+            formals(f:frame) (* devuelve la lista de los accesos a los argumentos *)
+            allocLocal(f:frame,b:boolean)
+            allocArg(f:frame,b:boolean)
+            newFrame() (* crea un frame *)
+    5)  ProcEntryExit1,2,3
