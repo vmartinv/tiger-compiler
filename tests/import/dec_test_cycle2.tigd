@@ -1,2 +1,0 @@
-function asdf(x:int):int = x
-import dec_test_cycle

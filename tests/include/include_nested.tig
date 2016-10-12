@@ -1,5 +1,5 @@
 let
-    import dec_test
+    include "dec_test_nested.tigd"
     var a := asdf(5)
 in
     0

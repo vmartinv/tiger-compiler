@@ -1,0 +1,63 @@
+let
+    type lista = {item: int, resto:lista}    
+    function length(l:lista):int = 
+        if l<>nil then 1+length(l.resto) else 0
+    function long(l:lista):int = 
+        let
+            var r:=0
+        in
+            while l<>nil do(
+                r:=r+1;
+                l:=l.resto
+            );
+            r
+        end
+    function cons (x:int, xs:lista):lista=
+        lista{item=x, resto=xs}
+    function concat2 (x:lista, y:lista):lista = 
+        if x<>nil 
+        then
+            cons(x.item, concat2(x.resto, y))
+        else
+            y
+    function snoc (x:int, xs:lista):lista=
+        concat2(xs, cons(x, nil))
+    function filter (x:int, xs:lista):lista=
+        if xs=nil then nil else if xs.item = x then filter(x, xs.resto) else cons(xs.item, filter(x, xs.resto))
+    function isin (x:int, xs:lista):int=
+        if xs=nil then 0 else if xs.item = x then 1 else isin(x, xs.resto)
+    function remove (x:int, xs:lista):lista =
+        if xs=nil then nil else if xs.item = x then xs.resto else cons(xs.item, remove(x, xs.resto))
+    function removeall (x:int, xs:lista):lista = filter(x, xs)
+    function reverse (xs:lista):lista =
+        if xs = nil then nil else concat2(reverse(xs.resto), cons(xs.item, nil))
+    function int(n:int):string =
+        if n=0 then "0"
+        else let function int2(n:int):string =
+                    if n<=0 then "" else concat(int2(n/10),chr(ord("0")+mod(n,10)))
+                 function mod(m:int, n:int):int =
+                    m-m/n*n
+             in if n<0 then concat("-", int2((-1)*n)) else int2(n)
+             end
+    function lista(xs:lista):string =
+        let
+            function lista2(xs:lista):string = 
+                if xs<>nil
+                then if xs.resto<>nil 
+                     then concat(int(xs.item),concat( ", ", lista2(xs.resto)))
+                     else int(xs.item)
+                else ""   
+        in
+            concat("[", concat(lista2(xs), "]"))
+        end
+    function printlista (xs:lista) = print(lista(xs))
+in
+    /*printlista(cons(-200, cons(200, nil)));*/
+    print(int(-100));
+    print("\n");
+    print(int(100));
+    print("\n");
+    print(chr(length(lista{item=1,resto=lista{item=2,resto=nil}})+ord("A")));
+    print(chr(length(lista{item=1,resto=lista{item=2,resto=nil}})+ord("A")));
+    0
+end

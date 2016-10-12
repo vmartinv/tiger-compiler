@@ -1,0 +1,7 @@
+let
+    type strange = int
+    extern function afora(x:strange):int
+    var x:=afora(5)
+in
+    0
+end

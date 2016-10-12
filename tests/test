@@ -17,11 +17,19 @@ function BAD(){
 }
 
 function usage(){
-    echo $"Usage: $0 {run|add|del} [case.tig]"
+    echo -e "Usage: $0 <command> [<args>]"
+    echo -e "These are the available commands:"
+    echo -e "\t${GREEN}add file1.tig file2.tig ...${NC}\tAdd specific cases to the test suite"
+    echo -e "\t${GREEN}add [all]${NC}\t\t\tSearch and add cases not in the test suite"
+    echo -e "\t${GREEN}run file1.tig file2.tig ...${NC}\tRun (and check) specific cases"
+    echo -e "\t${GREEN}run [all]${NC}\t\t\tRun the test suite (all added cases)"
+    echo -e "\t${GREEN}del file1.tig file2.tig ...${NC}\tRemove specific cases from the test suite"
+    echo
+    echo -e "Note: file.tig is considered to be in the test suite iif file.out exists."
     exit 1
 }
 
-function compile(){
+function compile_tiger(){
     printf "Compiling Tiger... "
     make -C "$TIGER_DIR" >/dev/null 2>&1
     if [ $? -ne 0 ]; then
@@ -32,15 +40,28 @@ function compile(){
     OK
 }
 
+function gen_output(){
+    exe="./a.out"
+    rm -f $exe || true
+    source=${1%.*}.tig
+    args=$(sed -r 's/^\s*\/\*TIGER_ARGS\s*=\s*(.*)\*\//\1/;tx;d;:x' $source)
+    "$TIGER" $args "$source" 2>&1
+    if [ -f "$exe" ]; then
+        $exe
+        echo Return code: $?
+        rm -f $exe
+    fi
+}
 
 function print_case(){
-    if [ -f "$1" ]; then
+    source=${1%.*}.tig
+    if [ -f "$source" ]; then
         echo -e "${PURPLE}Source code:${NC}"
-        cat "$1"
+        cat "$source"
         echo -e "${PURPLE}Output:${NC}"
-        "$TIGER" "$1"
+        gen_output "$source"
     fi
-    correct=${1%.*}.out
+    correct=${source%.*}.out
     if [ "$#" -ne 1 ] && [ -f "$correct" ]; then
         echo -e "${PURPLE}Expected Output:${NC}"
         cat "$correct"
@@ -49,77 +70,80 @@ function print_case(){
 }
 
 function add_case(){
-    if [ -f "$1" ]; then
-        print_case "$1"
+    source=${1%.*}.tig
+    if [ -f "$source" ]; then
+        echo "Running case "${source#$DIR/}"... "
+        print_case "$source"
         read -p "Add this output? (y/n) " -n 1 -r
-        echo    # (optional) move to a new line
+        echo
         if [[ $REPLY =~ ^[YysS]$ ]]
         then
-            correct=${1%.*}.out
-            echo Adding case "${1#$DIR/}"...
-            "$TIGER" "$1" > "$correct" 2>&1
+            correct=${source%.*}.out
+            echo Adding case "${source#$DIR/}"...
+            gen_output "$source" > "$correct" 2>&1
             OK
         fi
     else
-        echo -e "${RED}File not found.${NC}"
+        echo -e "${RED}File $source not found.${NC}"
     fi
 }
 
 function del_case(){
-    correct=${1%.*}.out
+    source=${1%.*}.tig
+    correct=${source%.*}.out
     if [ -f "$correct" ]; then
         echo Removing case "${correct#$DIR/}"...
-        print_case "$1" show_expected_output
+        print_case "$source" show_expected_output
         read -p "Remove this output? (y/n) " -n 1 -r
         echo    # (optional) move to a new line
         if [[ $REPLY =~ ^[YysS]$ ]]
         then
-            rm "$correct"
+            rm -f "$correct"
         fi
     else
-        echo -e "${RED}Output not found.${NC}"
+        echo -e "${RED}Output $correct not found.${NC}"
     fi
 }
 
 function run_case(){
-    if [ -f "$1" ]; then
-        correct=${1%.*}.out
-        printf "Testing case "${1#$DIR/}"... "
+    source=${1%.*}.tig
+    if [ -f "$source" ]; then
+        correct=${source%.*}.out
+        printf "Testing case "${source#$DIR/}"... "
         if [ -f "$correct" ]; then
-            "$TIGER" "$1" 2>&1 | diff - "$correct" > /dev/null
+            gen_output "$source" | diff - "$correct" > /dev/null
             if [ $? -eq 0 ]; then
                 OK
                 if [ "$#" -ne 1 ]; then
-                    print_case "$1" show_expected_output
+                    print_case "$source" show_expected_output
                 fi
                 return 0
             else
                 BAD
-                print_case "$1" show_expected_output
+                print_case "$source" show_expected_output
                 return 1
             fi
         else
             echo
-            print_case "$1"
-            return 0
+            print_case "$source"
+            return 1
         fi
     else
-        echo -e "${RED}File $1 not found.${NC}"
+        echo -e "${RED}File $source not found.${NC}"
         return 2
     fi
 }
 
 
-cd "$DIR"
 verb="$1"
 shift
 case "$verb" in
     run)
-        compile
-        if [ "$#" -eq 0 ]; then
-            passed=0
-            tot=0
-            for tfile in $(find "$DIR" -name "*.tig"); do
+        compile_tiger
+        passed=0
+        tot=0
+        if [ "$#" -eq 0 ] || [ "$1" = "all" ]; then
+            for tfile in $(find "$DIR" -name "*.tig" | sort); do
                 correct=${tfile%.*}.out
                 if [ -f "$correct" ]; then
                     run_case "$tfile"
@@ -127,24 +151,34 @@ case "$verb" in
                     tot=$((tot+1))
                 fi
             done
-            echo -e "Test passed ${PURPLE}${passed}/${tot}${NC}"
         else
             while [ $# -ne 0 ]
               do
                 run_case "$1" force_output
+                passed=$((passed+($? == 0)))
+                tot=$((tot+1))
                 shift
             done
         fi
+        echo -e "Tests passed ${PURPLE}${passed}/${tot}${NC}"
         ;;
      
     add)
-        [ "$#" -eq 0 ] && usage
-        compile
-        while [ $# -ne 0 ]
-          do
-            add_case "$1"
-            shift
-        done
+        compile_tiger
+        if [ "$#" -eq 0 ] || [ "$1" = "all" ]; then
+            for tfile in $(find "$DIR" -name "*.tig" | sort); do
+                correct=${tfile%.*}.out
+                if [ ! -f "$correct" ]; then
+                    add_case "$tfile"
+                fi
+            done
+        else
+            while [ $# -ne 0 ]
+              do
+                add_case "$1"
+                shift
+            done
+        fi
         ;;
      
     del)

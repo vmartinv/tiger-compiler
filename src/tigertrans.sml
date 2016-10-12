@@ -106,6 +106,7 @@ fun procEntryExit{level: level, body} =
 		val final = STRING(";;-------", "")
 	in	datosGlobs:=(!datosGlobs@[label, body', final]) end
 fun getResult() = !datosGlobs
+fun clearResult() = datosGlobs := []
 
 fun stringLen s =
 	let	fun aux[] = 0

@@ -1,0 +1,68 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+PURPLE='\033[0;35m'
+NC='\033[0m' # No Color
+
+EDITOR=geany
+RUN=make
+PROMPT="> "
+
+function lista(){
+    for f in $(ls *.sml | sort | sed 's/\.sml//' | sed 's/tiger//'); do
+        if [ -f "tiger${f}.sig" ]; then
+            printf ${GREEN}
+        else
+            printf ${PURPLE}
+        fi
+        printf $f
+        printf " ${NC}"
+    done | fold -w 140 -s
+    echo
+}
+
+function usage(){
+    echo -e "${PURPLE}Abridor de archivos 1.1!${NC} No hace falta escribir tiger ni .sml."
+    echo -e "Ingresando una línea vacía se ejecuta make."
+    echo -e "Se listan los archivos. Los archivos en ${GREEN}verde${NC} tienen sml y sig."
+    echo
+}
+
+SCRIPT_HISTORY=.e_history
+history -r "$SCRIPT_HISTORY"
+
+usage
+lista
+while read -p "$PROMPT" -e line; do
+    if [ -n "$line" ]; then
+        history -s "$line"
+        history -w "$SCRIPT_HISTORY"
+    fi
+    if [ -z "$line" ]; then
+        eval $RUN
+    else
+        if [ -f "${line}.sml" ]; then
+            file="${line}.sml"
+        elif [ -f "tiger${line}.sml" ]; then
+            file="tiger${line}.sml"
+        elif [ -f "${line}sml" ]; then
+            file="${line}sml"
+        elif [ -f "tiger${line}" ]; then
+            file="tiger${line}"
+        elif [ -f "tiger${line}sig" ]; then
+            file="tiger${line}sig"
+        elif [ -f "${line}sig" ]; then
+            file="${line}sig"
+        elif [ -f "${line}" ]; then
+            file="$line"
+        else
+            file=""
+            eval $line && RUN=$line
+        fi
+        if [ -f "$file" ]; then
+            $EDITOR "$file"
+        fi
+    fi
+    lista
+done
