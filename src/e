@@ -61,7 +61,7 @@ while read -p "$PROMPT" -e line; do
             eval $line && RUN=$line
         fi
         if [ -f "$file" ]; then
-            $EDITOR "$file"
+            $EDITOR "$file" &
         fi
     fi
     lista
