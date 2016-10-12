@@ -176,17 +176,17 @@ fun transExp(venv, tenv) =
 			in	{ exp=seqExp (exprs), ty=tipo } end
 		| trexp(AssignExp({var=SimpleVar s, exp}, nl)) = (*COMPLETAR_EXP*)
 			let
-				val {exp=_, ty=tye} = trexp exp
+				val {exp=nv, ty=tye} = trexp exp
 				val {exp=_, ty=tyv} = trvar (SimpleVar s, nl)
-				val tyr = case tabBusca(s, venv) of
+				val (acc,level) = case tabBusca(s, venv) of
 					  SOME (VIntro _) => error("Variable de solo lectura ("^s^")", nl)
 					| SOME (Func _) => error("No es una variable ("^s^")", nl)
-					| SOME (Var _) => if tiposIguales tye tyv
-									  then tye
+					| SOME (Var {access=acc,level=level,...}) => if tiposIguales tye tyv
+									  then (acc,level)
 									  else error("Error de tipos en asignación", nl)
 					| NONE => error("Variable inexistente ("^s^")", nl)
 			in
-				{exp=nilExp(), ty=TUnit}
+				{exp=assignExp({var=simpleVar(acc, level), exp=nv}), ty=TUnit}
 			end
 		| trexp(AssignExp({var, exp}, nl)) = (*COMPLETAR_EXP*)
 			let
@@ -238,10 +238,16 @@ fun transExp(venv, tenv) =
 			end
 		| trexp(LetExp({decs, body}, _)) =
 			let
-				val (venv', tenv', _) = List.foldl (fn (d, (v, t, _)) => trdec(v, t) d) (venv, tenv, []) decs
+				fun agregaDec (dec, (venv, tenv, decs)) =
+					let
+						val (venv', tenv', d) = trdec(venv, tenv) dec
+					in
+						(venv', tenv', decs@d)
+					end
+				val (venv', tenv', expdecs) = List.foldl agregaDec (venv, tenv, []) decs
 				val {exp=expbody,ty=tybody}=transExp (venv', tenv') body
 			in 
-				{exp=nilExp(), ty=tybody} (*COMPLETAR_EXP : exp=seqExp(expdecs@[expbody])*)
+				{exp=seqExp(expdecs@[expbody]), ty=tybody} (*COMPLETAR_EXP_DONE*)
 			end
 		| trexp(BreakExp nl) = (*COMPLETAR_EXP*)
 			{exp=nilExp(), ty=TUnit}
@@ -297,15 +303,18 @@ fun transExp(venv, tenv) =
 			in
 				{exp=nilExp(), ty=(!t)}
 			end
-		and trdec (venv, tenv) (VarDec ({name,escape,typ=NONE,init},pos)) =  (*COMPLETAR_EXP*)
+		and trdec (venv, tenv) (VarDec ({name,escape,typ=NONE,init},pos)) =  (*COMPLETAR_EXP_DONE*)
 			let
-                val {exp=_, ty=tyi} = transExp (venv, tenv) init
+                val {exp=initv, ty=tyi} = transExp (venv, tenv) init
                 val _ = case tyi of
                           TNil => error("No se puede inferir el tipo de nil en la declaracion de "^name, pos)
                         | _ => ()
-                val venv' = tabRInserta(name, Var {access=tigertrans.allocArg (topLevel()) false, level=0, ty = tyi}, venv) (*COMPLETAR_EXP : ARREGLAR Var!*)
+                val acc = tigertrans.allocLocal (topLevel()) true
+                val level = getActualLev()
+                val venv' = tabRInserta(name, Var {access=acc, level=level, ty = tyi}, venv)
+				val inite = assignExp({var=simpleVar(acc, level), exp=initv})
             in
-                (venv', tenv, []) (*lista vacia, que es? para dsp, para llevar los efectos laterales*)
+                (venv', tenv, [inite]) (*lista vacia, que es? para dsp, para llevar los efectos laterales*)
             end            
 		| trdec (venv, tenv) (VarDec ({name,escape,typ=SOME s,init},pos)) =  (*COMPLETAR_EXP*)
 			let
