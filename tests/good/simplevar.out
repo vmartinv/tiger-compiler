@@ -1,0 +1,28 @@
+LetExp{decs=[VarDec{name=s,escape=false,typ=NONE,init="asdasdasd"}
+             VarDec{name=x,escape=false,typ=NONE,init=1234}],
+ body=VarExp(SimpleVar(x))}
+bien!
+L1:	.long 9
+	.string "asdasdasd"
+L0:
+EXP(
+ ESEQ(
+  SEQ(
+   MOVE(
+    MEM(
+     BINOP(PLUS,
+      TEMP FP,
+      CONST ~4)),
+    NAME L1),
+   MOVE(
+    MEM(
+     BINOP(PLUS,
+      TEMP FP,
+      CONST ~5)),
+    CONST 1234)),
+  MEM(
+   BINOP(PLUS,
+    TEMP FP,
+    CONST ~5))))
+;;-------:
+yes!!
