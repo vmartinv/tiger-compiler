@@ -263,7 +263,7 @@ fun transExp(venv, tenv) =
 			in
 				{exp=nilExp(), ty=tya}
 			end
-		and trvar(SimpleVar s, nl) = (*COMPLETAR_EXP*)
+		and trvar(SimpleVar s, nl) = (*COMPLETAR_EXP_DONE*)
 			let
 				val (ty, access, level) = case tabBusca (s,venv) of
 						    NONE => error("Variable inexistente ("^s^")", nl)
@@ -342,19 +342,35 @@ fun transExp(venv, tenv) =
                 
                 fun toTipoArgs nl xs  = map (toTipoArg nl) xs
                 fun haceHeader ({name = n, params = p, result = r,...},nl) =
-                    (n, Func {level = topLevel(), label = tigertemp.newlabel(), formals = toTipoArgs nl p , result = toTipoRet nl r, extern = false}) (*COMPLETAR_EXP: level!*)
+                    let
+                        val label = tigertemp.newlabel()
+                        val formals = toTipoArgs nl p
+                        val level = newLevel({parent=topLevel(), name=label, formals=map (fn _ => true) formals}) 
+                    in
+                        (n, Func {level = level, label = label, formals = formals , result = toTipoRet nl r, extern = false}) (*COMPLETAR_EXP: level!*)
+                    end
                 fun agregaHeader ((name, header), venv) = tabRInserta (name, header, venv)
 				
-                val venv' = foldl agregaHeader venv (map haceHeader fs)
+                val headers = map haceHeader fs
+                val venv' = foldl agregaHeader venv headers
                 
 				(* 2da pasada: checkeo de tipo de retorno y cuerpo de la función *)                
-				fun checkFunc ({name = n, params = p, result = r, body = b},nl) =
+				fun checkFunc (({name = n, params = p, result = r, body = b},nl), header as (Func {level=level, label, formals, result, extern})) =
 						let
 							val tipos = toTipoArgs nl p
 							val nombres = map #name p
                             fun agregaArg ((name, typ), venv) = tabRInserta (name, Var{access=tigertrans.allocArg (topLevel()) false, level=0, ty=typ}, venv)(*COMPLETAR_EXP : ARREGLAR Var!*)
                             val venv'' = foldl agregaArg venv' (zip nombres tipos)
-							val {ty = tipoB,...} = transExp (venv'',tenv) b
+                            
+                            val _ = preFunctionDec()
+                            val _ = pushLevel level
+                            
+							val {exp=eB, ty = tipoB} = transExp (venv'',tenv) b
+                            
+                            val _ = popLevel()
+                            val _ = functionDec(eB, level, true)
+                            val _ = postFunctionDec()
+                            
 							val tipoR = case tabBusca(n,venv') of
 										  NONE => error("No deberia pasar",nl)
                                         | SOME (Func{result=r,...}) => r
@@ -365,7 +381,8 @@ fun transExp(venv, tenv) =
 						in
 							()
 						end
-				val _ = List.app checkFunc fs
+                |   checkFunc _ = raise Fail "error interno (checkFunc4w654)\n"
+				val _ = List.app checkFunc (zip fs (map #2 headers))
 			in
 				(venv', tenv, [])
 			end
