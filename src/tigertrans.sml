@@ -129,7 +129,7 @@ fun functionDec(e, l, proc) =
 				else MOVE(TEMP rv, unEx e)
 		val body' = procEntryExit1(#frame l, body)
 		val () = procEntryExit{body=Nx body', level=l}
-	in Nx body end (*COMPLETAR_EXP*)
+	in Nx body' end (*COMPLETAR_EXP*)
 fun postFunctionDec() =
 	(popSalida(); actualLevel := !actualLevel-1)
 
