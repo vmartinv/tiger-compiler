@@ -54,11 +54,12 @@ while read -p "$PROMPT" -e line; do
             file="tiger${line}sig"
         elif [ -f "${line}sig" ]; then
             file="${line}sig"
-        elif [ -f "${line}" ]; then
+        elif [ -f "${line}" ] && [ ! -x "${line}" ]; then
             file="$line"
         else
             file=""
-            eval $line && RUN=$line
+            eval $line
+            RUN=$line
         fi
         if [ -f "$file" ]; then
             $EDITOR "$file" &
