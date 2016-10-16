@@ -1,6 +1,6 @@
 /*TIGER_ARGS=-arbol -ir*/
 let
-	var s:="asdasdasd"
+    var s:="asdasdasd"
     var x:=1234
 in
     x
