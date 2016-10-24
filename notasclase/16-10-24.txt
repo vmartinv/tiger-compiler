@@ -1,0 +1,113 @@
+Canonizacion y reescritura de tree
+Esta reescritura busca
+a) Generar los temporarios que hagan falta para resultados intermedios
+b) Preparar el codigo para convertir un árbol en una lista.
+
+Para esto, usaremos un sistema de reescritura sencillo.
+Tendremos estas cuatro reglas: dibujo Página 176 del libro.
+
+Para la cuarta regla necesito saber si dos cosas conmutan.
+Como lo sabemos? Lo mejor es hacer una función que diga si una expresión y una sentencia conmutan.
+fun commute(CONST _, _) = True
+|   commute(NAME _, _) = True
+|   commute(_, LABEL _) = True
+|   commute _ = False
+
+La inteligencia subyace en agregar mas casos = true.
+La recomendación es generar código y revisar que casos puedo agregar para optimizarlo. Esto hace que se entienda mejor el lenguaje.
+Es sencillo generar patterns como los anteriores:
+(x+(let var x=f(45) in (print("Hola"); x) end); 0)
+
+Expresemos la reescrituras como patterns: dibujo Página 176 del libro.
+Nota: La regla del JUMP no hace falta hacerla, pues no tenemos jumps.
+
+CUIDADO!!!: op es palabra es reservada de ML! :O :O D:
+
+Ademas en la reescritura se moveran hacia arriba las llamadas  afuncion. Esto viene mayormente hecho (cortesia de A.Appel)
+val reorder_stm: Tree.exp list *(Tree.exp list -> Tree.stm) -> Tree.stm
+val reorder_exp: Tree.exp list *(Tree.exp list -> Tree.exp) -> Tree.stm*Tree.exp
+
+y dos funciones
+do_stm y do_exp
+
+Una vez que aplique todo esto, los ESEQ se fueron todos arriba en el arbol. Por lo que puedo sacar el ESEQ y ya tnego mi lista de instrucciones.
+
+---------------------
+En las torres de Hanoi, cuando nos queda un disquito parece que falta poco, pero en realidad solo estamos a mitad de camino.
+
+Una vez convertido el codigo Tree en una lista, llega el momento de partirlo en Bloques Básicos.
+Un BB es una secuencia de instrucciones que cumple
+a) Su primer instruccion es un LABEL
+b) Su uiltima instruccion es un JUMP o CJUMP, y es el único JUMP o CJUMP en ese BB.
+
+1era Ventaja: Si se ejecuta una instruccion se ejecutan todas (a menos que se divida por cero o algo asi)
+2da ventaja; 
+3era ventaja y mas interesante: es muy fácil detectar codigo muerto
+
+Side NOte: Dominancia entre instrucciones (ayudado por BB)
+    Hay dos labels distinguidas: start y end.
+    Si un BB1 esta en TODO camino de start a otro BB2, se dice que BB1 domina a BB2.
+
+    propiedades de la dominancia: transitiva, reflexiva y antisimetrica =>puedo contruir un arbolito del orden
+    Optimizacion 1:
+        BB1 domina a BB2, donde BB1 hace un TEMP igual a una ctte. Ningun BB entre BB1 u BB2 cambia aese TEMP. (Propagacion de cttes). Entonces TEMP en BB2 puede reemplazarse por una constante.
+    Otra optimizacion interesante:
+        int **m; // m[M][M];
+        int i,j;
+        for(i=0; i<M; i++)
+            for(j=0; j<M; j++)
+                ... m[i][j] ...
+        El codigo "Ingenuo" que se puede generar, dentro del for anidado:
+            *(*(m+sizeof(int)*i)+sizeof(int)*j)
+        Podemos optimizar, de este modo:
+            for(i=0; i<M; i++){
+                int *tmp=*(m+sizeof(int)*i);
+                for(j=0; j<M; j++)
+                    ... *(tmp++sizeof(int)*j) ...
+            }
+        
+Varias notas
+
+    Luego de la canonización, viene la etapa (dependiendo del target) de selección de instrucciones.
+    Para facilitar esto, hay un programa en C/Flex, que toma los programas que generan Tree y extrae todas las exp y stm usadas.
+    Además, un intérprete de Guillermo ls permite ejecutar y probar codigo generado.
+
+Próxima etapa .. seleccion de instrucciones
+    
+    Hay varias técnicas para hacer esto
+    1)  BURS/BURG (Bottom - Up Rewritiing Systems / Grammars)
+        Básicamente es crear un parser con un gramática libre de contexto para el lenguaje intermedio (Tree en este caso). Esta gramática es terriblemente ambigua (algo puede hacerse e varias maneras en assembler). La ambiguedad se elimina dando un costo a c/regla de producción, que puede ser el tiempo de ejecución ó el espacio ó lo que se quiera.
+        Un uso de esta técnica, para i386, SPARC y MIPS, está expuesta en [A Retargetable C Compliler - Fraser & Hanson]
+    2)  Maximal Munch -Mordisco maximo-
+        Acá tratamos de consumir (morder)
+        a cada paso, la mayor cantidad de instrucciones del lenguaje intermedio. Esto se hace pattern-mattching.
+        
+Cuál usaremos? MM -se puede elegir el otro, pero se recomienda MM-
+Se recomienda comenzando con pattern muy generales y luego especificarlos.
+        Ej. 
+            A+B*2^k+C
+            lea
+Conviene ser consistentes y poner las constantes en el mismo lugar (primera o última) para tener menos mordiscos
+            
+Detalles del MM
+Generará instrucciones que serán
+ datatype instr =   Oper {assem:string, src = Temp.temp list, dest=Temp.temp list, jump:label list option}
+                        |   Move {assem:string, src:Temp.temp, dst:Temp.temp}
+                        |   Label
+                        
+Las strings de assembler tienen esta forma (a´ la printf)
+    Ej.:
+         Oper{assem= "add `s0, `s1, `do \n", src = [t115, t112], dst= [t100], jump= NONE}
+            
+         obs: `s indica source y `d indica dest
+                            
+        Nota: acá se hará notar si el target CISC o RISC
+        
+CISC: instrucciones de largo variable (para que las instrucciones cortas ocupen poco lugar), dos operandos (uno era src\dst), registros dedicados, pocos registros.
+Ventajas:
+       - fácil de encontrar una maquina CISC para verlo correr.
+       - Guido prefiere este. Dice que 386 está bueno para recibirse rápido ;)
+            
+ RISC: instrucciones de largo fijo, tres operandos, registros generales, "muchos" registros.
+ Desventajas:
+       - no se consigue fácil, aunque hay emuladores
