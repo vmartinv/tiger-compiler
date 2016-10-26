@@ -1,0 +1,85 @@
+a) El for 
+    for var:= lo to hi do exp
+Cómo se implementaria?
+
+    var = lo<
+    while (var<=hi){
+        exp;
+        var++;
+    }
+Problema: si hi es el entero maximo. Si hi = MAX_INT, cicla indefinidamente.
+
+Qué pasa si:
+
+if (lo <= hi) {
+    var = lo;
+    sigue:
+    exp;
+    if (var==hi) goto fin;
+    var++;
+    goto sigue;
+}
+fin
+
+b) Creación de arreglos. 
+    type A = array of int
+    var a:=A[100] of 51 /*<--Como implementamos esto?*/
+                        \* si S1 es una función, la llamamos una vez y guardamos lo que de en cada elemento del arreglo*/
+Si la expresion tipa bien podemos entonces usar:
+fun creaArray(siz, inicial) = (*argumentos empaquetados*)
+    let
+        val siz' = unEx siz
+        val inicial'= unEx siz
+    in
+        Ex(ESEQ(CALL(_creaArray, [siz', inicial']), TEMP rv))
+    end
+
+En runtime.c,
+    void *_creaArray (long siz, long init)
+    {
+        void *ret;
+        assert(siz>=0);
+        ret = malloc((siz+1) *sizeof long);
+        *ret = siz;
+        ret++;
+        while(siz>0)
+            ref[--siz] = init;
+        return ret;
+    }
+    
+Para implementar SuscriptVar se puede implementar una función de runtime.
+En tigertrans.sml,
+    fun subscriptVar(a, idx) = 
+        let val a' = unEx a
+            val idx' = unEx idx
+        in
+            Ex(MEM(ESEQ(CALL(_indexArray, [a', idx'], TEMP rv))))
+        end
+long *_indexArray(long *m, long ind)
+{
+    assert(ind>=0 && ind<m[-1]);
+    return m+ind;
+}
+
+
+Para los records hay algo similar al creaArray, solo que en lugar de siz y init como en el array tenemos que proveer una lista de valores iniciales.
+El tamaño del record lo sacamos de la longitud de la lista.
+    -Como pasar la lista a la funcion?
+    CALL(_creaRecord, [length(linit)]@linit),
+        donde linit se obtiene desempaquetando la lista de valores iniciales
+        
+    Nota: si tiger permite dar los valores iniciales de forma desordenada, antes de llamar a creaRecord hay que ordenar los valores.
+            Hacer un test: los .a de estos records tienen que dar iguales: R{a=1, b=2} y R{b=15, a=1}
+    -Como lo implementamos en C?
+    #include <stdarg.h>
+    long *_creaRecord(long siz, ...){
+        long *ret, i;
+        va_list vl;
+        ret=malloc(siz*sizeof long);
+        va_start(vl, siz);
+        for(i=0; i<siz; i++)
+            ret[i]=va_arg(vl, long);
+        va_end(vl);
+        return ret;
+    }
+    

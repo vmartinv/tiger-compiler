@@ -1,0 +1,25 @@
+IfExp{test=3,then'=4,else'=2}
+bien!
+L0:
+EXP(
+ ESEQ(
+  SEQ(
+   JUMP(    NAME L1),
+   SEQ(
+    LABEL L1,
+    SEQ(
+     MOVE(
+      TEMP T0,
+      CONST 4),
+     SEQ(
+      JUMP(       NAME L3),
+      SEQ(
+       LABEL L2,
+       SEQ(
+        MOVE(
+         TEMP T0,
+         CONST 2),
+        LABEL L3)))))),
+  TEMP T0))
+;;-------:
+yes!!

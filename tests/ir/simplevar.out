@@ -9,20 +9,11 @@ EXP(
  ESEQ(
   SEQ(
    MOVE(
-    MEM(
-     BINOP(PLUS,
-      TEMP FP,
-      CONST ~4)),
+    TEMP T0,
     NAME L1),
    MOVE(
-    MEM(
-     BINOP(PLUS,
-      TEMP FP,
-      CONST ~5)),
+    TEMP T1,
     CONST 1234)),
-  MEM(
-   BINOP(PLUS,
-    TEMP FP,
-    CONST ~5))))
+  TEMP T1))
 ;;-------:
 yes!!

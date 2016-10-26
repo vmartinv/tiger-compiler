@@ -309,24 +309,27 @@ fun transExp(venv, tenv) =
                 val _ = case tyi of
                           TNil => error("No se puede inferir el tipo de nil en la declaracion de "^name, pos)
                         | _ => ()
-                val acc = tigertrans.allocLocal (topLevel()) true
+                val acc = tigertrans.allocLocal (topLevel()) (!escape)
                 val level = getActualLev()
                 val venv' = tabRInserta(name, Var {access=acc, level=level, ty = tyi}, venv)
 				val inite = assignExp({var=simpleVar(acc, level), exp=initv})
             in
-                (venv', tenv, [inite]) (*lista vacia, que es? para dsp, para llevar los efectos laterales*)
+                (venv', tenv, [inite]) (*lista con inite, que es? para dsp, para llevar los efectos laterales*)
             end            
-		| trdec (venv, tenv) (VarDec ({name,escape,typ=SOME s,init},pos)) =  (*COMPLETAR_EXP*)
+		| trdec (venv, tenv) (VarDec ({name,escape,typ=SOME s,init},pos)) =  (*COMPLETAR_EXP_DONE*)
 			let
-                val {exp=_, ty=tyi} = transExp (venv, tenv) init
+                val {exp=initv, ty=tyi} = transExp (venv, tenv) init
                 val t = case tabBusca(s, tenv) of
                           NONE => error("El tipo "^s^" no esta declarado.", pos)
                         | SOME t => if tiposIguales t tyi
                                     then t
-                                    else error("Los tipos de la declaracion no coinciden", pos)                        
-                val venv' = tabRInserta(name, Var {access=tigertrans.allocArg (topLevel()) false, level=0, ty = t}, venv) (*COMPLETAR_EXP : ARREGLAR Var!*)
+                                    else error("Los tipos de la declaracion no coinciden", pos)      
+                val acc = tigertrans.allocLocal (topLevel()) (!escape)
+                val level = getActualLev()
+                val venv' = tabRInserta(name, Var {access=acc, level=level, ty = t}, venv) (*COMPLETAR_EXP_DONE*)
+				val inite = assignExp({var=simpleVar(acc, level), exp=initv})
             in
-                (venv', tenv, [])
+                (venv', tenv, [inite])
             end
 		| trdec (venv, tenv) (FunctionDec fs) = (* fs = ({name: symbol, params: field list, result: symbol option, body: exp} * pos) list*)   (*COMPLETAR_EXP*)
 			let

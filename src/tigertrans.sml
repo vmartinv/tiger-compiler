@@ -218,13 +218,39 @@ fun forExp {lo, hi, var, body} =
 	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 fun ifThenExp{test, then'} =
-	Ex (CONST 0) (*COMPLETAR_EXP*)
+    let val test' = unCx test
+        val t' = unNx then'
+        val (lv, lf) = (newlabel(), newlabel())
+    in
+        Nx(seq[test'(lv, lf),
+                   LABEL lv, t',
+                   LABEL lf])
+    end  (*COMPLETAR_EXP_DONE*)
 
-fun ifThenElseExp {test,then',else'} =
-	Ex (CONST 0) (*COMPLETAR_EXP*)
-
+fun ifThenElseExp {test,then',else'} = 
+    let val test' = unCx test
+        val t' = unEx then'
+        val e' = unEx else'
+        val (lv, lf, le) = (newlabel(), newlabel(), newlabel())
+        val tmp = newtemp()
+    in
+        Ex(ESEQ(seq[test'(lv, lf),
+                   LABEL lv, MOVE(TEMP tmp, t'), JUMP(NAME le, [le]),
+                   LABEL lf, MOVE(TEMP tmp, e'),
+                   LABEL le],
+                   TEMP tmp))
+    end (*COMPLETAR_EXP_DONE*)
 fun ifThenElseExpUnit {test,then',else'} =
-	Ex (CONST 0) (*COMPLETAR_EXP*)
+    let val test' = unCx test
+        val t' = unNx then'
+        val e' = unNx else'
+        val (lv, lf, le) = (newlabel(), newlabel(), newlabel())
+    in
+        Nx(seq[test'(lv, lf),
+               LABEL lv, t', JUMP(NAME le, [le]),
+               LABEL lf, e',
+               LABEL le])
+    end (*COMPLETAR_EXP_DONE*)
 
 fun assignExp{var, exp} =
 let

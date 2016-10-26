@@ -1,0 +1,6 @@
+/*TIGER_ARGS=-arbol -ir*/
+let
+    var x:=5
+in
+    if x then 4 else 2
+end
