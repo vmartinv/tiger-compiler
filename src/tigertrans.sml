@@ -139,8 +139,12 @@ fun nilExp() = Ex (CONST 0)
 
 fun intExp i = Ex (CONST i)
 
-fun simpleVar(acc, nivel) =
-	Ex (tigerframe.exp acc)
+fun auxDiff 0 = TEMP fp
+  | auxDiff n = MEM (BINOP (PLUS, CONST fpPrev, auxDiff(n-1)))
+
+fun simpleVar(acc, nivel) = (* nivel = nivel de anidamiento, puede estar en otro frame *)
+	(* Ex (tigerframe.exp acc) *)
+	Ex (tigerframe.exp acc (auxDiff(getActualLev() - nivel)))
     
 fun varDec(acc) = simpleVar(acc, getActualLev())
 
