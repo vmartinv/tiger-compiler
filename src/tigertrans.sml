@@ -277,32 +277,23 @@ fun binOpIntExp {left, oper, right} =
 	    | _ => raise Fail ("No debe ocurrir\n")
 	end(*COMPLETAR_EXP*)
 
-
 fun binOpIntRelExp {left,oper,right} =
-	(*
 	let
 		val l = unEx left
 		val r = unEx right
-		val t = newlabel()
-		val f = newlabel()
 	in
 	case oper of 
-		  EqOp  => Nx (CJUMP (EQ, l, r, t, f) )
-	    | NeqOp =>
-	    | LtOp  =>  
-	    | LeOp  =>
-	    | GtOp  =>
-	    | GeOp  =>
-	    
-	    CJUMP of relop*exp*exp*tigertemp.label*tigertemp.label
-	    
-	    EQ | NE | LT | GT | LE | GE | ULT | ULE
-		  | UGT | UGE
-		  
-  | AND | OR  | LSHIFT | RSHIFT | ARSHIFT | XOR *)
-  
-	Ex (CONST 0) (*COMPLETAR_EXP*)
-fun binOpStrExp {left,oper,right} =
+		  EqOp  => Cx (fn (lt,lf) => CJUMP(EQ, l, r, lt, lf) )
+	    | NeqOp => Cx (fn (lt,lf) => CJUMP(NE, l, r, lt, lf) )
+	    | LtOp  => Cx (fn (lt,lf) => CJUMP(LT, l, r, lt, lf) )
+	    | LeOp  => Cx (fn (lt,lf) => CJUMP(LE, l, r, lt, lf) )
+	    | GtOp  => Cx (fn (lt,lf) => CJUMP(GT, l, r, lt, lf) )
+	    | GeOp  => Cx (fn (lt,lf) => CJUMP(GE, l, r, lt, lf) )
+	    | _ => raise Fail ("No debe ocurrir\n")
+    end
+    (*COMPLETAR_EXP*)
+fun binOpStrExp {left,oper,right} = (* aca se va a necesitar llamar a una funcion del runtime que compare strings
+Como runtime.c es de la etapa 3, por ahora usaremos una funcion cualquiera*)
 	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 
