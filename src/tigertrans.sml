@@ -144,7 +144,7 @@ fun auxDiff 0 = TEMP fp
 
 fun simpleVar(acc, nivel) = (* nivel = nivel de anidamiento, puede estar en otro frame *)
 	(* Ex (tigerframe.exp acc) *)
-	Ex (tigerframe.exp acc (auxDiff(getActualLev() - nivel)))
+	Ex (tigerframe.exp acc (auxDiff(getActualLev() - nivel))) (*COMPLETAR_EXP_DONE*)
     
 fun varDec(acc) = simpleVar(acc, getActualLev())
 
@@ -257,19 +257,51 @@ fun ifThenElseExpUnit {test,then',else'} =
     end (*COMPLETAR_EXP_DONE*)
 
 fun assignExp{var, exp} =
-let
-	val v = unEx var
-	val vl = unEx exp
-in
-	Nx (MOVE(v,vl))
-end
+	let
+		val v = unEx var
+		val vl = unEx exp
+	in
+		Nx (MOVE(v,vl))
+	end
 
 fun binOpIntExp {left, oper, right} = 
-	Ex (CONST 0) (*COMPLETAR_EXP*)
+	let
+		val l = unEx left
+		val r = unEx right
+	in
+		case oper of
+		  PlusOp   => Ex (BINOP(PLUS , l, r))
+		| MinusOp  => Ex (BINOP(MINUS, l, r))
+		| TimesOp  => Ex (BINOP(MUL  , l, r))
+		| DivideOp => Ex (BINOP(DIV  , l, r))
+	    | _ => raise Fail ("No debe ocurrir\n")
+	end(*COMPLETAR_EXP*)
+
 
 fun binOpIntRelExp {left,oper,right} =
+	(*
+	let
+		val l = unEx left
+		val r = unEx right
+		val t = newlabel()
+		val f = newlabel()
+	in
+	case oper of 
+		  EqOp  => Nx (CJUMP (EQ, l, r, t, f) )
+	    | NeqOp =>
+	    | LtOp  =>  
+	    | LeOp  =>
+	    | GtOp  =>
+	    | GeOp  =>
+	    
+	    CJUMP of relop*exp*exp*tigertemp.label*tigertemp.label
+	    
+	    EQ | NE | LT | GT | LE | GE | ULT | ULE
+		  | UGT | UGE
+		  
+  | AND | OR  | LSHIFT | RSHIFT | ARSHIFT | XOR *)
+  
 	Ex (CONST 0) (*COMPLETAR_EXP*)
-
 fun binOpStrExp {left,oper,right} =
 	Ex (CONST 0) (*COMPLETAR_EXP*)
 
