@@ -1,0 +1,2 @@
+/*TIGER_ARGS=-arbol -ir*/
+(if 3 then 4 else 2)

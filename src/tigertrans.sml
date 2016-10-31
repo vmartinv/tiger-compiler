@@ -139,8 +139,12 @@ fun nilExp() = Ex (CONST 0)
 
 fun intExp i = Ex (CONST i)
 
-fun simpleVar(acc, nivel) =
-	Ex (tigerframe.exp acc)
+fun auxDiff 0 = TEMP fp
+  | auxDiff n = MEM (BINOP (PLUS, CONST fpPrev, auxDiff(n-1)))
+
+fun simpleVar(acc, nivel) = (* nivel = nivel de anidamiento, puede estar en otro frame *)
+	(* Ex (tigerframe.exp acc) *)
+	Ex (tigerframe.exp acc (auxDiff(getActualLev() - nivel))) (*COMPLETAR_EXP_DONE*)
     
 fun varDec(acc) = simpleVar(acc, getActualLev())
 
@@ -218,29 +222,78 @@ fun forExp {lo, hi, var, body} =
 	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 fun ifThenExp{test, then'} =
-	Ex (CONST 0) (*COMPLETAR_EXP*)
+    let val test' = unCx test
+        val t' = unNx then'
+        val (lv, lf) = (newlabel(), newlabel())
+    in
+        Nx(seq[test'(lv, lf),
+                   LABEL lv, t',
+                   LABEL lf])
+    end  (*COMPLETAR_EXP_DONE*)
 
-fun ifThenElseExp {test,then',else'} =
-	Ex (CONST 0) (*COMPLETAR_EXP*)
-
+fun ifThenElseExp {test,then',else'} = 
+    let val test' = unCx test
+        val t' = unEx then'
+        val e' = unEx else'
+        val (lv, lf, le) = (newlabel(), newlabel(), newlabel())
+        val tmp = newtemp()
+    in
+        Ex(ESEQ(seq[test'(lv, lf),
+                   LABEL lv, MOVE(TEMP tmp, t'), JUMP(NAME le, [le]),
+                   LABEL lf, MOVE(TEMP tmp, e'),
+                   LABEL le],
+                   TEMP tmp))
+    end (*COMPLETAR_EXP_DONE*)
 fun ifThenElseExpUnit {test,then',else'} =
-	Ex (CONST 0) (*COMPLETAR_EXP*)
+    let val test' = unCx test
+        val t' = unNx then'
+        val e' = unNx else'
+        val (lv, lf, le) = (newlabel(), newlabel(), newlabel())
+    in
+        Nx(seq[test'(lv, lf),
+               LABEL lv, t', JUMP(NAME le, [le]),
+               LABEL lf, e',
+               LABEL le])
+    end (*COMPLETAR_EXP_DONE*)
 
 fun assignExp{var, exp} =
-let
-	val v = unEx var
-	val vl = unEx exp
-in
-	Nx (MOVE(v,vl))
-end
+	let
+		val v = unEx var
+		val vl = unEx exp
+	in
+		Nx (MOVE(v,vl))
+	end
 
 fun binOpIntExp {left, oper, right} = 
-	Ex (CONST 0) (*COMPLETAR_EXP*)
+	let
+		val l = unEx left
+		val r = unEx right
+	in
+		case oper of
+		  PlusOp   => Ex (BINOP(PLUS , l, r))
+		| MinusOp  => Ex (BINOP(MINUS, l, r))
+		| TimesOp  => Ex (BINOP(MUL  , l, r))
+		| DivideOp => Ex (BINOP(DIV  , l, r))
+	    | _ => raise Fail ("No debe ocurrir\n")
+	end(*COMPLETAR_EXP*)
 
 fun binOpIntRelExp {left,oper,right} =
-	Ex (CONST 0) (*COMPLETAR_EXP*)
-
-fun binOpStrExp {left,oper,right} =
+	let
+		val l = unEx left
+		val r = unEx right
+	in
+	case oper of 
+		  EqOp  => Cx (fn (lt,lf) => CJUMP(EQ, l, r, lt, lf) )
+	    | NeqOp => Cx (fn (lt,lf) => CJUMP(NE, l, r, lt, lf) )
+	    | LtOp  => Cx (fn (lt,lf) => CJUMP(LT, l, r, lt, lf) )
+	    | LeOp  => Cx (fn (lt,lf) => CJUMP(LE, l, r, lt, lf) )
+	    | GtOp  => Cx (fn (lt,lf) => CJUMP(GT, l, r, lt, lf) )
+	    | GeOp  => Cx (fn (lt,lf) => CJUMP(GE, l, r, lt, lf) )
+	    | _ => raise Fail ("No debe ocurrir\n")
+    end
+    (*COMPLETAR_EXP*)
+fun binOpStrExp {left,oper,right} = (* aca se va a necesitar llamar a una funcion del runtime que compare strings
+Como runtime.c es de la etapa 3, por ahora usaremos una funcion cualquiera*)
 	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 

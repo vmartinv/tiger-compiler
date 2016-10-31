@@ -42,17 +42,20 @@ val callersaves = []
 val calleesaves = []
 
 type frame = {
-	name: string,
-	formals: bool list,
-	locals: bool list,
+	name: string,            (* nombre de la función a la que pertenece - Se necesita para construir un frame *)
+	formals: bool list,      (* true si el parametro escapa, falso sino - Se necesita para construir un frame *)
+	locals: bool list,       (*  *)
 	actualArg: int ref,
 	actualLocal: int ref,
 	actualReg: int ref
 }
 type register = string
-datatype access = InFrame of int | InReg of tigertemp.label
-datatype frag = PROC of {body: tigertree.stm, frame: frame}
+datatype access = InFrame of int | InReg of tigertemp.label      (* Describe args y vars locales que pueden estar en el marco o en registros *)
+                                                                 (* InFrame(n) indica que se corresponde con una locacion de mem con offset n desde el fp *)
+                                                                 (* InReg(t) indica que se corresponde con el registro t *)
+datatype frag = PROC of {body: tigertree.stm, frame: frame}      (*  *)
 	| STRING of tigertemp.label * string
+
 fun newFrame{name, formals} = {
 	name=name,
 	formals=formals,
@@ -81,8 +84,14 @@ fun allocLocal (f: frame) b =
 		let	val ret = InFrame(!(#actualLocal f)+localsGap)
 		in	#actualLocal f:=(!(#actualLocal f)-1); ret end
 	| false => InReg(tigertemp.newtemp())
-fun exp(InFrame k) = MEM(BINOP(PLUS, TEMP(fp), CONST k))
-| exp(InReg l) = TEMP l
+
+(*
+fun exp(InFrame k) = MEM(BINOP(PLUS, TEMP fp, CONST k))
+  | exp(InReg l) = TEMP l
+*)
+fun exp(InFrame k) e = MEM(BINOP(PLUS, e, CONST k))
+  | exp(InReg l) _ = TEMP l
+  
 fun externalCall(s, l) = CALL(NAME s, l)
 
 fun procEntryExit1 (frame,body) = body

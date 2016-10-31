@@ -1,0 +1,24 @@
+LetExp{decs=[VarDec{name=x,escape=false,typ=NONE,init=5}],
+ body=SeqExp([IfExp{test=VarExp(SimpleVar(x)),then'=UnitExp,else'=NONE}0])}
+bien!
+L0:
+EXP(
+ ESEQ(
+  MOVE(
+   TEMP T0,
+   CONST 5),
+  ESEQ(
+   SEQ(
+    CJUMP(NE,
+     TEMP T0,
+     CONST 0,
+     L1,L2),
+    SEQ(
+     LABEL L1,
+     SEQ(
+      EXP(
+       CONST 0),
+      LABEL L2))),
+   CONST 0)))
+;;-------:
+yes!!

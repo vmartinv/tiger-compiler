@@ -1,0 +1,24 @@
+En compiler/src:
+	./e
+	
+Una vez ahí:
+
+1) Para compilar:
+	make
+
+2) Para correr el test t.tig
+- Opción 1
+	./tiger ../tests/ir/t.tig [opciones]
+- Opción 2
+	../tests/test run ../tests/t.tig
+La 2 está mejor porque recompila el tiger y toma las opciones del archivo, si este tiene un encabezado de la forma:
+	/*TIGER_ARGS = opciones */
+
+3) Para agregar el test t.tig
+	../tests/test add ../tests/t.tig
+	
+4) Para borrar el test t.tig
+	../tests/test del ../tests/t.tig
+
+5) Para obtener el usage de los tests:
+	../tests/test

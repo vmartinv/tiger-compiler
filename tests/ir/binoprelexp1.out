@@ -1,0 +1,68 @@
+LetExp{decs=[VarDec{name=s,escape=false,typ=NONE,init=2}
+             VarDec{name=x,escape=false,typ=NONE,init=34}
+             VarDec{name=y,escape=false,typ=NONE,
+              init=OpExp{left=VarExp(SimpleVar(s)),oper=EqOp,
+                    right=VarExp(SimpleVar(x))}}],
+ body=SeqExp([AssignExp{var=SimpleVar(y),
+               exp=IfExp{test=VarExp(SimpleVar(y)),then'=1,else'=2}}
+      VarExp(SimpleVar(y))])}
+bien!
+L0:
+EXP(
+ ESEQ(
+  SEQ(
+   MOVE(
+    TEMP T0,
+    CONST 2),
+   SEQ(
+    MOVE(
+     TEMP T1,
+     CONST 34),
+    MOVE(
+     TEMP T2,
+     ESEQ(
+      SEQ(
+       MOVE(
+        TEMP T3,
+        CONST 1),
+       SEQ(
+        CJUMP(EQ,
+         TEMP T0,
+         TEMP T1,
+         L1,L2),
+        SEQ(
+         LABEL L2,
+         SEQ(
+          MOVE(
+           TEMP T3,
+           CONST 0),
+          LABEL L1)))),
+      TEMP T3)))),
+  ESEQ(
+   MOVE(
+    TEMP T2,
+    ESEQ(
+     SEQ(
+      CJUMP(NE,
+       TEMP T2,
+       CONST 0,
+       L3,L4),
+      SEQ(
+       LABEL L3,
+       SEQ(
+        MOVE(
+         TEMP T4,
+         CONST 1),
+        SEQ(
+         JUMP(          NAME L5),
+         SEQ(
+          LABEL L4,
+          SEQ(
+           MOVE(
+            TEMP T4,
+            CONST 2),
+           LABEL L5)))))),
+     TEMP T4)),
+   TEMP T2)))
+;;-------:
+yes!!

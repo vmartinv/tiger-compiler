@@ -1,0 +1,25 @@
+LetExp{decs=[VarDec{name=s,escape=false,typ=NONE,init=2}
+             VarDec{name=x,escape=false,typ=NONE,init=34}
+             VarDec{name=y,escape=false,typ=NONE,
+              init=OpExp{left=VarExp(SimpleVar(s)),oper=PlusOp,
+                    right=VarExp(SimpleVar(x))}}],body=VarExp(SimpleVar(y))}
+bien!
+L0:
+EXP(
+ ESEQ(
+  SEQ(
+   MOVE(
+    TEMP T0,
+    CONST 2),
+   SEQ(
+    MOVE(
+     TEMP T1,
+     CONST 34),
+    MOVE(
+     TEMP T2,
+     BINOP(PLUS,
+      TEMP T0,
+      TEMP T1)))),
+  TEMP T2))
+;;-------:
+yes!!
