@@ -275,7 +275,7 @@ fun binOpIntExp {left, oper, right} =
 		| TimesOp  => Ex (BINOP(MUL  , l, r))
 		| DivideOp => Ex (BINOP(DIV  , l, r))
 	    | _ => raise Fail ("No debe ocurrir\n")
-	end(*COMPLETAR_EXP*)
+	end(*COMPLETAR_EXP_DONE*)
 
 fun binOpIntRelExp {left,oper,right} =
 	let
@@ -291,10 +291,24 @@ fun binOpIntRelExp {left,oper,right} =
 	    | GeOp  => Cx (fn (lt,lf) => CJUMP(GE, l, r, lt, lf) )
 	    | _ => raise Fail ("No debe ocurrir\n")
     end
+    (*COMPLETAR_EXP_DONE*)
+fun binOpStrExp {left,oper,right} = (* aca se va a necesitar llamar a una funcion del runtime que compare strings (_stringCompare)
+Obs: runtime.c es de la etapa 3*)
+	let
+		val l = unEx left
+		val r = unEx right
+		val cmp = externalCall("_stringCompare", [l, r])
+	in
+	case oper of 
+		  EqOp  => Cx (fn (lt,lf) => CJUMP(EQ, cmp, CONST 1, lt, lf) )
+	    | NeqOp => Cx (fn (lt,lf) => CJUMP(NE, cmp, CONST 1, lt, lf) )
+	    | LtOp  => Cx (fn (lt,lf) => CJUMP(LT, cmp, CONST 1, lt, lf) )
+	    | LeOp  => Cx (fn (lt,lf) => CJUMP(LE, cmp, CONST 1, lt, lf) )
+	    | GtOp  => Cx (fn (lt,lf) => CJUMP(GT, cmp, CONST 1, lt, lf) )
+	    | GeOp  => Cx (fn (lt,lf) => CJUMP(GE, cmp, CONST 1, lt, lf) )
+	    | _ => raise Fail ("No debe ocurrir\n")
+    end
     (*COMPLETAR_EXP*)
-fun binOpStrExp {left,oper,right} = (* aca se va a necesitar llamar a una funcion del runtime que compare strings
-Como runtime.c es de la etapa 3, por ahora usaremos una funcion cualquiera*)
-	Ex (CONST 0) (*COMPLETAR_EXP*)
 
 
 end
