@@ -214,27 +214,35 @@ fun transExp(venv, tenv) =
                 then {exp=ifThenExp{test=exptest, then'=expthen}, ty=TUnit}
 				else error("Error de tipos en if", nl)
 			end
-		| trexp(WhileExp({test, body}, nl)) =
+		| trexp(WhileExp({test, body}, nl)) = (*COMPLETAR_EXP_DONE*)
 			let
 				val ttest = trexp test
+                val _ = tigertrans.preWhileForExp()
 				val tbody = trexp body
+                val exp = whileExp {test=(#exp ttest), body=(#exp tbody), lev=topLevel()}
+                val _ = tigertrans.postWhileForExp()
 			in
 				if tipoReal(#ty ttest, tenv) = TInt andalso #ty tbody = TUnit
-                then {exp=whileExp {test=(#exp ttest), body=(#exp tbody), lev=topLevel()}, ty=TUnit}
+                then {exp=exp, ty=TUnit}
 				else if tipoReal(#ty ttest, tenv) <> TInt then error("Error de tipo en la condición", nl)
                      else error("El cuerpo de un while no puede devolver un valor", nl)
 			end
-		| trexp(ForExp({var, escape, lo, hi, body}, nl)) = (*COMPLETAR_EXP*)
+		| trexp(ForExp({var, escape, lo, hi, body}, nl)) = (*COMPLETAR_EXP_DONE*)
 			let
-				val {exp=_, ty=tyl} = trexp lo
-				val {exp=_, ty=tyh} = trexp hi
+				val {exp=elo, ty=tyl} = trexp lo
+				val {exp=ehi, ty=tyh} = trexp hi
 				val _ = if tiposIguales tyl TInt andalso tiposIguales tyh TInt
 						then ()
 						else error("Las cotas del for deben ser de tipo int", nl)
-				val venv' = tabRInserta(var, VIntro {access=tigertrans.allocArg (topLevel()) false, level=0}, venv) (*COMPLETAR_EXP : ARREGLAR VIntro!*)
-				val {exp=_, ty=tyb} = transExp (venv', tenv) body
+                val _ = tigertrans.preWhileForExp()
+                val access:access = tigertrans.allocLocal (topLevel()) false
+				val venv' = tabRInserta(var, VIntro {access=access, level=getActualLev()}, venv) (*COMPLETAR_EXP_DONE*)
+                val {exp=ebody, ty=tyb} = transExp (venv', tenv) body
+                val evar = tigertrans.simpleVar (access, getActualLev())
+                val exp = forExp({lo=elo, hi=ehi, var=evar, body=ebody})
+                val _ = tigertrans.postWhileForExp()
 			in
-				if tiposIguales tyb TUnit then {exp=nilExp(), ty=TUnit} else error("El cuerpo de un for no debe devolver valor", nl)
+				if tiposIguales tyb TUnit then {exp=exp, ty=TUnit} else error("El cuerpo de un for no debe devolver valor", nl)
 			end
 		| trexp(LetExp({decs, body}, _)) =
 			let
@@ -249,8 +257,8 @@ fun transExp(venv, tenv) =
 			in 
 				{exp=seqExp(expdecs@[expbody]), ty=tybody} (*COMPLETAR_EXP_DONE*)
 			end
-		| trexp(BreakExp nl) = (*COMPLETAR_EXP*)
-			{exp=nilExp(), ty=TUnit}
+		| trexp(BreakExp nl) = (*COMPLETAR_EXP_DONE*)
+			{exp=breakExp(), ty=TUnit}
 		| trexp(ArrayExp({typ, size, init}, nl)) = (*COMPLETAR_EXP*) (* testeo con tipo arr trucho *)
 			let
 				val (tya, cs) = case tabBusca(typ, tenv) of

@@ -1,0 +1,19 @@
+LetExp{decs=[TypeDec([{name=l,
+              ty=RecordTy([{name=elem,escape=falsetyp=NameTy(int)}{name=next,
+                  escape=falsetyp=NameTy(l)}])}])
+             VarDec{name=ls,escape=false,typ=l,
+              init=RecordExp{fields=[(elem,1)(next,NilExp)],typ=l}}],body=15}
+bien!
+L0:
+EXP(
+ ESEQ(
+  MOVE(
+   TEMP T0,
+   CALL(
+    NAME _creaRecord,
+     CONST 2,
+     CONST 1,
+     CONST 0)),
+  CONST 15))
+;;-------:
+yes!!

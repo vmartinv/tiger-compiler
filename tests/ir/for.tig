@@ -1,0 +1,4 @@
+/*TIGER_ARGS=-arbol -ir*/
+(
+for i := 0 to 2 do ()
+;0)

@@ -1,0 +1,40 @@
+SeqExp([ForExp{var=i,escape=false,lo=0,hi=2,body=UnitExp}0])
+bien!
+L0:
+EXP(
+ ESEQ(
+  SEQ(
+   CJUMP(LE,
+    CONST 0,
+    CONST 2,
+    L2,L1),
+   SEQ(
+    LABEL L2,
+    SEQ(
+     MOVE(
+      TEMP T0,
+      CONST 0),
+     SEQ(
+      LABEL L3,
+      SEQ(
+       EXP(
+        CONST 0),
+       SEQ(
+        CJUMP(EQ,
+         TEMP T0,
+         CONST 2,
+         L1,L4),
+        SEQ(
+         LABEL L4,
+         SEQ(
+          MOVE(
+           TEMP T0,
+           BINOP(PLUS,
+            TEMP T0,
+            CONST 1)),
+          SEQ(
+           JUMP(            NAME L3),
+           LABEL L1))))))))),
+  CONST 0))
+;;-------:
+yes!!
