@@ -143,7 +143,6 @@ fun auxDiff 0 = TEMP fp
   | auxDiff n = MEM (BINOP (PLUS, CONST fpPrev, auxDiff(n-1)))
 
 fun simpleVar(acc, nivel) = (* nivel = nivel de anidamiento, puede estar en otro frame *)
-	(* Ex (tigerframe.exp acc) *)
 	Ex (tigerframe.exp acc (auxDiff(getActualLev() - nivel))) (*COMPLETAR_EXP_DONE*)
     
 fun varDec(acc) = simpleVar(acc, getActualLev())
@@ -300,15 +299,15 @@ Obs: runtime.c es de la etapa 3*)
 		val cmp = externalCall("_stringCompare", [l, r])
 	in
 	case oper of 
-		  EqOp  => Cx (fn (lt,lf) => CJUMP(EQ, cmp, CONST 1, lt, lf) )
-	    | NeqOp => Cx (fn (lt,lf) => CJUMP(NE, cmp, CONST 1, lt, lf) )
-	    | LtOp  => Cx (fn (lt,lf) => CJUMP(LT, cmp, CONST 1, lt, lf) )
-	    | LeOp  => Cx (fn (lt,lf) => CJUMP(LE, cmp, CONST 1, lt, lf) )
-	    | GtOp  => Cx (fn (lt,lf) => CJUMP(GT, cmp, CONST 1, lt, lf) )
-	    | GeOp  => Cx (fn (lt,lf) => CJUMP(GE, cmp, CONST 1, lt, lf) )
+		  EqOp  => Cx (fn (lt,lf) => CJUMP(EQ, cmp, CONST 0, lt, lf) )
+	    | NeqOp => Cx (fn (lt,lf) => CJUMP(NE, cmp, CONST 0, lt, lf) )
+	    | LtOp  => Cx (fn (lt,lf) => CJUMP(LT, cmp, CONST 0, lt, lf) )
+	    | LeOp  => Cx (fn (lt,lf) => CJUMP(LE, cmp, CONST 0, lt, lf) )
+	    | GtOp  => Cx (fn (lt,lf) => CJUMP(GT, cmp, CONST 0, lt, lf) )
+	    | GeOp  => Cx (fn (lt,lf) => CJUMP(GE, cmp, CONST 0, lt, lf) )
 	    | _ => raise Fail ("No debe ocurrir\n")
     end
-    (*COMPLETAR_EXP*)
+    (*COMPLETAR_EXP_DONE*)
 
 
 end
