@@ -1,0 +1,6 @@
+/*TIGER_ARGS=-arbol -ir*/
+let
+   var a :=5
+in
+   a:=3; 0
+end

@@ -174,28 +174,23 @@ fun transExp(venv, tenv) =
 				val exprs = map (fn{exp, ty} => exp) lexti
 				val {exp, ty=tipo} = hd(rev lexti)
 			in	{ exp=seqExp (exprs), ty=tipo } end
-		| trexp(AssignExp({var=SimpleVar s, exp}, nl)) = (*COMPLETAR_EXP*)
+		| trexp(AssignExp({var=var, exp}, nl)) = (*COMPLETAR_EXP_DONE*)
 			let
+				val _ = case var of
+                        SimpleVar s =>
+                            (case tabBusca(s, venv) of
+                                  SOME (VIntro _) => error("Variable de solo lectura ("^s^")", nl)
+                                | SOME (Func _) => error("No es una variable ("^s^")", nl)
+                                | SOME (Var _) => ()
+                                | NONE => error("Variable inexistente ("^s^")", nl))
+                        | _ => ()
 				val {exp=nv, ty=tye} = trexp exp
-				val {exp=_, ty=tyv} = trvar (SimpleVar s, nl)
-				val (acc,level) = case tabBusca(s, venv) of
-					  SOME (VIntro _) => error("Variable de solo lectura ("^s^")", nl)
-					| SOME (Func _) => error("No es una variable ("^s^")", nl)
-					| SOME (Var {access=acc,level=level,...}) => if tiposIguales tye tyv
-									  then (acc,level)
-									  else error("Error de tipos en asignación", nl)
-					| NONE => error("Variable inexistente ("^s^")", nl)
+				val {exp=evar, ty=tyv} = trvar (var, nl)
+                val _ = if tiposIguales tye tyv
+                        then ()
+                        else error("Error de tipos en asignación", nl)
 			in
-				{exp=assignExp({var=simpleVar(acc, level), exp=nv}), ty=TUnit}
-			end
-		| trexp(AssignExp({var, exp}, nl)) = (*COMPLETAR_EXP*)
-			let
-				val {exp=_, ty=tye} = trexp exp
-				val {exp=_, ty=tyv} = trvar (var, nl)
-			in
-				if tiposIguales tye tyv
-				then {exp=nilExp(), ty=TUnit}
-				else error("Error de tipos en asignación", nl)
+				{exp=assignExp({var=evar, exp=nv}), ty=TUnit}
 			end
 		| trexp(IfExp({test, then', else'=SOME else'}, nl)) =
 			let val {exp=testexp, ty=tytest} = trexp test
@@ -259,15 +254,15 @@ fun transExp(venv, tenv) =
 			end
 		| trexp(BreakExp nl) = (*COMPLETAR_EXP_DONE*)
 			{exp=breakExp(), ty=TUnit}
-		| trexp(ArrayExp({typ, size, init}, nl)) = (*COMPLETAR_EXP*) (* testeo con tipo arr trucho *)
+		| trexp(ArrayExp({typ, size, init}, nl)) = (*COMPLETAR_EXP_DONE*) (* testeo con tipo arr trucho *)
 			let
 				val (tya, cs) = case tabBusca(typ, tenv) of
 						  SOME t => (case tipoReal(t,tenv) of
 									   TArray (cs, u) => (TArray (cs, u), cs)
 							         | _ => error(typ^" no es de tipo array", nl))
 						| NONE => error("Tipo inexistente ("^typ^")", nl)
-				val {exp=_, ty=tys} = trexp size
-				val {exp=_, ty=tyi} = trexp init
+				val {exp=esize, ty=tys} = trexp size
+				val {exp=einit, ty=tyi} = trexp init
 				val _ = if (tiposIguales tys TInt)
 						then ()
 						else error("El tamaño del arreglo debe ser de tipo int", nl)
@@ -275,7 +270,7 @@ fun transExp(venv, tenv) =
 						then ()
 						else error("El valor inicial no corresponde con el tipo del arreglo", nl)
 			in
-				{exp=nilExp(), ty=tya}
+				{exp=arrayExp {size=esize, init=einit}, ty=tya}
 			end
 		and trvar(SimpleVar s, nl) = (*COMPLETAR_EXP_DONE*)
 			let
@@ -287,29 +282,29 @@ fun transExp(venv, tenv) =
 			in
 				{exp=simpleVar(access, level), ty=ty}
 			end
-		| trvar(FieldVar(v, s), nl) = (*COMPLETAR_EXP*)
+		| trvar(FieldVar(v, s), nl) = (*COMPLETAR_EXP_DONE*)
 			let
-				val {exp=_, ty=tyv} = trvar(v, nl)
-				val t = (case tyv of
-						   TRecord (l, _) => (case List.filter (fn x => #1 x = s) l of
+				val {exp=evar, ty=tyv} = trvar(v, nl)
+				val (t,index) = (case tyv of
+					        	 TRecord (l, _) => (case List.filter (fn x => #1 x = s) l of
 						                       [] => error(s^" no es un campo del record", nl)
-						                     | (c::_) => #2 c)
-						 | _ => error("No es una variable de tipo record, no se puede indexar" , nl))
+						                     | (c::_) => (#2 c, #3 c))
+						         | _ => error("No es una variable de tipo record, no se puede indexar" , nl))
 			in
-				{exp=nilExp(), ty=(!t)}
+				{exp=fieldVar(evar, index), ty=(!t)}
 			end
-		| trvar(SubscriptVar(v, e), nl) = (*COMPLETAR_EXP*)
+		| trvar(SubscriptVar(v, e), nl) = (*COMPLETAR_EXP_DONE*)
 			let
-				val {exp=_, ty=tyv} = trvar(v, nl)
+				val {exp=evar, ty=tyv} = trvar(v, nl)
 				val t = (case tyv of
 						   TArray (tr, _) => tr
 						 | _ => error("No es una variable de tipo array, no se puede indexar" , nl))
-				val {exp=_, ty=tye} = trexp e
+				val {exp=index, ty=tye} = trexp e
 				val _ = if tiposIguales tye TInt
 						then ()
 						else error("El indice no es de tipo entero" , nl)
 			in
-				{exp=nilExp(), ty=(!t)}
+				{exp=subscriptVar(evar, index), ty=(!t)}
 			end
 		and trdec (venv, tenv) (VarDec ({name,escape,typ=NONE,init},pos)) =  (*COMPLETAR_EXP_DONE*)
 			let

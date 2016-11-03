@@ -1,0 +1,7 @@
+/*TIGER_ARGS=-arbol -ir*/
+let
+    type A = array of int
+    var a:=A[100] of 51
+in
+    a[20]
+end

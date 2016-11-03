@@ -1,0 +1,16 @@
+LetExp{decs=[TypeDec([{name=A,ty=ArrayTy(int)}])
+             VarDec{name=a,escape=false,typ=NONE,
+              init=ArrayExp{test=A,size=100,init=51}}],body=15}
+bien!
+L0:
+EXP(
+ ESEQ(
+  MOVE(
+   TEMP T0,
+   CALL(
+    NAME _allocArray,
+     CONST 100,
+     CONST 51)),
+  CONST 15))
+;;-------:
+yes!!

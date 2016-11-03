@@ -1,0 +1,40 @@
+LetExp{decs=[TypeDec([{name=A,ty=ArrayTy(int)}])
+             VarDec{name=a,escape=false,typ=NONE,
+              init=ArrayExp{test=A,size=100,init=51}}],
+ body=SeqExp([AssignExp{var=SubscriptVar(SimpleVar(a),23),exp=3}15])}
+bien!
+L0:
+EXP(
+ ESEQ(
+  MOVE(
+   TEMP T0,
+   CALL(
+    NAME _allocArray,
+     CONST 100,
+     CONST 51)),
+  ESEQ(
+   MOVE(
+    ESEQ(
+     SEQ(
+      MOVE(
+       TEMP T1,
+       TEMP T0),
+      SEQ(
+       MOVE(
+        TEMP T2,
+        CONST 23),
+       EXP(
+        CALL(
+         NAME _checkindex,
+          TEMP T1,
+          TEMP T2)))),
+     MEM(
+      BINOP(PLUS,
+       TEMP T1,
+       BINOP(MUL,
+        TEMP T2,
+        CONST 4)))),
+    CONST 3),
+   CONST 15)))
+;;-------:
+yes!!

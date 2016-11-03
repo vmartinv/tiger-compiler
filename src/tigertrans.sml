@@ -163,7 +163,9 @@ fun fieldVar(var, field) =
 let
     val var' = unEx var
 in
-	Ex (MEM(BINOP(PLUS, var', CONST (4*field)))) (*COMPLETAR_EXP_DONE*)
+    if field = 0
+    then Ex var'
+    else Ex (MEM(BINOP(PLUS, var', CONST (4*field)))) (*COMPLETAR_EXP_DONE*)
 end
 
 fun subscriptVar(arr, ind) =
