@@ -189,7 +189,7 @@ let
     val slinit = Listsort.sort comp linit
     val linit' = map (unEx o first) slinit    
 in
-    Ex (externalCall("_creaRecord", [CONST (length(linit'))]@linit')) (*COMPLETAR_EXP*)
+    Ex (externalCall("_creaRecord", [CONST (length(linit'))]@linit')) (*COMPLETAR_EXP_DONE*)
 end
 
 fun arrayExp{size, init} =
