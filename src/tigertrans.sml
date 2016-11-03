@@ -200,6 +200,12 @@ in
 	Ex (externalCall("_allocArray", [s, i]))
 end
 
+(*  name = etiqueta (nombre de la funcion)
+    external = si es externa, en este caso no esta esperando un sl
+    isproc = si retorna algo
+    lev = nivel de anidamiento
+    ls = lista de argumentos
+    *)
 fun callExp (name,external,isproc,lev:level,ls) = 
 	Ex (CONST 0) (*COMPLETAR_EXP*)
 

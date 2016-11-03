@@ -79,7 +79,7 @@ fun transExp(venv, tenv) =
 		| trexp(NilExp _)= {exp=nilExp(), ty=TNil}
 		| trexp(IntExp(i, _)) = {exp=intExp i, ty=TInt}
 		| trexp(StringExp(s, _)) = {exp=stringExp(s), ty=TString}
-		| trexp(CallExp({func, args}, nl)) = (*COMPLETAR_EXP*)
+		| trexp(CallExp({func, args}, nl)) = (*COMPLETAR_EXP*) 
             let
                 val (typR, typArgs) = case tabBusca(func,venv) of
                                           NONE => error("Funcion inexistente ("^func^")",nl)
@@ -93,6 +93,9 @@ fun transExp(venv, tenv) =
                 
             in
                 {exp=nilExp(), ty=typR}
+                (* aca completar con:
+                {exp=callExp(), ty=typR}
+                *)
             end
         | trexp(OpExp({left, oper=EqOp, right}, nl)) =
 			let
