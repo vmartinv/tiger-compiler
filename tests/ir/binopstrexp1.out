@@ -1,0 +1,41 @@
+LetExp{decs=[VarDec{name=s,escape=false,typ=NONE,init="asd"}
+             VarDec{name=x,escape=false,typ=NONE,init="asd"}],
+ body=OpExp{left=VarExp(SimpleVar(x)),oper=EqOp,right=VarExp(SimpleVar(s))}}
+bien!
+L1:	.long 3
+	.string "asd"
+L2:	.long 3
+	.string "asd"
+L0:
+EXP(
+ ESEQ(
+  SEQ(
+   MOVE(
+    TEMP T0,
+    NAME L1),
+   MOVE(
+    TEMP T1,
+    NAME L2)),
+  ESEQ(
+   SEQ(
+    MOVE(
+     TEMP T2,
+     CONST 1),
+    SEQ(
+     CJUMP(EQ,
+      CALL(
+       NAME _stringCompare,
+        TEMP T1,
+        TEMP T0),
+      CONST 0,
+      L3,L4),
+     SEQ(
+      LABEL L4,
+      SEQ(
+       MOVE(
+        TEMP T2,
+        CONST 0),
+       LABEL L3)))),
+   TEMP T2)))
+;;-------:
+yes!!

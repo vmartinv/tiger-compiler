@@ -1,0 +1,7 @@
+/*TIGER_ARGS=-arbol -ir*/
+let
+    type l = {elem:int, next:l}
+    var ls:l := l{elem=1, next=nil}
+in
+    15
+end

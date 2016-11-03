@@ -101,35 +101,47 @@ end
 
 val datosGlobs = ref ([]: frag list)
 fun procEntryExit{level: level, body} =
-	let	val label = STRING(name(#frame level), "")
+	let	
+        val label = STRING(name(#frame level), "")
 		val body' = PROC{frame= #frame level, body=unNx body}
 		val final = STRING(";;-------", "")
-	in	datosGlobs:=(!datosGlobs@[label, body', final]) end
+	in	
+        datosGlobs:=(!datosGlobs@[label, body', final]) 
+    end
 fun getResult() = !datosGlobs
 fun clearResult() = datosGlobs := []
 
 fun stringLen s =
-	let	fun aux[] = 0
+	let	
+        fun aux[] = 0
 		| aux(#"\\":: #"x"::_::_::t) = 1+aux(t)
 		| aux(_::t) = 1+aux(t)
-	in	aux(explode s) end
+	in	
+        aux(explode s) 
+    end
 
 fun stringExp(s: string) =
-	let	val l = newlabel()
+	let	
+        val l = newlabel()
 		val len = ".long "^makestring(stringLen s)
 		val str = ".string \""^s^"\""
 		val _ = datosGlobs:=(!datosGlobs @ [STRING(l, len), STRING("", str)])
-	in	Ex(NAME l) end
+	in	
+        Ex(NAME l) 
+    end
 fun preFunctionDec() =
 	(pushSalida(NONE);
 	actualLevel := !actualLevel+1)
 fun functionDec(e, l, proc) =
-	let	val body =
+	let	
+        val body =
 				if proc then unNx e
 				else MOVE(TEMP rv, unEx e)
 		val body' = procEntryExit1(#frame l, body)
 		val () = procEntryExit{body=Nx body', level=l}
-	in Nx body' end (*COMPLETAR_EXP*)
+	in
+        Nx body' 
+    end (*COMPLETAR_EXP*)
 fun postFunctionDec() =
 	(popSalida(); actualLevel := !actualLevel-1)
 
@@ -143,7 +155,6 @@ fun auxDiff 0 = TEMP fp
   | auxDiff n = MEM (BINOP (PLUS, CONST fpPrev, auxDiff(n-1)))
 
 fun simpleVar(acc, nivel) = (* nivel = nivel de anidamiento, puede estar en otro frame *)
-	(* Ex (tigerframe.exp acc) *)
 	Ex (tigerframe.exp acc (auxDiff(getActualLev() - nivel))) (*COMPLETAR_EXP_DONE*)
     
 fun varDec(acc) = simpleVar(acc, getActualLev())
@@ -165,15 +176,22 @@ in
 			BINOP(MUL, TEMP ri, CONST tigerframe.wSz)))))
 end
 
-fun recordExp l =
-	Ex (CONST 0) (*COMPLETAR_EXP*)
+fun recordExp linit =
+let
+    fun first (x,y) = x
+    fun comp ((_,a), (_,b)) = Int.compare (a,b)
+    val slinit = Listsort.sort comp linit
+    val linit' = map (unEx o first) slinit    
+in
+    Ex (externalCall("_creaRecord", [CONST (length(linit'))]@linit')) (*COMPLETAR_EXP*)
+end
 
 fun arrayExp{size, init} =
 let
 	val s = unEx size
 	val i = unEx init
 in
-	Ex (externalCall("allocArray", [s, i]))
+	Ex (externalCall("_allocArray", [s, i]))
 end
 
 fun callExp (name,external,isproc,lev:level,ls) = 
@@ -183,9 +201,12 @@ fun letExp ([], body) = Ex (unEx body)
  |  letExp (inits, body) = Ex (ESEQ(seq inits,unEx body))
 
 fun breakExp() = 
-	Ex (CONST 0) (*COMPLETAR_EXP*)
+    Nx (JUMP (NAME (topSalida()), [topSalida()])) (*COMPLETAR_EXP_DONE*)
 
 fun seqExp ([]:exp list) = Nx (EXP(CONST 0))
+	| seqExp ([Nx e]:exp list) = Nx e
+	| seqExp ([Ex e]:exp list) = Ex e
+	| seqExp ([cond]:exp list) = Ex (unEx cond)
 	| seqExp (exps:exp list) =
 		let
 			fun unx [e] = []
@@ -218,8 +239,37 @@ in
 		LABEL l3])
 end
 
+(*  if (lo <= hi) {//ifi
+        linit:
+        var = lo;//MOVE(var, lo')
+        lsigue:
+        expb;
+        if (var==hi) goto lfin;//if2
+        laumenta:
+        var++;
+        goto lsigue;
+    }
+    lfin:
+*)
 fun forExp {lo, hi, var, body} =
-	Ex (CONST 0) (*COMPLETAR_EXP*)
+let
+    val lo' = unEx lo
+    val hi' = unEx hi
+    val var' = unEx var
+	val (linit, lsigue, laumenta, lfin) = (newlabel(), newlabel(),  newlabel(), topSalida())
+	val ifi = CJUMP(LE, lo', hi', linit, lfin)
+	val if2 = CJUMP(EQ, var', hi', lfin, laumenta)
+	val expb = unNx body
+in
+	Nx (seq[ifi, LABEL linit,
+        MOVE(var', lo'),
+        LABEL lsigue,
+        expb,
+        if2,
+        LABEL laumenta, MOVE(var', BINOP(PLUS, var', CONST 1)),
+        JUMP(NAME lsigue, [lsigue]),
+		LABEL lfin])
+end (*COMPLETAR_EXP_DONE*)
 
 fun ifThenExp{test, then'} =
     let val test' = unCx test
@@ -275,7 +325,7 @@ fun binOpIntExp {left, oper, right} =
 		| TimesOp  => Ex (BINOP(MUL  , l, r))
 		| DivideOp => Ex (BINOP(DIV  , l, r))
 	    | _ => raise Fail ("No debe ocurrir\n")
-	end(*COMPLETAR_EXP*)
+	end(*COMPLETAR_EXP_DONE*)
 
 fun binOpIntRelExp {left,oper,right} =
 	let
@@ -291,10 +341,24 @@ fun binOpIntRelExp {left,oper,right} =
 	    | GeOp  => Cx (fn (lt,lf) => CJUMP(GE, l, r, lt, lf) )
 	    | _ => raise Fail ("No debe ocurrir\n")
     end
-    (*COMPLETAR_EXP*)
-fun binOpStrExp {left,oper,right} = (* aca se va a necesitar llamar a una funcion del runtime que compare strings
-Como runtime.c es de la etapa 3, por ahora usaremos una funcion cualquiera*)
-	Ex (CONST 0) (*COMPLETAR_EXP*)
+    (*COMPLETAR_EXP_DONE*)
+fun binOpStrExp {left,oper,right} = (* aca se va a necesitar llamar a una funcion del runtime que compare strings (_stringCompare)
+Obs: runtime.c es de la etapa 3*)
+	let
+		val l = unEx left
+		val r = unEx right
+		val cmp = externalCall("_stringCompare", [l, r])
+	in
+	case oper of 
+		  EqOp  => Cx (fn (lt,lf) => CJUMP(EQ, cmp, CONST 0, lt, lf) )
+	    | NeqOp => Cx (fn (lt,lf) => CJUMP(NE, cmp, CONST 0, lt, lf) )
+	    | LtOp  => Cx (fn (lt,lf) => CJUMP(LT, cmp, CONST 0, lt, lf) )
+	    | LeOp  => Cx (fn (lt,lf) => CJUMP(LE, cmp, CONST 0, lt, lf) )
+	    | GtOp  => Cx (fn (lt,lf) => CJUMP(GT, cmp, CONST 0, lt, lf) )
+	    | GeOp  => Cx (fn (lt,lf) => CJUMP(GE, cmp, CONST 0, lt, lf) )
+	    | _ => raise Fail ("No debe ocurrir\n")
+    end
+    (*COMPLETAR_EXP_DONE*)
 
 
 end

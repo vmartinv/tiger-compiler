@@ -85,10 +85,6 @@ fun allocLocal (f: frame) b =
 		in	#actualLocal f:=(!(#actualLocal f)-1); ret end
 	| false => InReg(tigertemp.newtemp())
 
-(*
-fun exp(InFrame k) = MEM(BINOP(PLUS, TEMP fp, CONST k))
-  | exp(InReg l) = TEMP l
-*)
 fun exp(InFrame k) e = MEM(BINOP(PLUS, e, CONST k))
   | exp(InReg l) _ = TEMP l
   
