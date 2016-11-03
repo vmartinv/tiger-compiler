@@ -160,7 +160,11 @@ fun simpleVar(acc, nivel) = (* nivel = nivel de anidamiento, puede estar en otro
 fun varDec(acc) = simpleVar(acc, getActualLev())
 
 fun fieldVar(var, field) = 
-	Ex (CONST 0) (*COMPLETAR_EXP*)
+let
+    val var' = unEx var
+in
+	Ex (MEM(BINOP(PLUS, var', CONST (4*field)))) (*COMPLETAR_EXP_DONE*)
+end
 
 fun subscriptVar(arr, ind) =
 let
