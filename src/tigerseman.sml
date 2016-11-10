@@ -85,35 +85,21 @@ fun transExp(venv, tenv) =
                                           NONE => error("Funcion inexistente ("^func^")",nl)
                                         | SOME (Func{result=typR,formals=typArgs,...}) => (typR, typArgs)
                                         | SOME _ => error(func^" no es una función",nl)
-                val callArgs:Tipo list = map #ty (map trexp args)
-                val _ = if length typArgs = length callArgs andalso List.all (fn (ta,ca) => tiposIguales ta ca) (zip typArgs callArgs)
+                val (callArgs:exp list, callTyArgs:Tipo list) = ListPair.unzip (map trexp args)
+                val callTyArgs:Tipo list = map #ty (map trexp args)
+                val callArgs:exp list = map #exp (map trexp args)
+                val _ = if length typArgs = length callTyArgs andalso List.all (fn (ta,ca) => tiposIguales ta ca) (zip typArgs callTyArgs)
                         then ()
                         else error("Los argumentos deberían ser: "^join (map tigerpp.pptipo typArgs) "->"^"\n"
-                                 ^ "y se recibio: "^join (map tigerpp.pptipo callArgs) "->", nl)
-                (*val ls:Exp list = map #exp (map trexp args)
-                val (external,isproc,lev)  = case tabBusca(func,venv) of
+                                 ^ "y se recibio: "^join (map tigerpp.pptipo callTyArgs) "->", nl)
+                val callArgs:exp list = map (trexp o (#exp)) (map trexp args)
+                val (label,extern,isproc,lev) = case tabBusca(func,venv) of
 						  NONE => error("Funcion inexistente ("^func^")",nl)
-						| SOME (Func{result=typR,extern=extern,level=level,...}) => (extern,tiposiguales typR TUnit, level)
-						| SOME _ => error(func^" no es una función",nl)                
-                     *)
+						| SOME (Func{label=label, result=typR,extern=extern,level=level,...}) => (label, extern, tiposIguales typR TUnit, level)
+						| SOME _ => error(func^" no es una función",nl)
+                     
             in
-                {exp=nilExp(), ty=typR}
-                (* aca completar con:
-                {exp=callExp(), ty=typR}
-                *)
-                (*  CallExp of {func: symbol, args: exp list} * pos
-                                
-					name = etiqueta (nombre de la funcion)
-					external = si es externa, en este caso no esta esperando un sl
-					isproc = si retorna algo
-					lev = nivel de anidamiento
-					ls = lista de argumentos
-					
-					fun callExp (name,external,isproc,lev:level,ls) 
-					
-						| Func of {level: tigertrans.level, label: tigertemp.label,	formals: Tipo list, result: Tipo, extern: bool}
-				*)
-
+                {exp=callExp(label, extern, isproc, lev, callArgs), ty=typR}
             end
         | trexp(OpExp({left, oper=EqOp, right}, nl)) =
 			let

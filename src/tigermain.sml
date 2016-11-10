@@ -30,6 +30,7 @@ fun compile arbol escapes ir canon code flow inter source =
         val expIncludes = expandIncludes (Path.dir source)
         val escap = pass findEscape
         fun seman x = (transProg x; tigertrans.getResult())
+        (* val inter = tigerinterp.inter true *)
     in
         source >>= lee_archivo >>= 
            lexer >>= parser >>= (*de ASCII al arbol tigerabs.exp*)
