@@ -36,5 +36,77 @@ Process.system("gcc -g -Wall "^salida^" -runtime.o -gc.o")
 Si el target no es Intel, es recomendable
 Ellcc (Elk) ó QEMU
 
+--------------o------------------------------------
 
+
+Ultima parte del coloreo
+===============
+procedure Freeze()
+    let u \in freezeWorkList
+    freezeWorkList <- freezeWorkList \ {u}
+    simplifyWorkList <- SimplifyWorkList U {u}
+    FreezeMoves(u)
+    
+procedure FreezeMoves(u)
+    forall m (=copy(u, v) ov copy(v, u)) \in NodeMoves(u)
+        if m \in activeMoves then
+            activeMoves <- activeMoves \ {m}
+        else
+            workListMoves <- workListMoves \ {m}
+        frozenMoves <- frozenMoves U {m}
+        if NodeMoves(v)={} ^ degree[v]<K then
+            freezeWorkList <- freezeWorkList \ {v}
+            simplifyWorkList <- simplifyWorkList U {v}
+            
+procedure SelectSpill()
+    let m \in spillWorkList se selecciona con alguna heurística. Evite elegir nodos con poca vida, que puede resultar en fetchesde registros spilleados.
+    spillWorkList <- spillWorkList \ {m}
+    simplifyWorkList <- simplifyWorkList U {m}
+    FreezeMoves(m)
+    
+procedure AssignColors()
+    while SelectStack not empty
+        let m = pop(selectStack)
+        okColors <- {0, ..., k-1}
+        for all w \in adjList[m]
+            if GetAlias(w) \in (coloredNodes U precolored)
+                okColors <- okCOlors \ {color[getAlias(w)]}
+            if okColors = {}
+                spilledNodes <- spilledNodes U {m}
+            else
+                coloredNodes <- coloresNodes U {m}
+                let c \in okColors
+                color[m] <- c
+        forall m \in coalescedNodes
+            color[n] <- color[getAlias(n)]
+
+procedure RewriteProgram()
+    Aloque memoria para cada v \in spillesNodes
+    Cree un nuevo temporario v_i para cada def y cada use.
+    En las instrucciones inserte un store luego de cada def de v_i y un fetch antes de cada use de v_i
+    Ponga las v_i en un conjunto newTemps
+    spilledNodes <- {}
+    initial <- coloredNodes U coalesedNodes U newTemps
+    coloredNodes <- {}
+    coalescedNodes <- {}
+    
+    
+Nota: Briggs: se coalescen todos los temporarios que no interfieren. Resulta muy agresivo y podía dar lugar a grafos no coloreables.
+
+- Posteriormente, George y Appel (padre) proponen un coalescing menos agresivo, pero iterando (paper george.pdf).
+Mencionamos una optimizaión conocida como earliest evaluation (Morel & Renvoise).
+Si uno tiene v <- (u_1, ..., u_n) #
+ v podra ser calculado apenas estén disponibles los valores de u_1, ..., u_n, busando los defs correspondientes más cercanos, y moviendo # a continuación. Esto es posible si los defs están en bloques básicos que dominen el BB de v.
+(recordar: A domina a B sii A está en todo camino que una a begin con B
+Propiedades:
+- Reflexiva: A domina a A
+- Antisimétrica: si A domina a B y B domina a A, B \= A
+- Transitiva: si A domina  B y B domina a C => A domina a C
+Por lo tanto, es relación de orden y podemos construir un árbol.)
+
+- Propagación de cttes.
+
+- Common subexpression Elimination
+Ej: x^8 = (x*x)^2^2
+Para hacerlo fácil, implementarlo dentro de la función.
 
