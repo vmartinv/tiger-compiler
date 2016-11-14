@@ -1,0 +1,40 @@
+Terminado el coloreo se emite el assembler a un archivo.s. Esto se puede hacer con
+    TextIO.openOut(nombre)
+    TextIO.output(file, string)
+    TextIO.close(file)
+
+El ensamblado y linkeo lo pueden hacer con el gcc. Es necesario incluir el runtime puede ser .c o .o)..
+Nota: Tiger no tiene medios para manejar explícitamente memoria dinámica. Se aloja memoria dinámica cuando se crean arreglos y records, pero no tenemos medios para liberar esa memoria. Así que, una implementación seria descansa en usar...
+
+Garbage Collectors
+Un primer intento, fallido, puede ser usar un contador de referencias por c/objecto alocado.
+Cuando las referencias locales desaparecen se decrementa el contador; cuyando es cero se libera la memoria:
+Contraejemplo:
+    (dos bloques f0ormado un ciclo de referencias)
+    
+Segundo intento: hacemos un diccionario de todos los objetos alocados.
+Cuando la memoria es escasa recorremos el segmento de datos viendo qué punteros están vivos y marcamos los objetos apuntados. Luego se buscan punteros dentro de los objetos marcados y sigo. Los que se quedan sin marcar se desalojan.
+Problema: Necesitamos saber qué valores son punteros.
+
+Primer intento: boxed values
+[tag|  valor]
+ ^
+ |--indica si es un puntero o no (1 byte)
+ Problema causa desalineación en todos los tipos. Podriamos extender el tag a 4bytes pero estaríamos desperdiciando mucha memoria.
+ 
+Segundo intento(mosml): boxed values internos. Consiste en poner el tag como un bit DENTRO del valor. Reduce el rango de valores y complica la aritmética (pues tenemos que arreglar el numero cada vez que se quiere hacer una operación)
+
+Tercer intento: unboxed values (MLTON)
+Usa un análisis MUY complicado. Unboxed significa que no están tageados.
+
+Cuarto intento: unboxed values y optimismo (si un valor tiene un valor compatible con el valor de un puntero, es un puntero).
+Esto es usado por un CC muy popular, hecho po BOehm (Bohm) y De Mers. Sólo hay que compilarlo y linkear el ejecutable.
+Así que, el ensamblado y linkeo se puede hacer con: (ej.)
+Process.system("gcc -g -Wall "^salida^" -runtime.o -gc.o")
+
+
+Si el target no es Intel, es recomendable
+Ellcc (Elk) ó QEMU
+
+
+
