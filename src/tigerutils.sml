@@ -11,9 +11,6 @@ fun zip [] [] = []
 |   zip (x::xs) (y::ys) = (x,y)::zip xs ys
 |   zip _ _ = raise Fail "No deberia pasar\n"
 
-fun unzip [] = ([], [])
-|   unzip ((x, y)::xs) = ((x: ((fst o unzip) xs)), (y: ((snd o unzip) xs)))
-
 fun flatten xxs = List.foldr (op@) [] xxs
 
 fun reps [] = NONE
