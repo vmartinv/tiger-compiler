@@ -1,0 +1,9 @@
+/*TIGER_ARGS=-arbol -ir*/
+let
+    function g(x:int) : int = x+1
+    function f() : int = g(0)
+in f()
+end
+/*
+3er Caso- nivel llamante > nivel llamada. Hay que trepar por los static links.
+*/

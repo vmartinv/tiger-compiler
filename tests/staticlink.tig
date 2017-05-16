@@ -1,0 +1,32 @@
+/*TIGER_ARGS=-arbol -ir*/
+let 
+    type tree = {key:string, left:tree, right:tree}
+    var sample_tree := tree{key="root", left=tree{key="left", left=nil, right=nil}, right=tree{key="right", left=nil, right=nil}}
+    
+    function prettyprint(tree:tree) : string = 
+    let
+        var output := ""
+
+        function write(s: string) = 
+            output := concat(output,s)
+
+        function show(n:int, t:tree) =
+        let function indent(s:string) =
+            (for i := 1 to n
+            do write( " ");
+            output := concat(output,s); write("\n"))
+        in if t=nil then indent(".")
+           else (indent(t.key);
+                 show(n+1,t.left);
+                 show(n+1,t.right))
+           end
+     in show(0,tree); output
+     end
+in prettyprint(sample_tree); 0
+end
+/*
+show es llamante de indent.
+2do Caso- Al inicio prettyprint llama a show: nivel llamante < nivel llamada. El static link de show es el frame de prettyprint.
+1er Caso- Luego show llama a show: nivel llamante = nivel llamada. El static link de la llamada es el mismo que el del llamante.
+3er Caso- Dentro de indent se llama a write: nivel llamante > nivel llamada. Hay que trepar por los static links.
+*/

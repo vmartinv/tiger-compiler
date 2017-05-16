@@ -382,11 +382,14 @@ fun transExp(venv, tenv) =
 						let
 							val tipos = toTipoArgs nl p
 							val nombres = map #name p
-                            fun agregaArg ((name, typ), venv) = tabRInserta (name, Var{access=tigertrans.allocArg (topLevel()) false, level=0, ty=typ}, venv)(*COMPLETAR_EXP : ARREGLAR Var!*)
-                            val venv'' = foldl agregaArg venv' (zip nombres tipos)
+                            fun agregaArg ((name, typ), venv) =
+								tabRInserta (name, Var{access=tigertrans.allocArg (topLevel()) true, level=getActualLev(), ty=typ}, venv)(*COMPLETAR_EXP : ARREGLAR Var!*)
                             
                             val _ = preFunctionDec()
                             val _ = pushLevel level
+                            
+                            val acc_sl = tigertrans.allocArg (topLevel()) true
+                            val venv'' = foldl agregaArg venv' (zip nombres tipos)
                             
 							val {exp=eB, ty = tipoB} = transExp (venv'',tenv) b
                             

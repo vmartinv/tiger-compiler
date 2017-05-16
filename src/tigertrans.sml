@@ -4,6 +4,7 @@ open tigerframe
 open tigertree
 open tigertemp
 open tigerabs
+open tigerutils
 
 exception breakexc
 exception divCero
@@ -22,7 +23,7 @@ val outermost: level = {parent=NONE,
 fun newLevel{parent={parent, frame, level}, name, formals} =
 	{
 	parent=SOME frame,
-	frame=newFrame{name=name, formals=formals},
+	frame=newFrame{name=name, formals=true::formals}, (*true por static link*)
 	level=level+1}
 fun allocArg{parent, frame, level} b = tigerframe.allocArg frame b
 fun allocLocal{parent, frame, level} b = tigerframe.allocLocal frame b
@@ -200,14 +201,25 @@ in
 	Ex (externalCall("_allocArray", [s, i]))
 end
 
-(*  name = etiqueta (nombre de la funcion)
-    external = si es externa, en este caso no esta esperando un sl
-    isproc = si retorna algo
-    lev = nivel de anidamiento
-    ls = lista de argumentos
+(*  name 	 = etiqueta (nombre de la funcion)
+    ext = si es externa, en este caso no esta esperando un sl
+    isproc 	 = si retorna algo
+    lev 	 = nivel de anidamiento
+    params   = lista de argumentos
     *)
-fun callExp (name,external,isproc,lev:level,ls) = 
-	Ex (CONST 0) (*COMPLETAR_EXP*)
+fun callExp (name,extern:bool,isproc,lev:level,params) = 
+let val name' 	= NAME name
+	val static_link = let fun trepar 0 = TEMP fp 
+						   |  trepar n = MEM(BINOP(PLUS,CONST ~8, trepar(n-1)))
+					  in  trepar(getActualLev() - #level lev+1) end
+	val params' =  if (not extern) then static_link::(map unEx params) else (map unEx params)
+	val tmps = map (fn _ => TEMP (newtemp())) params'
+	val moves = map MOVE (zip tmps params')   (*Mueven los argumentos a temporarios*)
+	val rt = TEMP (newtemp())
+in
+	if isproc then Nx(seq(moves@[EXP(CALL(name', tmps))]))
+	else Ex(ESEQ(seq(moves@[EXP(CALL(name',tmps)), MOVE(rt, TEMP rv)]), rt) )
+end (*COMPLETAR_EXP*)
 
 fun letExp ([], body) = Ex (unEx body)
  |  letExp (inits, body) = Ex (ESEQ(seq inits,unEx body))
