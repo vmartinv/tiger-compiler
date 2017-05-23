@@ -1,0 +1,6 @@
+/*TIGER_ARGS=-arbol -ir*/
+let function fact(x:int):int=
+    if x=0 then 1 else x*fact(x-1)
+in
+    fact(2)
+end

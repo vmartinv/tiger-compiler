@@ -21,10 +21,11 @@ fun getActualLev() = !actualLevel
 val outermost: level = {parent=NONE,
 	frame=newFrame{name="_tigermain", formals=[]}, level=getActualLev()}
 fun newLevel{parent={parent, frame, level}, name, formals} =
-	{
-	parent=SOME frame,
-	frame=newFrame{name=name, formals=true::formals}, (*true por static link*)
-	level=level+1}
+	let 
+		val lev = {parent=SOME frame, frame=newFrame{name=name, formals=true::formals}, (*true por static link*)
+					level=level+1}
+		val _ = allocArg (#frame lev) true (*static link*)
+	in lev end
 fun allocArg{parent, frame, level} b = tigerframe.allocArg frame b
 fun allocLocal{parent, frame, level} b = tigerframe.allocLocal frame b
 fun formals{parent, frame, level} = tigerframe.formals frame
@@ -78,7 +79,7 @@ fun unCx (Nx s) = raise Fail ("Error (UnCx(Nx..))")
 fun Ir(e) =
 	let	fun aux(Ex e) = tigerit.tree(EXP e)
 		| aux(Nx s) = tigerit.tree(s)
-		| aux _ = raise Fail "bueno, a COMPLETAR_EXP!"
+		| aux _ = raise Fail "bueno, a completar!"
 		fun aux2(PROC{body, frame}) = aux(Nx body)
 		| aux2(STRING(l, "")) = l^":\n"
 		| aux2(STRING("", s)) = "\t"^s^"\n"
@@ -383,6 +384,11 @@ Obs: runtime.c es de la etapa 3*)
 	    | _ => raise Fail ("No debe ocurrir\n")
     end
     (*COMPLETAR_EXP_DONE*)
+
+
+fun printExp (Ex e) = tigerit.tree(EXP e)
+	| printExp (Nx s) = tigerit.tree(s)
+	| printExp _ = raise Fail "No debe ocurrir 3324435\n"
 
 
 end

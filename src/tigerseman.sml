@@ -85,15 +85,12 @@ fun transExp(venv, tenv) =
                                           NONE => error("Funcion inexistente ("^func^")",nl)
                                         | SOME (Func{result=typR,formals=typArgs,...}) => (typR, typArgs)
                                         | SOME _ => error(func^" no es una función",nl)
-				val callArgs:Tipo list = map #ty (map trexp args)
-(*                val (callArgs:exp list, callTyArgs:Tipo list) = ListPair.unzip (map trexp args)*)
                 val callTyArgs:Tipo list = map #ty (map trexp args)
                 val callArgs:exp list = map #exp (map trexp args)
                 val _ = if length typArgs = length callTyArgs andalso List.all (fn (ta,ca) => tiposIguales ta ca) (zip typArgs callTyArgs)
                         then ()
                         else error("Los argumentos deberían ser: "^join (map tigerpp.pptipo typArgs) "->"^"\n"
                                  ^ "y se recibio: "^join (map tigerpp.pptipo callTyArgs) "->", nl)
-                (*val callArgs:exp list = map (trexp o (#exp)) (map trexp args)*)
                 val (label,extern,isproc,lev) = case tabBusca(func,venv) of
 						  NONE => error("Funcion inexistente ("^func^")",nl)
 						| SOME (Func{label=label, result=typR,extern=extern,level=level,...}) => (label, extern, tiposIguales typR TUnit, level)
@@ -368,7 +365,7 @@ fun transExp(venv, tenv) =
                     let
                         val label = tigertemp.newlabel()
                         val formals = toTipoArgs nl p
-                        val level = newLevel({parent=topLevel(), name=label, formals=map (fn _ => true) formals}) 
+                        val level = newLevel({parent=topLevel(), name=label, formals=map (fn f => (! o #escape) f) p})
                     in
                         (n, Func {level = level, label = label, formals = formals , result = toTipoRet nl r, extern = false}) (*COMPLETAR_EXP: level!*)
                     end
@@ -388,7 +385,6 @@ fun transExp(venv, tenv) =
                             val _ = preFunctionDec()
                             val _ = pushLevel level
                             
-                            val acc_sl = tigertrans.allocArg (topLevel()) true
                             val venv'' = foldl agregaArg venv' (zip nombres tipos)
                             
 							val {exp=eB, ty = tipoB} = transExp (venv'',tenv) b

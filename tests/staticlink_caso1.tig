@@ -5,5 +5,5 @@ let
 in f()
 end
 /*
-3er Caso- nivel llamante > nivel llamada. Hay que trepar por los static links.
+1er Caso- nivel llamante = nivel llamada. Hay que trepar por los static links.
 */
