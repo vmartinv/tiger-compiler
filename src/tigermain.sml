@@ -20,8 +20,8 @@ fun compile arbol escapes ir canon code flow inter source =
 
         (*Printers*)
         val prntArbol = pass (fn x=> if arbol then tigerpp.exprAst x else ())
-		val prntIr = pass (fn x => if ir then print(tigertrans.Ir(x)) else ())
-		(*val prntCanon = pass (fn x => if canon then print(tigercanon.Canon(x)) else ())*)
+        val prntIr = pass (fn x => if ir then print(tigertrans.Ir(x)) else ())
+        val prntCanon = pass (fn x => if canon then print("------Canon------\n"^tigercanon.Canon(x)) else ())
         fun prntOk _ = print "yes!!\n"
         
         (*Etapas de la compilacion*)
@@ -39,7 +39,7 @@ fun compile arbol escapes ir canon code flow inter source =
            expIncludes >>=  (*etapa agregada para que funcionen los includes*)
            escap >>= prntArbol >>= 
            seman >>= prntIr >>= (*chequeo de tipos y generacion de fragmentos*)
-           canonize >>= (*prntCanon >>=*)
+           canonize >>= prntCanon >>=
            prntOk (*si llega hasta aca esta todo ok*)
     end
 

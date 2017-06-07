@@ -1,0 +1,29 @@
+SeqExp([CallExp{func=print,args=["Hello World"]}0])
+bien!
+L1:	.long 11
+	.string "Hello World"
+L0:
+EXP(
+ ESEQ(
+  SEQ(
+   MOVE(
+    TEMP T0,
+    NAME L1),
+   EXP(
+    CALL(
+     NAME print,
+      TEMP T0))),
+  CONST 0))
+;;-------:
+------Canon------
+LABEL L3
+MOVE(
+ TEMP T0,
+ NAME L1)
+EXP(
+ CALL(
+  NAME print,
+   TEMP T0))
+JUMP( NAME L2)
+LABEL L2
+yes!!

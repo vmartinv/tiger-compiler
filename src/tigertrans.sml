@@ -76,11 +76,12 @@ fun unCx (Nx s) = raise Fail ("Error (UnCx(Nx..))")
 	| unCx (Ex e) =
 	(fn (t,f) => CJUMP(NE, e, CONST 0, t, f))
 
+fun printExp (Ex e) = tigerit.tree(EXP e)
+	| printExp (Nx s) = tigerit.tree(s)
+	| printExp _ = raise Fail "No debe ocurrir 3324435\n"
+
 fun Ir(e) =
-	let	fun aux(Ex e) = tigerit.tree(EXP e)
-		| aux(Nx s) = tigerit.tree(s)
-		| aux _ = raise Fail "bueno, a completar!"
-		fun aux2(PROC{body, frame}) = aux(Nx body)
+	let	fun aux2(PROC{body, frame}) = printExp(Nx body)
 		| aux2(STRING(l, "")) = l^":\n"
 		| aux2(STRING("", s)) = "\t"^s^"\n"
 		| aux2(STRING(l, s)) = l^":\t"^s^"\n"
@@ -384,11 +385,5 @@ Obs: runtime.c es de la etapa 3*)
 	    | _ => raise Fail ("No debe ocurrir\n")
     end
     (*COMPLETAR_EXP_DONE*)
-
-
-fun printExp (Ex e) = tigerit.tree(EXP e)
-	| printExp (Nx s) = tigerit.tree(s)
-	| printExp _ = raise Fail "No debe ocurrir 3324435\n"
-
 
 end

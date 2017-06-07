@@ -35,8 +35,6 @@ val traceSchedule :
 type canFrag
 
 val canonize: tigerframe.frag list -> canFrag list
-(*
 val Canon: canFrag list -> string
-*)
 
 end 

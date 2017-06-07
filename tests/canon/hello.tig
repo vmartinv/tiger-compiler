@@ -1,0 +1,2 @@
+/*TIGER_ARGS=-arbol -ir -canon*/
+(print ("Hello World");0)

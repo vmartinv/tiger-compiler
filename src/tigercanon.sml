@@ -167,24 +167,18 @@ fun canonize(l:tigerframe.frag list):canFrag list =
 	let 
 		val canon = traceSchedule o basicBlocks o linearize
 		fun canon2 (tigerframe.PROC {body=tb,frame=fr}) = {body=canon tb, frame=fr}
-		|   canon2 _ =  raise Fail "error interno 1 tigercanon"
+		|   canon2 _ =  raise Fail "error interno 3456 tigercanon"
 	in
 		map canon2 (List.filter (fn x => case x of
-				(tigerframe.STRING s) => true
-				| _ => false) l)
+				(tigerframe.STRING s) => false
+				| _ => true) l)
 	end
 
-	(*
-fun Canon(e) =
-	let	fun seqq (s::[]) = s
-		  | seqq (s::ss) = SEQ (s, (seqq ss))
-		fun aux2({body, frame}) = 
-		   let val xs = seqq body
-		   in printExp(Nx xs)
-		   end
-		fun aux [] = ""
-		| aux(h::t) = (aux2 h)^(aux t)
-	in	aux e end
 
-	*)
+(*
+type canFrag = {body: tigertree.stm list, frame: tigerframe.frame}
+*)
+fun Canon(e) =
+	let	fun aux2({body, frame}) = concat (map tigerit.tree body)
+	in	concat (map aux2 e) end
 end

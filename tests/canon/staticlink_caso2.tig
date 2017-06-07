@@ -1,0 +1,8 @@
+/*TIGER_ARGS=-arbol -ir -canon*/
+let
+    function f() : int = 0
+in f()
+end
+/*
+2do Caso- nivel llamante < nivel llamada. El static link de g() es el frame de f().
+*/

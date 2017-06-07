@@ -1,0 +1,104 @@
+LetExp{decs=[VarDec{name=n,escape=false,typ=NONE,init=1}],
+ body=SeqExp([IfExp{
+              test=OpExp{
+                   left=OpExp{left=0,oper=MinusOp,right=VarExp(SimpleVar(n))},
+                    oper=EqOp,right=VarExp(SimpleVar(n))},
+              then'=CallExp{func=print,args=["son iguales"]},
+              else'=CallExp{func=print,args=["son diferentes"]}}
+      CallExp{func=print,args=["\x0a"]}0])}
+bien!
+L1:	.long 11
+	.string "son iguales"
+L2:	.long 14
+	.string "son diferentes"
+L6:	.long 1
+	.string "\x0a"
+L0:
+EXP(
+ ESEQ(
+  MOVE(
+   TEMP T0,
+   CONST 1),
+  ESEQ(
+   SEQ(
+    SEQ(
+     CJUMP(EQ,
+      BINOP(MINUS,
+       CONST 0,
+       TEMP T0),
+      TEMP T0,
+      L3,L4),
+     SEQ(
+      LABEL L3,
+      SEQ(
+       SEQ(
+        MOVE(
+         TEMP T1,
+         NAME L1),
+        EXP(
+         CALL(
+          NAME print,
+           TEMP T1))),
+       SEQ(
+        JUMP(         NAME L5),
+        SEQ(
+         LABEL L4,
+         SEQ(
+          SEQ(
+           MOVE(
+            TEMP T3,
+            NAME L2),
+           EXP(
+            CALL(
+             NAME print,
+              TEMP T3))),
+          LABEL L5)))))),
+    SEQ(
+     MOVE(
+      TEMP T5,
+      NAME L6),
+     EXP(
+      CALL(
+       NAME print,
+        TEMP T5)))),
+   CONST 0)))
+;;-------:
+------Canon------
+LABEL L8
+MOVE(
+ TEMP T0,
+ CONST 1)
+CJUMP(EQ,
+ BINOP(MINUS,
+  CONST 0,
+  TEMP T0),
+ TEMP T0,
+ L3,L4)
+LABEL L4
+MOVE(
+ TEMP T3,
+ NAME L2)
+EXP(
+ CALL(
+  NAME print,
+   TEMP T3))
+LABEL L5
+MOVE(
+ TEMP T5,
+ NAME L6)
+EXP(
+ CALL(
+  NAME print,
+   TEMP T5))
+JUMP( NAME L7)
+LABEL L3
+MOVE(
+ TEMP T1,
+ NAME L1)
+EXP(
+ CALL(
+  NAME print,
+   TEMP T1))
+JUMP( NAME L5)
+LABEL L7
+yes!!

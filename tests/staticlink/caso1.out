@@ -1,0 +1,58 @@
+LetExp{decs=[FunctionDec([{name=g,params=[{name=x,escape=falsetyp=NameTy(int)}
+              ],result=int
+             body=OpExp{left=VarExp(SimpleVar(x)),oper=PlusOp,right=1}}{name=f,
+             params=[],result=intbody=CallExp{func=g,args=[0]}}])],
+ body=CallExp{func=f,args=[]}}
+bien!
+L1:
+EXP(
+ BINOP(PLUS,
+  MEM(
+   BINOP(PLUS,
+    TEMP FP,
+    CONST 4)),
+  CONST 1))
+;;-------:
+L2:
+EXP(
+ ESEQ(
+  SEQ(
+   MOVE(
+    TEMP T0,
+    MEM(
+     BINOP(PLUS,
+      CONST ~8,
+      TEMP FP))),
+   SEQ(
+    MOVE(
+     TEMP T1,
+     CONST 0),
+    SEQ(
+     EXP(
+      CALL(
+       NAME L1,
+        TEMP T0,
+        TEMP T1)),
+     MOVE(
+      TEMP T2,
+      TEMP RV)))),
+  TEMP T2))
+;;-------:
+L0:
+EXP(
+ ESEQ(
+  SEQ(
+   MOVE(
+    TEMP T3,
+    TEMP FP),
+   SEQ(
+    EXP(
+     CALL(
+      NAME L2,
+       TEMP T3)),
+    MOVE(
+     TEMP T4,
+     TEMP RV))),
+  TEMP T4))
+;;-------:
+yes!!
