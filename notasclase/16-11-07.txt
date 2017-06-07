@@ -1,0 +1,148 @@
+completar aquí primera parte
+
+Codigo
+========
+procedure Main()
+    LivenessAnalysis()
+    Build()
+    MakeWorkList()
+    repeat
+        if simplifyWorkList!={} then simplify()
+        else if workListMOves!={} then Coalesce()
+        else if spillWorkList!+{} then SelectSpill()
+    until simplifyWOrkList{} ^ workListMove={} ^ freezeWorkList={} ^ spillWorkList={}
+    AssignColors()
+    if spilledNodes!={} then
+        RenaiteProgram(spilledNodes)
+        Main()
+
+    ACA HABIA ALGO
+
+procedure Build()
+    forall b \in bame block in program
+        let live=liveOUt(b)
+        forall I \in instructions(b) in reverse order
+            if isMOveInstruction(I) then
+                live <- live \ use(I)
+                forall n \in def(I) U use(I)
+                    moveList[n]<-moveList[n] U [I]
+                workListMoves <- workListMoves U [I]
+            live <- live U def(I)
+            forall d \in def(I)
+                forall l \in live
+                    AddEdge(l, d)
+            live <- use(I) U (live \ def(I))
+
+procedure AddEdge(u, v)
+    if((u,v)!=adjSet) ^ (u!=v) then
+        adjSet <- adjSet U {(u, v), (v, u)}
+    
+    if u \not \in precolored then
+        adjList[u] <- adjList[u] U {u}
+        degree[u] <- degree[u]+1
+    
+    if v \not \in precolored then
+        adjList[v] <- adjList[v] U {u}
+        degree[v] <- degree[v]+1
+
+function Adjacent(u)
+    adjList[u]\(selectStacu U coalescedNodes)
+
+function NOdeMOves(n)
+    moveList[n] \intersectio (activeMoves U workLIstMoves)
+    
+function MovesRelated(n)
+    NodeMoves(n)!={}
+
+procedure MakeWorkList()
+    forall n \in initial
+        initial <- initial \ {n}
+        if degree[n] >= k then
+            spillWorkList <- spillWorkList U {n}
+        else if MOveRelated(n) then
+            freezeWorkList <- freezeWorkList U {n}
+        else
+            simplifyWorkList<-simplifyWorkList U {n}
+    
+procedure Simplify()
+    let n \in simplifyWorkList
+    simplifyWorkList <- simplifyWorkList \ {n}
+    push(n, selectStack)
+    forall m\in Adjacent(n)
+
+procedure DecrementDegree(m)
+    let d=degree[m]
+    degree[m]<- degree[m]-1
+    if d==k then
+        EnableMOves({m}UAdjacent[m])
+        spillWorkList <- spillWorkList \ {m}
+        if MoveRelated(m) then
+            freezeWorkList <- freezeWorkList U {m}
+        else
+            simplifyWorkList <- simplifyWOrkList U {m}
+
+procedure EnableMoves(nodes)
+    forall n \in nodes
+        forall m \in NodeMoves(n)
+            activeMoves <- activeMoves \ {m}
+            workListMoves <- workListMoves U {m}
+
+procedure Coalesce()
+    let m (=copy(x,y)) \in workListMoves
+    x <- GetAlias(x)
+    y <- GetAlias(y)
+    if y \in precolored then
+        let (u, v)=(y, x)
+    else
+        let (u, v)=(x, y)
+    workListMoves <- workListMoves \m
+    if u==v then
+    
+    else if v \in precolores (^invertido) (u,v) \in adjSet then
+        constrainedMOves <- constrainedMoves U {m}
+        AddWorkList(u)
+        AddWorkList(v)
+    else if u \in precolores ^ (\forall t \in Adjacent(u), Ok(t, u))
+        (^invertido) u\in precolores ^ conservative(Adjacent(u) U Adjacent(v)) then
+            coalescedMoves <- coalescedMoves U {m}
+            combine(u, v)
+            AddWorkList(u)
+    else
+        activeMOves <- activeMoves U {m}
+
+procedure AddWOrkList(u)
+    if u!=precolores ^ not(MoveRelated(u)) ^ degree[u] < k then
+        freezeWorkList <- freezeWorkList \ {u}
+        simplifyWorkList <- simplifyWorkList U {u}
+
+function Ok(t, r)
+    degree[t]<k (^invertido) t \in precolored (^invertido) (t,r) \in AdjSet
+
+function Conservative(nodes)
+    let k=6
+    forall n \ín nodes
+        if degree[n]>=k then k <- k+1
+        
+    return k<K
+
+function GetAlias(n)
+    if n \in CoalescedNodes then
+        GetAlias(alias[n])
+    else n
+
+procedure Combine(u, v)
+    if v \in asdfNodes then
+        freezeWorkList <- freezeWorkList \ {v}
+    else
+        spillWorkList <- spillWorkList \ {v}
+    coalescedNOdes <- coalescedNodes U {u}
+    alias[u] <- v
+    nodeMoves[u] <- nodeMoves[u] U nodesMoves[v]
+    forall \t in Adjacent(u)
+        AddEdge (t, u)
+        DecrementDegree(t)
+    if degree[u]>=k ^ u \in freezeWorkList != then
+        freezeWorkList <- freezeWorkList \ {u}
+        spillWorkList <- spillWorkList U {u}
+    
+            
