@@ -1,6 +1,11 @@
 # Unix makefile for tigermain example
 
-BASEDIR=/usr/local
+ifeq ($(wildcard /usr/local/bin/mosmlc),) 
+    BASEDIR=/usr
+else 
+    BASEDIR=/usr/local
+endif 
+
 #BASEDIR=$(dir $(dir $(which mosmlc)))
 HOME=${BASEDIR}/bin
 MOSMLHOME=${HOME}
