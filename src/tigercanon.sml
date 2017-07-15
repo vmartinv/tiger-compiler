@@ -162,7 +162,6 @@ fun traceSchedule(blocks,done) =
          @ [LABEL done]
 
 
-
 fun canonize(l:tigerframe.frag list):canFrag list =
 	let 
 		val canon = traceSchedule o basicBlocks o linearize
@@ -179,6 +178,6 @@ fun canonize(l:tigerframe.frag list):canFrag list =
 type canFrag = {body: tigertree.stm list, frame: tigerframe.frame}
 *)
 fun Canon(e) =
-	let	fun aux2({body, frame}) = concat (map tigerit.tree body)
+	let	fun aux2({body, frame}) = ((tigerframe.name frame)^":\n")^concat (map tigerit.tree body)^";;-------:\n"
 	in	concat (map aux2 e) end
 end
