@@ -154,11 +154,11 @@ fun nilExp() = Ex (CONST 0)
 
 fun intExp i = Ex (CONST i)
 
-fun auxDiff 0 = TEMP fp
-  | auxDiff n = MEM (BINOP (PLUS, CONST fpPrev, auxDiff(n-1)))
-
+fun trepar 0 = TEMP fp 
+  | trepar n = MEM(BINOP(PLUS, CONST fpPrevLev, trepar(n-1)))
+						   
 fun simpleVar(acc, nivel) = (* nivel = nivel de anidamiento, puede estar en otro frame *)
-	Ex (tigerframe.exp acc (auxDiff(getActualLev() - nivel))) (*COMPLETAR_EXP_DONE*)
+	Ex (tigerframe.exp acc (trepar(getActualLev() - nivel))) (*COMPLETAR_EXP_DONE*)
     
 fun varDec(acc) = simpleVar(acc, getActualLev())
 
@@ -168,7 +168,7 @@ let
 in
     if field = 0
     then Ex var'
-    else Ex (MEM(BINOP(PLUS, var', CONST (4*field)))) (*COMPLETAR_EXP_DONE*)
+    else Ex (MEM(BINOP(PLUS, var', CONST (tigerframe.wSz*field)))) (*COMPLETAR_EXP_DONE*)
 end
 
 fun subscriptVar(arr, ind) =
@@ -211,9 +211,7 @@ end
     *)
 fun callExp (name,extern:bool,isproc,lev:level,params) = 
 let val name' 	= NAME name
-	val static_link = let fun trepar 0 = TEMP fp 
-						   |  trepar n = MEM(BINOP(PLUS,CONST ~8, trepar(n-1)))
-					  in  trepar(getActualLev() - #level lev+1) end
+	val static_link = trepar(getActualLev() - #level lev + 1)
 	val params' =  if (not extern) then static_link::(map unEx params) else (map unEx params)
 	val tmps = map (fn _ => TEMP (newtemp())) params'
 	val moves = map MOVE (zip tmps params')   (*Mueven los argumentos a temporarios*)
