@@ -1,0 +1,167 @@
+             Tiger Compiler Reference
+             ________________________
+   
+                            __,,,,_
+             _ __..-;''`--/'/ /.',-`-.
+         (`/' ` |  \ \ \\ / / / / .-'/`,_
+        /'`\ \   |  \ | \| // // / -.,/_,'-,
+       /<7' ;  \ \  | ; ||/ /| | \/    |`-/,'-.,_,/')
+      /  _.-, `,-\,__|  _-| / \ \/|_/  |    '-/.;.\'
+      `-`  f/ ;      / __/ \__ `/ |__/ |
+           `-'      |  -| =|\_  \  |-' |
+                 __/   /_..-' `  ),'  //
+                ((__.-'((___..-'' \__.'
+
+
+
+**************************************************************
+***************************Overview***************************
+**************************************************************
+
+               Front-end -> IR -> Back-end
+
+where:
+
+Front-end <-> analysis
+    - lexical analysis   (string -> tokens)
+    - syntax analysis    (tokens -> AST)
+    - semantic analysis  (AST -> IR)
+
+IR <-> independent from source language & machine language
+
+Back-end <-> synthesis
+    - optimization of IR
+    - translation to machine language
+
+
+
+**************************************************************
+****************************Phases****************************
+**************************************************************
+
+
+Lex & Parse (FRONT-END - ENTREGA 0)
+-----------
+The lexical analyzer takes a stream of characters (a program) and produces a stream of tokens.
+The parse take a stream of tokens corresponding to a program and produces the abstract syntac tree associated with it.
+
+  tigerlex.lex       Lexer para Tiger
+ 
+  tigergrm.y         Parser para Tiger
+
+  tigernlin.sml      Nro de línea
+
+  tigerabs.sml       Sintaxis abstracta para Tiger
+                        - FunctionDec es lista de funciones porque contempla el caso de las definiciones recursivas.
+                        - Idem para TypeDec, pues están permitido los tipos recursivos, pero no puede haber ciclos.
+                        - No hay sintaxis abstracta para & y | (se traducen al AST como if then else).
+                        - No hay sintaxis abstracta para el - unario (se traduce como 0 - x).
+                        - Un statement vacío se representa como SeqExp [].
+                        - escape se usará para saber cuáles variables son locales en el caso de anidamiento de funciones o loops.
+                        - El campo escape de field sólo tiene sentido en FunctionDec (en RecordTy es ignorado).
+
+
+Semantic Analysis - Type Checking  (FRONT-END - ENTREGA 1)
+---------------------------------
+Semantic Analysis connects variable definitions to their uses, checks that each expression has a correct type and translate AST into a simpler representation suitable for generating machine code.
+First we will handle type checking.
+
+  tigerseman.sml     Semántica de Tiger
+                        - Por ahora, nos ocupamos del tipado.
+                        - Dos entornos, tab_tipos y tab_vars:
+                               Entorno de tipo: string -> Tipo
+                               Entorno de valores (variables + funciones): string -> EnvEntry (ver tigersres)
+                        - transProg toma el AST del programa y lo transforma en {trans.exp, tips.Tipo} (por ahora exp=(), completar sólo tipo).
+
+  tigertips.sml      Tipos de Tiger
+                        - TNil es un tipo inventado para que la expresión nil sea de cualquier tipo record.
+                        - TUnit es un tipo inventado para las expresiones que no devuelven valor.
+
+  tigersres.sml      Entorno de valores
+                        - VIntro si es una variable readonly (sólo en for)
+                        - Var si es una variable -> tipo
+                        - Func si es una función -> nivel, label, tipo params formales, tipo rdo, bool externa
+
+  tigerescap.sml     Cálculo de escapes
+                        - Una variable escapa cuando es accedida desde un marco de activación distinto del que la alocó.
+                        - escEnv es una tabla que para cada variable nos dice cuál es su profundidad y si escapa o no.
+
+
+Semantic Analysis - Intermediate Representation  (FRONT-END - ENTREGA 2)
+-----------------------------------------------
+An intermediate representation (IR) is a kind of abstract machine language that can express the target-machine operations without committing to too much machine-specific detail, and which is independent from source language.
+The tigerframe and tigertemp interfaces provide (to tigertrans) machine-independent views of memory-resident and register-resident variables. The tigertrans module augments this by handling the notion of nested scopes (via static links) and generate the intermediate code.
+
+  tigerseman.sml     Semántica de Tiger
+                        - Ahora nos ocupamos del código intermedio, completando el campo exp que antes era (). Usamos tigertrans.
+
+  tigertree.sml      Árboles de código intermedio
+                        - Debe tener componentes individuales que describan solamente cosas extremadamente simples (comparables a assembler).
+                        - Expresiones - computación de algún valor, posiblemente con efectos laterales:
+                            constantes enteras (CONST)
+                            constantes simbólicas (NAME), se usan para hacer labels
+                            temporarios (TEMP) la máquina abstracta tiene infinitos temporarios, la real tiene finitos registros
+                            operaciones binarias básicas aritméticas y lógicas (BINOP)
+                            contenidos en memoria (MEM)
+                            llamada a procedimiento (CALL)
+                            secuencia que produce valor (ESEQ)
+                        - Sentencias - producen efectos laterales y controlan el flujo:
+                            mover a registro o memoria (MOV)
+                            evaluar una expresión y descartar el resultado (EXP)
+                            salto - transferir control del lugar actual a una dirección determinada (JUMP)
+                            salto condicional (CJUMP)
+                            secuencia (SEQ)
+                            etiqueta (LABEL)
+
+  tigertrans.sml     Generación de código intermedio
+                        - Cómo traducir un AST a código intermedio? Tres casos:
+                            Expresión que computa un valor -> Ex of tigertree.exp:
+                            Expresión que no retorna valor -> Nx of tigertree.stm:
+                            Condicional o salto            -> Cx of label * label -> tigertree.stm
+                          Ver tipo de datos: tigertrans.exp.
+                        - Todas las variables y l-values en Tiger ocupan una palabra en memoria y entran en un registro :)
+                            
+  tigerframe.sml     Marcos de activación
+                        - Tiger no tiene funciones de alto orden => con un stack nos alcanza para las variables locales.
+                        - Tiger tiene funciones anidadas: una función necesita tener acceso no sólo a su FP, sino al de funcs que la llaman.
+                        - Cómo se logra? Usaremos Static Links.
+                        - Las variables que escapan van en el frame, las que no escapan pueden ir en registros.
+
+  tigertemp.sml      Temporarios y etiquetas
+                        - temporary -> a value that is temporary held in a register.
+                        - label -> some machine-language location whose exact address is yet to be determined.
+
+
+Canonicalize  (BACK-END - ENTREGA 2)
+------------
+Rewrite the IR for convenience:
+1st: A tree is rewritten into a list of canonical trees without SEQ or ESEQ nodes.
+2nd: This list is grouped into a set of basic blocks, which contain no internal jumps or labels.
+3rd: The basic blocks are ordered into a set of traces in which every CJUMP is immediately followed by its false label.
+
+  tigercanon.sml     Canonizador
+
+  tigerinterp.sml    Intérprete de código intermedio canonizado
+
+
+Instruction Selection   (BACK-END - ENTREGA 3)
+---------------------
+
+
+Control Flow, Liveness & Register Allocation   (BACK-END - ENTREGA 3)
+--------------------------------------------
+
+
+
+Other modules:
+
+  tigerutils.sml     Utils
+  tigerpp.sml        Pretty printer
+  tigerinclude.sml   Maneja los includes
+  tigertab.sml       Tablas
+  tigertopsort.sml   Sort topológico
+  tigerpila.sml      Pilas
+  tigerit.sml        
+  tigermain.sml
+
+
