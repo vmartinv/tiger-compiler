@@ -165,10 +165,11 @@ fun varDec(acc) = simpleVar(acc, getActualLev())
 fun fieldVar(var, field) = 
 let
     val var' = unEx var
-in
-    if field = 0
-    then Ex var'
-    else Ex (MEM(BINOP(PLUS, var', CONST (tigerframe.wSz*field)))) (*COMPLETAR_EXP_DONE*)
+    val t = newtemp()
+in    
+    Ex( ESEQ(seq[MOVE(TEMP t, var'),
+		EXP(externalCall("_checkNil", [TEMP t]))],
+		MEM(BINOP(PLUS, TEMP t, CONST (tigerframe.wSz*field))))) (*COMPLETAR_EXP_DONE*)
 end
 
 fun subscriptVar(arr, ind) =
@@ -180,7 +181,7 @@ let
 in
 	Ex( ESEQ(seq[MOVE(TEMP ra, a),
 		MOVE(TEMP ri, i),
-		EXP(externalCall("_checkindex", [TEMP ra, TEMP ri]))],
+		EXP(externalCall("_checkIndexArray", [TEMP ra, TEMP ri]))],
 		MEM(BINOP(PLUS, TEMP ra,
 			BINOP(MUL, TEMP ri, CONST tigerframe.wSz)))))
 end
