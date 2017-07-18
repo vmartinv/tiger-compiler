@@ -193,7 +193,7 @@ let
     val slinit = Listsort.sort comp linit
     val linit' = map (unEx o first) slinit    
 in
-    Ex (externalCall("_creaRecord", [CONST (length(linit'))]@linit')) (*COMPLETAR_EXP_DONE*)
+    Ex (externalCall("_allocRecord", [CONST (length(linit'))]@linit')) (*COMPLETAR_EXP_DONE*)
 end
 
 fun arrayExp{size, init} =
@@ -201,7 +201,7 @@ let
 	val s = unEx size
 	val i = unEx init
 in
-	Ex (externalCall("_allocArray", [s, i]))
+	Ex (externalCall("_initArray", [s, i]))
 end
 
 (*  name 	 = etiqueta (nombre de la funcion)
