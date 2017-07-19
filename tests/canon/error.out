@@ -64,6 +64,7 @@ EXP(
    CONST 0)))
 ;;-------:
 ------Canon------
+L0:
 LABEL L8
 MOVE(
  TEMP T0,
@@ -101,4 +102,5 @@ EXP(
    TEMP T1))
 JUMP( NAME L5)
 LABEL L7
+;;-------:
 yes!!

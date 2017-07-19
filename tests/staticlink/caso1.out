@@ -21,7 +21,7 @@ EXP(
     TEMP T0,
     MEM(
      BINOP(PLUS,
-      CONST ~8,
+      CONST 8,
       TEMP FP))),
    SEQ(
     MOVE(

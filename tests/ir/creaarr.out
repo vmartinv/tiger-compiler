@@ -8,7 +8,7 @@ EXP(
   MOVE(
    TEMP T0,
    CALL(
-    NAME _allocArray,
+    NAME _initArray,
      CONST 100,
      CONST 51)),
   CONST 15))

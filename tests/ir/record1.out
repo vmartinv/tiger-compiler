@@ -10,7 +10,7 @@ EXP(
   MOVE(
    TEMP T0,
    CALL(
-    NAME _creaRecord,
+    NAME _allocRecord,
      CONST 2,
      CONST 1,
      CONST 0)),
