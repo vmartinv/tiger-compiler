@@ -18,4 +18,9 @@ fun reps [] = NONE
 
 fun error(s, p) = raise Fail ("Error -- línea "^p^": "^s^"\n")
 
+fun elimRep []      = []
+  | elimRep (x::xs) = if List.exists (fn y => y = x) xs then elimRep xs else x::(elimRep xs)
+
+fun remove e xs = List.filter (fn x => x <> e) xs
+
 end

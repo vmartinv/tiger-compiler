@@ -23,15 +23,19 @@
 where:
 
 Front-end <-> analysis
-    - lexical analysis   (string -> tokens)
-    - syntax analysis    (tokens -> AST)
-    - semantic analysis  (AST -> IR)
+    - lexical analysis       (string -> tokens)
+    - syntax analysis        (tokens -> AST)
+    - semantic analysis      (AST -> IR)
 
 IR <-> independent from source language & machine language
 
 Back-end <-> synthesis
-    - optimization of IR
-    - translation to machine language
+    - optimization of IR     (IR -> IR)
+    - instruction selection  (IR -> instructions)
+    - control flow analysis  (instructions -> flowgraph)
+    - liveness               (flowgraph -> interferencegraph)
+    - register allocation    
+    - code emission
 
 
 
@@ -148,10 +152,24 @@ Instruction Selection   (BACK-END - ENTREGA 3)
 ---------------------
 
 
-Control Flow, Liveness & Register Allocation   (BACK-END - ENTREGA 3)
---------------------------------------------
+Control Flow & Liveness   (BACK-END - ENTREGA 3)
+-----------------------
+We have used an unbounded number of temporaries, but the real machine has a bounded number of registers. Two temporaries a and b can fit into the same register if a and b are never in used at the same time.
+A variable is live if it holds a value that may be needed in the future.
+To perform liveness analysis on a program it is useful to make a control-flow graph.
+The flow analysis for the Tiger compiler is done in two stages:
+1st: the control flow of the Assem program is analysed, producing a control-flow graph.
+2nd: the liveness of variables in the control-flow graph is analysed, producing an interference graphs.
+  
+  tigergraph.sml     Tipo abstracto de datos para grafos
+  
+  tigerflow.sml      Maneja grafos de control de flujo
+
+  tigermakegraph.sml Transforma una lista de instrucciones assembler en un grafo de flujo
 
 
+Register Allocation   (BACK-END - ENTREGA 3)
+-------------------
 
 Other modules:
 
