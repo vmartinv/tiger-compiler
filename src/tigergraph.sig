@@ -16,7 +16,9 @@ exception GraphEdge
 val mk_edge: {from: node, to: node} -> unit
 val rm_edge: {from: node, to: node} -> unit
 
-(* Faltan las tablas y funciones para debug *)
+type 'a table = (node, 'a) Splaymap.dict
+
+(* Faltan funciones para debug *)
 
 end
 

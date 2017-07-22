@@ -4,6 +4,8 @@ struct
 open Dynarray
 open tigerutils
 
+(* Graph types and operations *)
+
 type nodeId = int
 
 type nodeInfo = {pred: nodeId list, succ: nodeId list}
@@ -69,6 +71,9 @@ fun rm_edge {from=n:node, to=m:node} =
 	   update(g, j, {pred = remove i (#pred(sub(g,j))), succ = #succ(sub(g,j))})
 	end
 	
+(* Tables *)
+
+type 'a table = (node, 'a) Splaymap.dict
 
 end
 
