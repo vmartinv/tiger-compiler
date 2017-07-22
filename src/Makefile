@@ -34,6 +34,7 @@ EXEFILE=
 GRALOBJS= tigerabs.uo tigergrm.uo tigerlex.uo tigermain.uo \
  	tigernlin.uo tigerpp.uo tigerescap.uo tigertab.uo tigerseman.uo tigertemp.uo tigertopsort.uo tigerutils.uo tigertree.uo \
  	tigerframe.uo tigertrans.uo tigerit.uo tigerpila.uo tigerinclude.uo tigercanon.uo \
+ 	tigerassem.uo \
  	tigergraph.uo tigerflow.uo tigersimpleregalloc.uo
 
 all: tiger
@@ -68,6 +69,7 @@ clean:
 
 depend: tigerabs.sml tigergrm.sml tigerlex.sml tigermain.sml \
 	tigernlin.sml tigerpp.sml tigertopsort.sml tigerutils.sml tigerinclude.sml \
+	tigerassem.sml \
 	tigergraph.sml tigerflow.sml tigersimpleregalloc.sml
 	$(REMOVE) Makefile.bak
 	$(MOVE) Makefile Makefile.bak
@@ -75,12 +77,13 @@ depend: tigerabs.sml tigergrm.sml tigerlex.sml tigermain.sml \
 	$(MOSMLTOOLS)/mosmldep >> Makefile
 
 ### DO NOT DELETE THIS LINE
+tigerassem.ui: tigertemp.ui 
 tigersimpleregalloc.uo: tigersimpleregalloc.ui 
 tigerlex.uo: tigergrm.ui tigernlin.uo 
 tigergrm.uo: tigergrm.ui tigernlin.uo tigerabs.uo 
 tigerinclude.uo: tigerinclude.ui tigergrm.ui tigernlin.uo tigerabs.uo \
     tigerlex.uo tigerutils.ui 
-tigerflow.uo: tigerflow.ui 
+tigerflow.uo: tigerflow.ui tigergraph.ui tigertemp.ui 
 tigerflow.ui: tigergraph.ui tigertemp.ui 
 tigertree.uo: tigertemp.ui 
 tigermain.uo: tigerseman.ui tigerescap.ui tigergrm.ui tigercanon.ui \
@@ -96,6 +99,7 @@ tigerframe.uo: tigerframe.ui tigertree.uo tigertemp.ui
 tigerseman.ui: tigerabs.uo 
 tigertab.uo: tigertab.ui 
 tigerinclude.ui: tigerabs.uo 
+tigerassem.uo: tigerassem.ui tigertemp.ui 
 tigergrm.ui: tigerabs.uo 
 tigerpila.uo: tigerpila.ui 
 tigertemp.uo: tigertemp.ui 
