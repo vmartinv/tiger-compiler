@@ -46,6 +46,8 @@ podríamos agregar al tipo grafo un id para hacerlo simple
 pero si eq sólo se usa para un mismo grafo, no hace falta*)
 fun eq ((_,n), (_,m)) = n = m
 
+fun cmp ((_,n), (_,m)) = Int.compare(n,m)
+
 fun newGraph () = array(0, fakeNode)
 
 fun newNode(g:graph) = (*agrego el nodo al final porque no hay una operación de destrucción de nodos en la interfaz*)

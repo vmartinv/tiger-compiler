@@ -11,6 +11,11 @@ fun zip [] [] = []
 |   zip (x::xs) (y::ys) = (x,y)::zip xs ys
 |   zip _ _ = raise Fail "No deberia pasar\n"
 
+fun zip3R [] ys zs = []
+|   zip3R xs [] zs = []
+|   zip3R xs ys [] = []
+|   zip3R (x::xs) (y::ys) (z::zs) = (x,y,z)::zip3R xs ys zs
+
 fun flatten xxs = List.foldr (op@) [] xxs
 
 fun reps [] = NONE
