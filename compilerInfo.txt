@@ -163,9 +163,8 @@ The flow analysis for the Tiger compiler is done in two stages:
   
   tigergraph.sml     Tipo abstracto de datos para grafos
   
-  tigerflow.sml      Maneja grafos de control de flujo
-
-  tigermakegraph.sml Transforma una lista de instrucciones assembler en un grafo de flujo
+  tigerflow.sml      Grafos de control de flujo: transforma una lista de instrucciones assembler en un grafo de flujo
+                        - Se separa la información de los nodos: se usan tablas para def, use e ismove.
 
 
 Register Allocation   (BACK-END - ENTREGA 3)
