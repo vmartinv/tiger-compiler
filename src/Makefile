@@ -35,7 +35,7 @@ GRALOBJS= tigerabs.uo tigergrm.uo tigerlex.uo tigermain.uo \
  	tigernlin.uo tigerpp.uo tigerescap.uo tigertab.uo tigerseman.uo tigertemp.uo tigertopsort.uo tigerutils.uo tigertree.uo \
  	tigerframe.uo tigertrans.uo tigerit.uo tigerpila.uo tigerinclude.uo tigercanon.uo \
  	tigerassem.uo \
- 	tigergraph.uo tigerflow.uo tigersimpleregalloc.uo
+ 	tigergraph.uo tigerflow.uo tigerliveness.uo tigersimpleregalloc.uo
 
 all: tiger
 
@@ -70,7 +70,7 @@ clean:
 depend: tigerabs.sml tigergrm.sml tigerlex.sml tigermain.sml \
 	tigernlin.sml tigerpp.sml tigertopsort.sml tigerutils.sml tigerinclude.sml \
 	tigerassem.sml \
-	tigergraph.sml tigerflow.sml tigersimpleregalloc.sml
+	tigergraph.sml tigerflow.sml tigerliveness.sml tigersimpleregalloc.sml
 	$(REMOVE) Makefile.bak
 	$(MOVE) Makefile Makefile.bak
 	$(MOSMLTOOLS)/cutdeps < Makefile.bak > Makefile
@@ -78,13 +78,15 @@ depend: tigerabs.sml tigergrm.sml tigerlex.sml tigermain.sml \
 
 ### DO NOT DELETE THIS LINE
 tigerassem.ui: tigertemp.ui 
+tigerliveness.ui: tigergraph.ui tigertemp.ui 
 tigersimpleregalloc.uo: tigersimpleregalloc.ui 
 tigerlex.uo: tigergrm.ui tigernlin.uo 
 tigergrm.uo: tigergrm.ui tigernlin.uo tigerabs.uo 
 tigerinclude.uo: tigerinclude.ui tigergrm.ui tigernlin.uo tigerabs.uo \
     tigerlex.uo tigerutils.ui 
-tigerflow.uo: tigerflow.ui tigergraph.ui tigertemp.ui 
-tigerflow.ui: tigergraph.ui tigertemp.ui 
+tigerflow.uo: tigerflow.ui tigergraph.ui tigerassem.ui tigertemp.ui \
+    tigerutils.ui 
+tigerflow.ui: tigergraph.ui tigerassem.ui tigertemp.ui 
 tigertree.uo: tigertemp.ui 
 tigermain.uo: tigerseman.ui tigerescap.ui tigergrm.ui tigercanon.ui \
     tigerinclude.ui tigerlex.uo tigerutils.ui tigertrans.ui tigerpp.uo 
@@ -106,6 +108,7 @@ tigertemp.uo: tigertemp.ui
 tigerpp.uo: tigertips.uo tigerframe.ui tigerabs.uo tigerutils.ui 
 tigerescap.uo: tigerescap.ui tigertab.ui tigerabs.uo tigerutils.ui 
 tigertopsort.ui: tigertab.ui tigertips.uo tigerabs.uo 
+tigerliveness.uo: tigerliveness.ui tigergraph.ui tigertemp.ui 
 tigertopsort.uo: tigertopsort.ui tigertab.ui tigertips.uo tigerabs.uo 
 tigertrans.uo: tigertrans.ui tigertree.uo tigerpila.ui tigerframe.ui \
     tigerit.uo tigertemp.ui tigerabs.uo tigerutils.ui 
