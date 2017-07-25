@@ -159,12 +159,18 @@ A variable is live if it holds a value that may be needed in the future.
 To perform liveness analysis on a program it is useful to make a control-flow graph.
 The flow analysis for the Tiger compiler is done in two stages:
 1st: the control flow of the Assem program is analysed, producing a control-flow graph.
-2nd: the liveness of variables in the control-flow graph is analysed, producing an interference graphs.
+2nd: the liveness of variables in the control-flow graph is analysed, producing an interference graph.
   
-  tigergraph.sml     Tipo abstracto de datos para grafos
+  tigergraph.sml     Tipo abstracto de datos para grafos dirigidos
   
-  tigerflow.sml      Grafos de control de flujo: transforma una lista de instrucciones assembler en un grafo de flujo
-                        - Se separa la información de los nodos: se usan tablas para def, use e ismove.
+  tigerflow.sml      Grafos de control de flujo
+                        - Transforma una lista de instrucciones assembler en un grafo de flujo.
+                        - Se separa la información de los nodos: se usan tablas (uso Splaymap) para def, use e ismove.
+
+  tigerliveness.sml  Cálculo de liveness y grafo de interferencia
+                        - Para el cálculo de liveness, implemento el algoritmo de ecuaciones de liveness (iterativo).
+                        - Uso el módulo Splayset para representar los conjuntos.
+			- Considero el tratamiento especial para MOVE (páginas 221,222).
 
 
 Register Allocation   (BACK-END - ENTREGA 3)

@@ -28,4 +28,6 @@ fun elimRep []      = []
 
 fun remove e xs = List.filter (fn x => x <> e) xs
 
+fun fromListtoSet(cmp, xs) = List.foldl (fn (x,s) => Splayset.add(s, x)) (Splayset.empty cmp) xs
+
 end

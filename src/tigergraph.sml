@@ -39,11 +39,9 @@ fun adj(n:node) =
 	in map (fn id => (#1 n, id)) adjsid
 	end
 
-(*vamos a necesitar esto?:
+(* no creo que necesitemos esto, hasta liveness no lo usé
 fun eqGraph g h = ....
-fun eq ((g,n), (h,m)) = if eqGraph g h then n = m else false
-podríamos agregar al tipo grafo un id para hacerlo simple
-pero si eq sólo se usa para un mismo grafo, no hace falta*)
+fun eq ((g,n), (h,m)) = if eqGraph g h then n = m else false*)
 fun eq ((_,n), (_,m)) = n = m
 
 fun cmp ((_,n), (_,m)) = Int.compare(n,m)
@@ -74,8 +72,11 @@ fun rm_edge {from=n:node, to=m:node} =
 	end
 	
 (* Tables *)
-
 type 'a table = (node, 'a) Splaymap.dict
+
+(* For debug *)
+fun nodename (g, id) = "n"^(Int.toString(id))
+
 
 end
 

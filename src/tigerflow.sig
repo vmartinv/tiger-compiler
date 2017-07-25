@@ -7,13 +7,12 @@ datatype flowgraph =
 	           use: (tigertemp.temp list) tigergraph.table, (*temporarios usados en cada nodo*)
 	           ismove: bool tigergraph.table} (*dice si cada nodo es un MOVE - se puede borrar si def y use son iguales*)
 
-
-val instrs2graph: tigerassem.instr list -> flowgraph * tigergraph.node list
-
-(* Necesario acá?
 val getGraph: flowgraph -> tigergraph.graph
 val getDef: flowgraph -> (tigertemp.temp list) tigergraph.table
 val getUse: flowgraph -> (tigertemp.temp list) tigergraph.table
 val getMov: flowgraph -> bool tigergraph.table
-*)
+
+val instrs2graph: tigerassem.instr list -> flowgraph * tigergraph.node list
+
+
 end

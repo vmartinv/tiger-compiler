@@ -19,7 +19,8 @@ val rm_edge: {from: node, to: node} -> unit
 
 type 'a table = (node, 'a) Splaymap.dict
 
-(* Faltan funciones para debug *)
+(* For debugging *)
+val nodename: node -> string
 
 end
 
