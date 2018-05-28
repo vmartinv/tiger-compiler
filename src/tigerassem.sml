@@ -5,6 +5,7 @@ type reg = string
 type temp = tigertemp.temp
 type label = tigertemp.label
 
+
 datatype instr = OPER of {assem: string,
                           dst: temp list,
                           src: temp list,
@@ -14,9 +15,8 @@ datatype instr = OPER of {assem: string,
                | MOVE of {assem: string,
                           dst: temp,
                           src: temp}
-
-(*
-fun format = COMPLETAR
-*)
+                          
+fun format _ ins = ""
+	(*COMPLETAR*)
 
 end

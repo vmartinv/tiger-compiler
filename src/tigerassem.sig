@@ -14,8 +14,7 @@ datatype instr = OPER of {assem: string,
                | MOVE of {assem: string,
                           dst: temp,
                           src: temp}
-(*
+
 val format: (temp->string) -> instr -> string
-*)
 
 end

@@ -32,7 +32,7 @@ val basicBlocks :
 val traceSchedule :
 	tigertree.stm list list * tigertemp.label -> tigertree.stm list
 
-type canFrag
+type canFrag = {body: tigertree.stm list, frame: tigerframe.frame}
 
 val canonize: tigerframe.frag list -> canFrag list
 val Canon: canFrag list -> string
