@@ -15,8 +15,8 @@ struct
 		| LABEL of tigertemp.label
 	and binop = PLUS | MINUS | MUL | DIV | AND | OR
 		  | LSHIFT | RSHIFT | ARSHIFT | XOR
-	and relop = EQ | NE | LT | GT | LE | GE | ULT | ULE
-		  | UGT | UGE
+	and relop = EQ | NE | LT | GT | LE | GE (*| ULT | ULE
+		  | UGT | UGE no hay unsigneds en tiger*)
 
 	fun notRel EQ = NE
 	  | notRel NE = EQ
@@ -24,8 +24,11 @@ struct
 	  | notRel GE = LT
 	  | notRel GT = LE
 	  | notRel LE = GT
+(*
 	  | notRel ULT = UGE
 	  | notRel UGE = ULT
 	  | notRel ULE = UGT
 	  | notRel UGT = ULE
+	no hay unsigneds en tiger
+*)
 end

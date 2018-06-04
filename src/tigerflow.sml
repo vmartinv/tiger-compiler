@@ -22,7 +22,7 @@ fun makeFlowGraph instrs =
         val g = newGraph ()
         val nodes = List.map (fn _ => newNode g) instrs
         val labelDict:(label, node) Splaymap.dict = (* diccionario de labels *)
-			let fun aux((LABEL{lab, ...},n),map) = Splaymap.insert(map, lab, n)
+			let fun aux((aLABEL{lab, ...},n),map) = Splaymap.insert(map, lab, n)
                   | aux(_, map) = map
             in List.foldl aux (Splaymap.mkDict (String.compare)) (zip instrs nodes)
             end
@@ -35,18 +35,18 @@ fun makeFlowGraph instrs =
         
         (* def *)
         fun addDef ((OPER{dst, ...}, node), map) = Splaymap.insert(map, node, dst)
-          | addDef ((MOVE{dst, ...}, node), map) = Splaymap.insert(map, node, [dst])
+          | addDef ((MOV{dst, ...}, node), map) = Splaymap.insert(map, node, [dst])
           | addDef ((_,node), map) = Splaymap.insert(map, node, [])
         val d = List.foldl addDef (Splaymap.mkDict(cmp)) (tigerutils.zip instrs nodes)
         
         (* use *)
         fun addUse ((OPER{src, ...}, node), map) = Splaymap.insert(map, node, src)
-          | addUse ((MOVE{src, ...}, node), map) = Splaymap.insert(map, node, [src])
+          | addUse ((MOV{src, ...}, node), map) = Splaymap.insert(map, node, [src])
           | addUse ((_,node), map) = Splaymap.insert(map, node, [])
         val u = List.foldl addUse (Splaymap.mkDict(cmp)) (tigerutils.zip instrs nodes)
         
         (* ismove *)
-        fun addMove ((MOVE{...}, node), map) = Splaymap.insert(map, node, true)
+        fun addMove ((MOV{...}, node), map) = Splaymap.insert(map, node, true)
           | addMove ((_,node), map) = Splaymap.insert(map, node, false)
         val m = List.foldl addMove (Splaymap.mkDict(cmp)) (tigerutils.zip instrs nodes)
     in

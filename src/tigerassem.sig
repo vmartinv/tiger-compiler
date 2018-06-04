@@ -9,9 +9,9 @@ datatype instr = OPER of {assem: string,
                           dst: temp list,
                           src: temp list,
                           jump: label list option}
-               | LABEL of {assem: string,
+               | aLABEL of {assem: string,
                            lab: label}
-               | MOVE of {assem: string,
+               | MOV of {assem: string,
                           dst: temp,
                           src: temp}
 

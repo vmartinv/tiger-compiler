@@ -23,6 +23,13 @@ fun compile arbol escapes ir canon code flow inter source =
         val prntArbol = pass (fn x=> if arbol then tigerpp.exprAst x else ())
         val prntIr = pass (fn x => if ir then print(tigertrans.Ir(x)) else ())
         val prntCanon = pass (fn x => if canon then print("------Canon------\n"^tigercanon.Canon(x)) else ())
+        fun getBodies frags = map (fn {body=bs, frame=f} => bs) frags
+        
+        
+        val prntCode =
+			let fun aux2({body=b, frame=f}) = ((tigerframe.name f)^":\n")^concat (tigercodegen.printCode b)^";;-------:\n"
+			in pass (fn xs => if code then print("------Code------\n"^concat (map aux2 xs)) else ())
+			end
         fun prntOk _ = print "yes!!\n"
         
         (*Etapas de la compilacion*)
@@ -35,14 +42,15 @@ fun compile arbol escapes ir canon code flow inter source =
         fun seman x = (transProg x; tigertrans.getResult())
         (* val inter = tigerinterp.inter true *)
         
+
 (*
-instructionSel :
+	instructionSel :
     {body: tigertree.stm list, frame: tigerframe.frame} list ->
     {body: tigerassem.instr list, frame: tigerframe.frame} list
 *)
         fun instructionSel frags = 
             let
-                fun func {body=bs, frame=f} = {body=flatten (map (fn b => tigercodegen.codegen f b) bs) , frame=f}
+                fun func {body=bs, frame=f} = {body=tigercodegen.codegens f bs, frame=f}
             in
                 map func frags
             end
@@ -53,7 +61,7 @@ instructionSel :
            escap >>= prntArbol >>= 
            seman >>= prntIr >>= (*chequeo de tipos y generacion de fragmentos*)
            canonize >>= prntCanon >>=
-           instructionSel >>=
+           instructionSel >>= prntCode >>=
            prntOk (*si llega hasta aca esta todo ok*)
     end
 
