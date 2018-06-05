@@ -6,7 +6,7 @@ PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
 EDITOR=geany
-RUN=t run
+RUN="t run"
 PROMPT="> "
 
 function lista(){
@@ -41,37 +41,38 @@ while read -p "$PROMPT" -e line; do
         history -w "$SCRIPT_HISTORY"
     fi
     if [ -z "$line" ]; then
-        eval $RUN
-    else
-        if [ -f "${line}.sml" ]; then
-            file="${line}.sml"
-        elif [ -f "tiger${line}.sml" ]; then
-            file="tiger${line}.sml"
-        elif [ -f "${line}sig" ]; then
-            file="${line}sig"
-        elif [ -f "${line}ig" ]; then
-            file="${line}ig"
-        elif [ -f "${line}sml" ]; then
-            file="${line}sml"
-        elif [ -f "tiger${line}" ]; then
-            file="tiger${line}"
-        elif [ -f "tiger${line}sig" ]; then
-            file="tiger${line}sig"
-        elif [ -f "${line}sig" ]; then
-            file="${line}sig"
-        elif [ -f "${line}" ] && [ ! -x "${line}" ]; then
-            file="$line"
-        else
-            file=""
-			if [[ ${line} == t\ * ]]; then
-				line=${line/t\ /../tests/test }
-			fi
-			eval $line
-            RUN=$line
-        fi
-        if [ -f "$file" ]; then
-            $EDITOR "$file" &
-        fi
+        line=$RUN
     fi
+	if [ -f "${line}.sml" ]; then
+		file="${line}.sml"
+	elif [ -f "tiger${line}.sml" ]; then
+		file="tiger${line}.sml"
+	elif [ -f "${line}sig" ]; then
+		file="${line}sig"
+	elif [ -f "${line}ig" ]; then
+		file="${line}ig"
+	elif [ -f "${line}sml" ]; then
+		file="${line}sml"
+	elif [ -f "tiger${line}" ]; then
+		file="tiger${line}"
+	elif [ -f "tiger${line}sig" ]; then
+		file="tiger${line}sig"
+	elif [ -f "${line}sig" ]; then
+		file="${line}sig"
+	elif [ -f "${line}" ] && [ ! -x "${line}" ]; then
+		file="$line"
+	else
+		file=""
+		if [[ ${line} == t\ * ]]; then
+			line=${line/t\ /../tests/test }
+		fi
+		trap "echo Interrumped" INT
+		eval "($line)"
+		trap - INT
+		RUN=$line
+	fi
+	if [ -f "$file" ]; then
+		$EDITOR "$file" &
+	fi
     lista
 done
