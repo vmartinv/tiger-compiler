@@ -47,7 +47,7 @@ function gen_output(){
     args=$(sed -r 's/^\s*\/\*TIGER_ARGS\s*=\s*(.*)\*\//\1/;tx;d;:x' $source)
     "$TIGER" $args "$source" 2>&1
     if [ -f "$exe" ]; then
-        $exe
+        $exe 2>&1
         echo Return code: $?
         rm -f $exe
     fi
@@ -59,14 +59,18 @@ function print_case(){
         echo -e "${PURPLE}Source code:${NC}"
         cat "$source"
         echo -e "${PURPLE}Output:${NC}"
-        gen_output "$source"
-    fi
-    correct=${source%.*}.out
-    if [ "$#" -ne 1 ] && [ -f "$correct" ]; then
-        echo -e "${PURPLE}Expected Output:${NC}"
-        cat "$correct"
-        echo -e "${PURPLE}Diff <expected >actual:${NC}"
-        diff "$correct" <(gen_output "$source")
+        if [ "$#" -ne 1 ]; then
+			output=$2
+		else
+			output=$(gen_output "$source" 2>&1)
+		fi
+		correct=${source%.*}.out
+		if [ -f "$correct" ]; then
+			echo -e "${PURPLE}Expected Output:${NC}"
+			cat "$correct"
+			echo -e "${PURPLE}Diff <expected >actual:${NC}"
+			diff "$correct" <(echo "$output")
+		fi
     fi
     echo
 }
@@ -75,14 +79,19 @@ function add_case(){
     source=${1%.*}.tig
     if [ -f "$source" ]; then
         echo "Running case "${source#$DIR/}"... "
-        print_case "$source" show_expected_output
+        if [ "$#" -ne 1 ]; then
+			output=$2
+		else
+			output=$(gen_output "$source" 2>&1)
+		fi
+        print_case "$source" "$output"
         read -p "Add this output? (y/n) " -n 1 -r
         echo
         if [[ $REPLY =~ ^[YysS]$ ]]
         then
             correct=${source%.*}.out
             echo Adding case "${source#$DIR/}"...
-            gen_output "$source" > "$correct" 2>&1
+            echo "$output" > "$correct"
             OK
         fi
     else
@@ -95,7 +104,7 @@ function del_case(){
     correct=${source%.*}.out
     if [ -f "$correct" ]; then
         echo Removing case "${correct#$DIR/}"...
-        print_case "$source" show_expected_output
+        print_case "$source"
         read -p "Remove this output? (y/n) " -n 1 -r
         echo    # (optional) move to a new line
         if [[ $REPLY =~ ^[YysS]$ ]]
@@ -113,16 +122,19 @@ function run_case(){
         correct=${source%.*}.out
         printf "Testing case "${source#$DIR/}"... "
         if [ -f "$correct" ]; then
-            gen_output "$source" | diff - "$correct" > /dev/null
+			trap "echo Case stopped" INT
+			output=$(gen_output "$source")
+			trap - INT
+            diff <(echo "$output") "$correct" > /dev/null
             if [ $? -eq 0 ]; then
                 OK
                 if [ "$#" -ne 1 ]; then
-                    print_case "$source" show_expected_output
+                    print_case "$source" "$output"
                 fi
                 return 0
             else
                 BAD
-                print_case "$source" show_expected_output
+                print_case "$source" "$output"
                 return 1
             fi
         else
@@ -142,14 +154,15 @@ function fix_case(){
         correct=${source%.*}.out
         printf "Testing case "${source#$DIR/}"... "
         if [ -f "$correct" ]; then
-            gen_output "$source" | diff - "$correct" > /dev/null
+			output=$(gen_output "$source")
+            diff <(echo "$output") "$correct" > /dev/null
             if [ $? -eq 0 ]; then
                 OK
                 return 0
             else
                 BAD
-                add_case "$source"
-                #~ print_case "$source" show_expected_output
+                add_case "$source" "$output"
+                #~ print_case "$source"
                 return 1
             fi
         fi
