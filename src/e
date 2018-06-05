@@ -1,12 +1,12 @@
 #!/bin/bash
-
+VERSION=1.2
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
 EDITOR=geany
-RUN=make
+RUN=t run
 PROMPT="> "
 
 function lista(){
@@ -23,10 +23,11 @@ function lista(){
 }
 
 function usage(){
-    echo -e "${PURPLE}Abridor de archivos 1.1!${NC} No hace falta escribir tiger ni .sml."
-    echo -e "Ingresando una línea vacía se ejecuta make."
-    echo -e "Se listan los archivos. Los archivos en ${GREEN}verde${NC} tienen sml y sig."
+    echo -e "${PURPLE}Abridor de archivos ${VERSION}!${NC}"
+    echo -e "No hace falta escribir tiger ni .sml. Para abrir los .sig agregar un . despues del nombre."
+    echo -e "Ingresando una línea vacía se ejecuta el ultimo comando. t es un alias para ../tests/test"
     echo
+    echo -e "Se listan los archivos. Los archivos en ${GREEN}verde${NC} tienen sml y sig."
 }
 
 SCRIPT_HISTORY=.e_history
@@ -46,6 +47,10 @@ while read -p "$PROMPT" -e line; do
             file="${line}.sml"
         elif [ -f "tiger${line}.sml" ]; then
             file="tiger${line}.sml"
+        elif [ -f "${line}sig" ]; then
+            file="${line}sig"
+        elif [ -f "${line}ig" ]; then
+            file="${line}ig"
         elif [ -f "${line}sml" ]; then
             file="${line}sml"
         elif [ -f "tiger${line}" ]; then
@@ -58,7 +63,10 @@ while read -p "$PROMPT" -e line; do
             file="$line"
         else
             file=""
-            eval $line
+			if [[ ${line} == t\ * ]]; then
+				line=${line/t\ /../tests/test }
+			fi
+			eval $line
             RUN=$line
         fi
         if [ -f "$file" ]; then
