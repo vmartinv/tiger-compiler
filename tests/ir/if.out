@@ -21,5 +21,5 @@ EXP(
          CONST 2),
         LABEL L3)))))),
   TEMP T0))
-;;-------:
+;;-END-PROC--:
 yes!!

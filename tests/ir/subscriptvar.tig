@@ -1,4 +1,4 @@
-/*TIGER_ARGS=-arbol -ir*/
+/*TIGER_ARGS=-arbol -ir -canon*/
 let
     type A = array of int
     var a:=A[100] of 51

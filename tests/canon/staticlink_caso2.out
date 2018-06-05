@@ -4,14 +4,14 @@ bien!
 L1:
 EXP(
  CONST 0)
-;;-------:
+;;-END-PROC--:
 L0:
 EXP(
  ESEQ(
   SEQ(
    MOVE(
     TEMP T0,
-    TEMP FP),
+    TEMP ebp),
    SEQ(
     EXP(
      CALL(
@@ -19,32 +19,37 @@ EXP(
        TEMP T0)),
     MOVE(
      TEMP T1,
-     TEMP RV))),
+     TEMP eax))),
   TEMP T1))
-;;-------:
+;;-END-PROC--:
 ------Canon------
-L1:
-LABEL L3
-EXP(
- CONST 0)
-JUMP( NAME L2)
-LABEL L2
-;;-------:
+;;-END-PROC--:
 L0:
+;;-END-PROC--:
+L1:
+;;--END-STRS--:
+--FRAME L0:
 LABEL L5
 MOVE(
  TEMP T0,
- TEMP FP)
+ TEMP ebp)
 EXP(
  CALL(
   NAME L1,
    TEMP T0))
 MOVE(
  TEMP T1,
- TEMP RV)
+ TEMP eax)
 EXP(
  TEMP T1)
 JUMP( NAME L4)
 LABEL L4
-;;-------:
+;;-END-FRAME-:
+--FRAME L1:
+LABEL L3
+EXP(
+ CONST 0)
+JUMP( NAME L2)
+LABEL L2
+;;-END-FRAME-:
 yes!!

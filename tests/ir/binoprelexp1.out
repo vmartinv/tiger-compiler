@@ -64,5 +64,5 @@ EXP(
            LABEL L5)))))),
      TEMP T4)),
    TEMP T2)))
-;;-------:
+;;-END-PROC--:
 yes!!

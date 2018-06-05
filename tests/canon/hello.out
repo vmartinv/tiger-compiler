@@ -14,9 +14,14 @@ EXP(
      NAME print,
       TEMP T0))),
   CONST 0))
-;;-------:
+;;-END-PROC--:
 ------Canon------
+;;-END-PROC--:
 L0:
+	.string "Hello World"
+L1:	.long 11
+;;--END-STRS--:
+--FRAME L0:
 LABEL L3
 MOVE(
  TEMP T0,
@@ -27,5 +32,5 @@ EXP(
    TEMP T0))
 JUMP( NAME L2)
 LABEL L2
-;;-------:
+;;-END-FRAME-:
 yes!!

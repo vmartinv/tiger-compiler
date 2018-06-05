@@ -16,5 +16,6 @@ datatype instr = OPER of {assem: string,
                           src: temp}
 
 val format: (temp->string) -> instr -> string
+val printCode: instr list -> string list
 
 end

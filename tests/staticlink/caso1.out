@@ -9,10 +9,10 @@ EXP(
  BINOP(PLUS,
   MEM(
    BINOP(PLUS,
-    TEMP FP,
+    TEMP ebp,
     CONST 4)),
   CONST 1))
-;;-------:
+;;-END-PROC--:
 L2:
 EXP(
  ESEQ(
@@ -22,7 +22,7 @@ EXP(
     MEM(
      BINOP(PLUS,
       CONST 8,
-      TEMP FP))),
+      TEMP ebp))),
    SEQ(
     MOVE(
      TEMP T1,
@@ -35,16 +35,16 @@ EXP(
         TEMP T1)),
      MOVE(
       TEMP T2,
-      TEMP RV)))),
+      TEMP eax)))),
   TEMP T2))
-;;-------:
+;;-END-PROC--:
 L0:
 EXP(
  ESEQ(
   SEQ(
    MOVE(
     TEMP T3,
-    TEMP FP),
+    TEMP ebp),
    SEQ(
     EXP(
      CALL(
@@ -52,7 +52,7 @@ EXP(
        TEMP T3)),
     MOVE(
      TEMP T4,
-     TEMP RV))),
+     TEMP eax))),
   TEMP T4))
-;;-------:
+;;-END-PROC--:
 yes!!

@@ -12,5 +12,5 @@ EXP(
     TEMP T0,
     CONST 3),
    CONST 0)))
-;;-------:
+;;-END-PROC--:
 yes!!

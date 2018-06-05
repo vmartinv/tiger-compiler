@@ -4,14 +4,14 @@ bien!
 L1:
 EXP(
  CONST 0)
-;;-------:
+;;-END-PROC--:
 L0:
 EXP(
  ESEQ(
   SEQ(
    MOVE(
     TEMP T0,
-    TEMP FP),
+    TEMP ebp),
    SEQ(
     EXP(
      CALL(
@@ -19,7 +19,7 @@ EXP(
        TEMP T0)),
     MOVE(
      TEMP T1,
-     TEMP RV))),
+     TEMP eax))),
   TEMP T1))
-;;-------:
+;;-END-PROC--:
 yes!!

@@ -15,5 +15,5 @@ EXP(
     TEMP T1,
     CONST 1234)),
   TEMP T1))
-;;-------:
+;;-END-PROC--:
 yes!!

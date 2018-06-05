@@ -21,5 +21,5 @@ EXP(
       TEMP T0,
       TEMP T1)))),
   TEMP T2))
-;;-------:
+;;-END-PROC--:
 yes!!

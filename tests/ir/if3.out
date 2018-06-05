@@ -20,5 +20,5 @@ EXP(
        CONST 0),
       LABEL L2))),
    CONST 0)))
-;;-------:
+;;-END-PROC--:
 yes!!

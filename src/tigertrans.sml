@@ -107,7 +107,7 @@ fun procEntryExit{level: level, body} =
 	let	
         val label = STRING(name(#frame level), "")
 		val body' = PROC{frame= #frame level, body=unNx body}
-		val final = STRING(";;-------", "")
+		val final = STRING(";;-END-PROC--", "")
 	in	
         datosGlobs:=(!datosGlobs@[label, body', final]) 
     end

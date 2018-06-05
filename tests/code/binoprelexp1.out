@@ -1,6 +1,9 @@
 bien!
 ------Canon------
+;;-END-PROC--:
 L0:
+;;--END-STRS--:
+--FRAME L0:
 LABEL L7
 MOVE(
  TEMP T0,
@@ -44,9 +47,9 @@ MOVE(
  CONST 1)
 JUMP( NAME L5)
 LABEL L6
-;;-------:
+;;-END-FRAME-:
 ------Code------
-L0:
+--FRAME L0:
 LABEL: L7
 OPER: mov %d0, 2 D:[T5] S:[]
 MOVE: mov %d0, %s0 D:T0 S:T5
@@ -75,5 +78,5 @@ OPER: mov %d0, 1 D:[T11] S:[]
 MOVE: mov %d0, %s0 D:T4 S:T11
 OPER: jmp %j0 D:[] S:[] J:[L5]
 LABEL: L6
-;;-------:
+;;-END-FRAME-:
 yes!!

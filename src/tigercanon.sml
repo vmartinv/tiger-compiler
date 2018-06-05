@@ -161,23 +161,26 @@ fun traceSchedule(blocks,done) =
        getnext(foldr enterblock (tabNueva()) blocks, blocks)
          @ [LABEL done]
 
-
-fun canonize(l:tigerframe.frag list):canFrag list =
+fun canonize l =
 	let 
-		val canon = traceSchedule o basicBlocks o linearize
-		fun canon2 (tigerframe.PROC {body=tb,frame=fr}) = {body=canon tb, frame=fr}
-		|   canon2 _ =  raise Fail "error interno 3456 tigercanon"
+		val canon = (traceSchedule o basicBlocks o linearize)
+		fun canon2 [] a b = (a,b)
+		 | 	canon2 (x::xs) a b =
+			case x of
+				(tigerframe.STRING s) => (canon2 xs) (s::a) b
+				| (tigerframe.PROC {body=tb,frame=fr}) => (canon2 xs) a ((canon tb,fr)::b)
 	in
-		map canon2 (List.filter (fn x => case x of
-				(tigerframe.STRING s) => false
-				| _ => true) l)
-	end
+		canon2 l [] []
+	end	
 
 
 (*
-type canFrag = {body: tigertree.stm list, frame: tigerframe.frame}
+type canFrag = (string list) ((tigertree.stm list, tigerframe.frame) list)
 *)
-fun Canon(e) =
-	let	fun aux2({body, frame}) = ((tigerframe.name frame)^":\n")^concat (map tigerit.tree body)^";;-------:\n"
-	in	concat (map aux2 e) end
+fun Canon (strs, frags) =
+	let	fun aux2((body, frame)) = ("--FRAME "^(tigerframe.name frame)^":\n")^concat (map tigerit.tree body)^";;-END-FRAME-:\n"
+		fun aux3((l, "")) = l^":\n"
+		| aux3(("", s)) = "\t"^s^"\n"
+		| aux3((l, s)) = l^":\t"^s^"\n"
+	in (concat (map aux3 strs)) ^ ";;--END-STRS--:\n" ^ concat (map aux2 frags) end
 end

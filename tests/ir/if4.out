@@ -27,5 +27,5 @@ EXP(
           CONST 0),
          LABEL L3)))))),
    CONST 0)))
-;;-------:
+;;-END-PROC--:
 yes!!
