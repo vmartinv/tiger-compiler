@@ -24,8 +24,6 @@ fun compile arbol escapes ir canon code flow inter source =
         val prntArbol = pass (fn x=> if arbol then tigerpp.exprAst x else ())
         val prntIr = pass (fn x => if ir then print(tigertrans.Ir(x)) else ())
         val prntCanon = pass (fn x => if canon then print("------Canon------\n"^tigercanon.Canon(x)) else ())
-        
-        
         val prntCode =
 			let fun aux2((b, f)) = ("--FRAME "^(tigerframe.name f)^":\n")^concat (tigerassem.printCode b)^";;-END-FRAME-:\n"
 			in pass (fn (strs, xs) => if code then print("------Code------\n"^concat (map aux2 xs)) else ())
@@ -40,8 +38,6 @@ fun compile arbol escapes ir canon code flow inter source =
         val expIncludes = expandIncludes (Path.dir source)
         val escap = pass findEscape
         fun seman x = (transProg x; tigertrans.getResult())
-        (* val inter = tigerinterp.inter true *)
-        
 (*
 	instructionSel :
     [string], [([tigertree.stm], tigerframe.frame)] ->
@@ -49,6 +45,13 @@ fun compile arbol escapes ir canon code flow inter source =
 *)
         fun instructionSel (strs, frags) =
 			(strs, map (fn (bs, f) => (tigercodegen.codegens f bs, f)) frags)
+		fun flowAnalysis (strs, frames) =
+			let fun perFrame (instrs, frame) =
+					let val (flowgraph, nodes) = tigerflow.instrs2graph instrs
+					in ([], frame) (*COMPLETAR*)
+					end
+			in (strs, map perFrame frames)
+			end
     in
         source >>= lee_archivo >>= 
            lexer >>= parser >>= (*de ASCII al arbol tigerabs.exp*)
@@ -57,6 +60,7 @@ fun compile arbol escapes ir canon code flow inter source =
            seman >>= prntIr >>= (*chequeo de tipos y generacion de fragmentos*)
            canonize >>= prntCanon >>=
            instructionSel >>= prntCode >>=
+           flowAnalysis >>=
            prntOk (*si llega hasta aca esta todo ok*)
     end
 
