@@ -35,11 +35,7 @@ fun codegen frame stm =
         fun emit x = ilist := x::(!ilist) (*!ilist es equivalente a *ilist en C y ilist := a es equivalente a *ilist = a en C*)
         fun result gen = let val t = tigertemp.newtemp() in (gen t; t) end
         fun munchExp (CONST i) = result (fn r => emit(OPER{assem = "mov %d0, "^(Int.toString i), src = [], dst = [r], jump = NONE}))
-(*
-        | munchExp (NAME lab) = result (fn r => emit(OPER{assem = "mov %d0, "^(makeString lab), src = [], dst = [r], jump = NONE})) (* no puede aparecer pero por si las dudas ... *)
-REVISAR
-*)
-        | munchExp (NAME lab) = lab
+        | munchExp (NAME lab) = result (fn r => emit(OPER{assem = "mov %d0, "^(makeString lab), src = [], dst = [r], jump = NONE})) (*se podria retornar lab directo pero por las dudas*)
         | munchExp (MEM m) = result (fn r => emit(OPER{assem = "mov %d0, %s0", src =[munchExp m] , dst=[r], jump=NONE}))
         | munchExp (TEMP t) = t
         | munchExp (CALL _) = raise Fail "CALL no debería aparecer luego de canonizar 234235"
@@ -54,25 +50,29 @@ REVISAR
         | munchExp (BINOP (MUL, e1, CONST i)) = result ( fn r => (emit(OPER{assem = "imul %d0, %s0, "^(Int.toString(i)), src=[munchExp e1], dst=[r], jump=NONE})))
         | munchExp (BINOP (MUL, e1, e2)) = result ( fn r => (emit(OPER{assem = "imul %d0, %s0, %s1", src=[munchExp e1, munchExp e2], dst=[r], jump=NONE})))
         | munchExp (BINOP (DIV, CONST i, e1)) = result ( fn r => (
-			let val _ = emit(OPER{assem = "xor %d0, %s0", src=["edx"], dst=["edx"], jump = NONE})
+			let val m1 = munchExp e1
+				val _ = emit(OPER{assem = "xor %d0, %s0", src=["edx"], dst=["edx"], jump = NONE})
 				val _ = emit(OPER{assem = "mov %d0, "^(Int.toString i), src=[], dst=["eax"], jump = NONE})
-				val _ = emit(OPER{assem = "idiv %s1", src = ["eax", "edx", munchExp e1], dst = ["eax", "edx"], jump = NONE})
+				val _ = emit(OPER{assem = "idiv %s1", src = ["eax", "edx", m1], dst = ["eax", "edx"], jump = NONE})
 				val _ = emit(MOV{assem = "mov %d0, %s0", src="eax", dst=r})
 			in
 				()
 			end))
         | munchExp (BINOP (DIV, e1, CONST i)) = result ( fn r => (
-			let val _ = emit(OPER{assem = "xor %d0, %s0", src=["edx"], dst=["edx"], jump = NONE})
-				val _ = emit(OPER{assem = "mov %d0, %s0", src=[munchExp e1], dst=["eax"], jump = NONE})
+			let val m1 = munchExp e1
+				val _ = emit(OPER{assem = "xor %d0, %s0", src=["edx"], dst=["edx"], jump = NONE})
+				val _ = emit(OPER{assem = "mov %d0, %s0", src=[m1], dst=["eax"], jump = NONE})
 				val _ = emit(OPER{assem = "idiv "^(Int.toString i), src = ["eax", "edx"], dst = ["eax", "edx"], jump = NONE})
 				val _ = emit(MOV{assem = "mov %d0, %s0", src="eax", dst=r})
 			in
 				()
 			end))
 		| munchExp (BINOP (DIV, e1, e2)) = result ( fn r => (
-			let val _ = emit(OPER{assem = "xor %d0, %s0", src=["edx"], dst=["edx"], jump = NONE})
-				val _ = emit(OPER{assem = "mov %d0, %s0", src=[munchExp e1], dst=["eax"], jump = NONE})
-				val _ = emit(OPER{assem = "idiv %s1", src = ["eax", "edx", munchExp e2], dst = ["eax", "edx"], jump = NONE})
+			let val m1 = munchExp e1
+				val m2 = munchExp e2
+				val _ = emit(OPER{assem = "xor %d0, %s0", src=["edx"], dst=["edx"], jump = NONE})
+				val _ = emit(OPER{assem = "mov %d0, %s0", src=[m1], dst=["eax"], jump = NONE})
+				val _ = emit(OPER{assem = "idiv %s1", src = ["eax", "edx", m2], dst = ["eax", "edx"], jump = NONE})
 				val _ = emit(MOV{assem = "mov %d0, %s0", src="eax", dst=r})
 			in
 				()

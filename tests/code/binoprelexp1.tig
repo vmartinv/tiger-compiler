@@ -1,0 +1,9 @@
+/*TIGER_ARGS=-canon -code*/
+let
+    var s:=2
+    var x:=34
+    var y:= s=x
+in
+    y := if y then 1 else 2;
+    y
+end

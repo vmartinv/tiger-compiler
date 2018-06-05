@@ -1,0 +1,7 @@
+/*TIGER_ARGS=-canon -code*/
+let
+    var s:="asd"
+    var x:="asd"
+in
+    x=s
+end

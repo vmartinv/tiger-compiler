@@ -21,9 +21,9 @@ open tigertree
 
 type level = int
 
-val fp = "FP"				(* frame pointer *)
+val fp = "ebp"				(* frame pointer *)
 val sp = "esp"				(* stack pointer *)
-val rv = "RV"				(* return value  *)
+val rv = "eax"				(* return value  *)
 val ov = "OV"				(* overflow value (edx en el 386) *)
 val wSz = 4					(* word size in bytes *)
 val log2WSz = 2				(* base two logarithm of word size in bytes *)
@@ -38,8 +38,8 @@ val localsGap = ~4 			(* bytes *)
 val calldefs = [rv]
 val specialregs = [rv, fp, sp]
 val argregs = []
-val callersaves = []
-val calleesaves = []
+val callersaves = [rv, "ecd", "edx"]
+val calleesaves = ["ebx", "edi", "esi"] (*VER: ESP and EBP will also be preserved by the calling convention*)
 
 type frame = {
 	name: string,            (* nombre de la función a la que pertenece - Se necesita para construir un frame *)

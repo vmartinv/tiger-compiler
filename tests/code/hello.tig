@@ -1,0 +1,2 @@
+/*TIGER_ARGS=-code*/
+(print ("Hello World");0)
