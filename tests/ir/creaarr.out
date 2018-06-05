@@ -6,11 +6,18 @@ L0:
 EXP(
  ESEQ(
   MOVE(
-   TEMP T0,
-   CALL(
-    NAME _initArray,
-     CONST 100,
-     CONST 51)),
+   TEMP T1,
+   ESEQ(
+    SEQ(
+     EXP(
+      CALL(
+       NAME _initArray,
+        CONST 100,
+        CONST 51)),
+     MOVE(
+      TEMP T0,
+      TEMP eax)),
+    TEMP T0)),
   CONST 15))
-;;-------:
+;;-END-PROC--:
 yes!!

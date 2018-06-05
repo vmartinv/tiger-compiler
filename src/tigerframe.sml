@@ -87,8 +87,8 @@ fun allocLocal (f: frame) b =
 
 fun exp(InFrame k) e = MEM(BINOP(PLUS, e, CONST k))
   | exp(InReg l) _ = TEMP l
-  
-fun externalCall(s, l) = CALL(NAME s, l)
+
+fun externalCall(s, l) = let val raux = tigertemp.newtemp() in ESEQ(SEQ(EXP(CALL(NAME s, l)),MOVE(TEMP raux,TEMP rv)),TEMP raux) end
 
 fun procEntryExit1 (frame,body) = body
 end

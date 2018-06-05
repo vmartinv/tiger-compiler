@@ -19,23 +19,30 @@ EXP(
   ESEQ(
    SEQ(
     MOVE(
-     TEMP T2,
+     TEMP T3,
      CONST 1),
     SEQ(
      CJUMP(EQ,
-      CALL(
-       NAME _stringCompare,
-        TEMP T1,
-        TEMP T0),
+      ESEQ(
+       SEQ(
+        EXP(
+         CALL(
+          NAME _stringCompare,
+           TEMP T1,
+           TEMP T0)),
+        MOVE(
+         TEMP T2,
+         TEMP eax)),
+       TEMP T2),
       CONST 0,
       L3,L4),
      SEQ(
       LABEL L4,
       SEQ(
        MOVE(
-        TEMP T2,
+        TEMP T3,
         CONST 0),
        LABEL L3)))),
-   TEMP T2)))
-;;-------:
+   TEMP T3)))
+;;-END-PROC--:
 yes!!

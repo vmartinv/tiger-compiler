@@ -8,12 +8,19 @@ L0:
 EXP(
  ESEQ(
   MOVE(
-   TEMP T0,
-   CALL(
-    NAME _allocRecord,
-     CONST 2,
-     CONST 1,
-     CONST 0)),
+   TEMP T1,
+   ESEQ(
+    SEQ(
+     EXP(
+      CALL(
+       NAME _allocRecord,
+        CONST 2,
+        CONST 1,
+        CONST 0)),
+     MOVE(
+      TEMP T0,
+      TEMP eax)),
+    TEMP T0)),
   CONST 15))
-;;-------:
+;;-END-PROC--:
 yes!!

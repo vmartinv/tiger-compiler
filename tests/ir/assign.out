@@ -9,28 +9,42 @@ L0:
 EXP(
  ESEQ(
   MOVE(
-   TEMP T0,
-   CALL(
-    NAME _allocRecord,
-     CONST 2,
-     CONST 15,
-     CONST 0)),
+   TEMP T1,
+   ESEQ(
+    SEQ(
+     EXP(
+      CALL(
+       NAME _allocRecord,
+        CONST 2,
+        CONST 15,
+        CONST 0)),
+     MOVE(
+      TEMP T0,
+      TEMP eax)),
+    TEMP T0)),
   ESEQ(
    MOVE(
     ESEQ(
      SEQ(
       MOVE(
-       TEMP T1,
-       TEMP T0),
+       TEMP T2,
+       TEMP T1),
       EXP(
-       CALL(
-        NAME _checkNil,
-         TEMP T1))),
+       ESEQ(
+        SEQ(
+         EXP(
+          CALL(
+           NAME _checkNil,
+            TEMP T2)),
+         MOVE(
+          TEMP T3,
+          TEMP eax)),
+        TEMP T3))),
      MEM(
       BINOP(PLUS,
-       TEMP T1,
+       TEMP T2,
        CONST 0))),
     CONST 3),
    CONST 0)))
-;;-------:
+;;-END-PROC--:
 yes!!
