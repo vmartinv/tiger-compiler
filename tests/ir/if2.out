@@ -2,7 +2,8 @@ LetExp{decs=[VarDec{name=x,escape=false,typ=NONE,init=5}],
  body=IfExp{test=VarExp(SimpleVar(x)),then'=4,else'=2}}
 bien!
 L0:
-EXP(
+MOVE(
+ TEMP eax,
  ESEQ(
   MOVE(
    TEMP T0,

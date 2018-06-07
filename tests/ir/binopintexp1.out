@@ -5,7 +5,8 @@ LetExp{decs=[VarDec{name=s,escape=false,typ=NONE,init=2}
                     right=VarExp(SimpleVar(x))}}],body=VarExp(SimpleVar(y))}
 bien!
 L0:
-EXP(
+MOVE(
+ TEMP eax,
  ESEQ(
   SEQ(
    MOVE(

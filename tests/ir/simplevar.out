@@ -5,7 +5,8 @@ bien!
 L1:	.long 9
 	.string "asdasdasd"
 L0:
-EXP(
+MOVE(
+ TEMP eax,
  ESEQ(
   SEQ(
    MOVE(

@@ -6,7 +6,8 @@ LetExp{decs=[TypeDec([{name=l,
  body=VarExp(FieldVar(SimpleVar(ls),elem))}
 bien!
 L0:
-EXP(
+MOVE(
+ TEMP eax,
  ESEQ(
   MOVE(
    TEMP T1,

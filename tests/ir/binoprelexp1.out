@@ -8,7 +8,8 @@ LetExp{decs=[VarDec{name=s,escape=false,typ=NONE,init=2}
       VarExp(SimpleVar(y))])}
 bien!
 L0:
-EXP(
+MOVE(
+ TEMP eax,
  ESEQ(
   SEQ(
    MOVE(

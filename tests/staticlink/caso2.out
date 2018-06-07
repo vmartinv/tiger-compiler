@@ -2,11 +2,13 @@ LetExp{decs=[FunctionDec([{name=f,params=[],result=intbody=0}])],
  body=CallExp{func=f,args=[]}}
 bien!
 L1:
-EXP(
+MOVE(
+ TEMP eax,
  CONST 0)
 ;;-END-PROC--:
 L0:
-EXP(
+MOVE(
+ TEMP eax,
  ESEQ(
   SEQ(
    MOVE(

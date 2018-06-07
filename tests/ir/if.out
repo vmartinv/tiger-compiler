@@ -1,7 +1,8 @@
 IfExp{test=3,then'=4,else'=2}
 bien!
 L0:
-EXP(
+MOVE(
+ TEMP eax,
  ESEQ(
   SEQ(
    JUMP(    NAME L1),

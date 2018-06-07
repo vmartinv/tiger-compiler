@@ -3,7 +3,8 @@ bien!
 L1:	.long 11
 	.string "Hello World"
 L0:
-EXP(
+MOVE(
+ TEMP eax,
  ESEQ(
   SEQ(
    MOVE(
@@ -30,6 +31,9 @@ EXP(
  CALL(
   NAME print,
    TEMP T0))
+MOVE(
+ TEMP eax,
+ CONST 0)
 JUMP( NAME L2)
 LABEL L2
 ;;-END-FRAME-:

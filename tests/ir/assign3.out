@@ -4,7 +4,8 @@ LetExp{decs=[TypeDec([{name=A,ty=ArrayTy(int)}])
  body=SeqExp([AssignExp{var=SubscriptVar(SimpleVar(a),23),exp=3}15])}
 bien!
 L0:
-EXP(
+MOVE(
+ TEMP eax,
  ESEQ(
   MOVE(
    TEMP T1,

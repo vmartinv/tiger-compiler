@@ -5,54 +5,54 @@ LetExp{decs=[FunctionDec([{name=g,params=[{name=x,escape=falsetyp=NameTy(int)}
  body=CallExp{func=f,args=[]}}
 bien!
 L1:
-EXP(
+MOVE(
+ TEMP eax,
  BINOP(PLUS,
-  MEM(
-   BINOP(PLUS,
-    TEMP ebp,
-    CONST 4)),
+  TEMP T0,
   CONST 1))
 ;;-END-PROC--:
 L2:
-EXP(
+MOVE(
+ TEMP eax,
  ESEQ(
   SEQ(
    MOVE(
-    TEMP T0,
+    TEMP T1,
     MEM(
      BINOP(PLUS,
       CONST 8,
       TEMP ebp))),
    SEQ(
     MOVE(
-     TEMP T1,
+     TEMP T2,
      CONST 0),
     SEQ(
      EXP(
       CALL(
        NAME L1,
-        TEMP T0,
-        TEMP T1)),
+        TEMP T1,
+        TEMP T2)),
      MOVE(
-      TEMP T2,
+      TEMP T3,
       TEMP eax)))),
-  TEMP T2))
+  TEMP T3))
 ;;-END-PROC--:
 L0:
-EXP(
+MOVE(
+ TEMP eax,
  ESEQ(
   SEQ(
    MOVE(
-    TEMP T3,
+    TEMP T4,
     TEMP ebp),
    SEQ(
     EXP(
      CALL(
       NAME L2,
-       TEMP T3)),
+       TEMP T4)),
     MOVE(
-     TEMP T4,
+     TEMP T5,
      TEMP eax))),
-  TEMP T4))
+  TEMP T5))
 ;;-END-PROC--:
 yes!!

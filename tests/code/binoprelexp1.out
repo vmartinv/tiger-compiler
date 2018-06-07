@@ -38,7 +38,8 @@ LABEL L5
 MOVE(
  TEMP T2,
  TEMP T4)
-EXP(
+MOVE(
+ TEMP eax,
  TEMP T2)
 JUMP( NAME L6)
 LABEL L3
@@ -72,6 +73,7 @@ OPER: mov %d0, 2 D:[T10] S:[]
 MOVE: mov %d0, %s0 D:T4 S:T10
 LABEL: L5
 MOVE: mov %d0, %s0 D:T2 S:T4
+MOVE: mov %d0, %s0 D:eax S:T2
 OPER: jmp %j0 D:[] S:[] J:[L6]
 LABEL: L3
 OPER: mov %d0, 1 D:[T11] S:[]

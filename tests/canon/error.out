@@ -14,7 +14,8 @@ L2:	.long 14
 L6:	.long 1
 	.string "\x0a"
 L0:
-EXP(
+MOVE(
+ TEMP eax,
  ESEQ(
   MOVE(
    TEMP T0,
@@ -100,6 +101,9 @@ EXP(
  CALL(
   NAME print,
    TEMP T5))
+MOVE(
+ TEMP eax,
+ CONST 0)
 JUMP( NAME L7)
 LABEL L3
 MOVE(

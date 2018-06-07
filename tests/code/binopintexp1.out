@@ -9,6 +9,7 @@ MOVE: mov %d0, %s0 D:T1 S:T4
 MOVE: mov %d0, %s0 D:T5 S:T0
 OPER: add %d0, %s1 D:[T5] S:[T5,T1]
 MOVE: mov %d0, %s0 D:T2 S:T5
+MOVE: mov %d0, %s0 D:eax S:T2
 OPER: jmp %j0 D:[] S:[] J:[L1]
 LABEL: L1
 ;;-END-FRAME-:

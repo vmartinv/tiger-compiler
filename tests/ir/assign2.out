@@ -2,7 +2,8 @@ LetExp{decs=[VarDec{name=a,escape=false,typ=NONE,init=5}],
  body=SeqExp([AssignExp{var=SimpleVar(a),exp=3}0])}
 bien!
 L0:
-EXP(
+MOVE(
+ TEMP eax,
  ESEQ(
   MOVE(
    TEMP T0,

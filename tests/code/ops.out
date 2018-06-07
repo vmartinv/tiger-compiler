@@ -13,6 +13,7 @@ OPER: xor %d0, %s0 D:[edx] S:[edx]
 OPER: mov %d0, %s0 D:[eax] S:[T1]
 OPER: idiv 10 D:[eax,edx] S:[eax,edx]
 MOVE: mov %d0, %s0 D:T0 S:eax
+MOVE: mov %d0, %s0 D:eax S:T0
 OPER: jmp %j0 D:[] S:[] J:[L1]
 LABEL: L1
 ;;-END-FRAME-:

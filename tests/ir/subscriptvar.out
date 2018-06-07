@@ -4,7 +4,8 @@ LetExp{decs=[TypeDec([{name=A,ty=ArrayTy(int)}])
  body=VarExp(SubscriptVar(SimpleVar(a),20))}
 bien!
 L0:
-EXP(
+MOVE(
+ TEMP eax,
  ESEQ(
   MOVE(
    TEMP T1,
@@ -80,7 +81,8 @@ MOVE(
  TEMP eax)
 EXP(
  TEMP T4)
-EXP(
+MOVE(
+ TEMP eax,
  MEM(
   BINOP(PLUS,
    TEMP T2,
