@@ -60,7 +60,9 @@ fun compile arbol escapes ir canon code flow inter source =
            seman >>= prntIr >>= (*chequeo de tipos y generacion de fragmentos*)
            canonize >>= prntCanon >>=
            instructionSel >>= prntCode >>=
+(*
            flowAnalysis >>=
+*)
            prntOk (*si llega hasta aca esta todo ok*)
     end
 

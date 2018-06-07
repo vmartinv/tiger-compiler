@@ -366,7 +366,8 @@ fun transExp(venv, tenv) =
                     let
                         val label = tigertemp.newlabel()
                         val formals = toTipoArgs nl p
-                        val level = newLevel({parent=topLevel(), name=label, formals=map (fn f => (! o #escape) f) p})
+                        val escapes = map (fn f => (! o #escape) f) p
+                        val level = newLevel({parent=topLevel(), name=label, formals=escapes})
                     in
                         (n, Func {level = level, label = label, formals = formals , result = toTipoRet nl r, extern = false}) (*COMPLETAR_EXP: level!*)
                     end
@@ -377,33 +378,32 @@ fun transExp(venv, tenv) =
                 
 				(* 2da pasada: checkeo de tipo de retorno y cuerpo de la función *)                
 				fun checkFunc (({name = n, params = p, result = r, body = b},nl), header as (Func {level=level, label, formals, result, extern})) =
-						let
-							val tipos = toTipoArgs nl p
-							val nombres = map #name p
-                            fun agregaArg ((name, typ), venv) =
-								tabRInserta (name, Var{access=tigertrans.allocArg (topLevel()) true, level=getActualLev(), ty=typ}, venv)(*COMPLETAR_EXP : ARREGLAR Var!*)
-                            
+						let                    
                             val _ = preFunctionDec()
                             val _ = pushLevel level
+
+							val tipos = toTipoArgs nl p
+							val nombres = map #name p
+							val accesslist = List.tl (tigertrans.formals level)
+                            fun agregaArg (((argT,argN),access), venv) =
+								tabRInserta(argN, Var {ty=argT, access=access, level=getActualLev()  }, venv)
                             
-                            val venv'' = foldl agregaArg venv' (zip nombres tipos)
+                            val venv'' = foldl agregaArg venv' (zip (zip tipos nombres) accesslist)
                             
 							val {exp=eB, ty = tipoB} = transExp (venv'',tenv) b
                             
-                            val _ = popLevel()
-                            val _ = functionDec(eB, level, true)
-                            val _ = postFunctionDec()
-                            
 							val tipoR = case tabBusca(n,venv') of
-										  NONE => error("No deberia pasar",nl)
+										  NONE => error("No deberia pasar 23423",nl)
                                         | SOME (Func{result=r,...}) => r
-                                        | SOME _ => error("No deberia pasar",nl)
+                                        | SOME _ => error("No deberia pasar 534534",nl)
 							val _ = if tiposIguales tipoB tipoR
 									then ()
 									else error("El tipo de retorno de la funcion y el de su definición no coinciden", nl)
-						in
-							()
-						end
+							
+						   val _ = functionDec(eB, level, tipoR=TUnit)
+					       val _ = popLevel()
+						   val _ = postFunctionDec()
+						in () end
                 |   checkFunc _ = raise Fail "error interno (checkFunc4w654)\n"
 				val _ = List.app checkFunc (zip fs (map #2 headers))
 			in

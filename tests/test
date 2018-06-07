@@ -64,6 +64,7 @@ function print_case(){
 		else
 			output=$(gen_output "$source" 2>&1)
 		fi
+		echo "$output"
 		correct=${source%.*}.out
 		if [ -f "$correct" ]; then
 			echo -e "${PURPLE}Expected Output:${NC}"

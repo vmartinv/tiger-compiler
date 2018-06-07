@@ -9,7 +9,7 @@ fun endswith ext s = (ext = String.extract (s, size(s)-size(ext), NONE))
 
 fun zip [] [] = []
 |   zip (x::xs) (y::ys) = (x,y)::zip xs ys
-|   zip _ _ = raise Fail "No deberia pasar\n"
+|   zip _ _ = raise Fail "No deberia pasar zip 456727\n"
 
 fun zip3R [] ys zs = []
 |   zip3R xs [] zs = []
