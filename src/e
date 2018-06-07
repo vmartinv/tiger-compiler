@@ -63,8 +63,11 @@ while read -p "$PROMPT" -e line; do
 		file="$line"
 	else
 		file=""
-		if [[ ${line} == t\ * ]]; then
-			line=${line/t\ /../tests/test }
+		if [[ ${line} =~ ^t\ (.*) ]]; then
+			line="../tests/test ${BASH_REMATCH[1]}"
+		fi
+		if [[ ${line} =~ ^g\ (.*) ]]; then
+			line="git ${BASH_REMATCH[1]}"
 		fi
 		trap "echo Interrumped" INT
 		eval "($line)"
