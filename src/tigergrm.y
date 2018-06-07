@@ -1,7 +1,8 @@
 %{
 open tigerabs
+open tigerutils
 
-fun P() = !tigernlin.file_name ^ Int.toString (!tigernlin.num_linea)
+fun P() = !tigernlin.file_name ^ toString (!tigernlin.num_linea)
 
 fun nombre(SimpleVar s) = s
 | nombre _ = raise Fail "Imposible que no sea SimpleVar!"

@@ -1,4 +1,5 @@
 structure tigertemp :> tigertemp = struct
+open tigerutils
 type label = string
 type temp = string
 fun makeString s = s
@@ -8,14 +9,14 @@ local
 in
 	fun newtemp() =
 		let
-			val s = "T"^Int.toString(!i)
+			val s = "T"^toString(!i)
 		in
 			i := !i+1;
 			s
 		end
 	fun newlabel() =
 		let
-			val s = "L"^Int.toString(!j)
+			val s = "L"^toString(!j)
 		in
 			j := !j+1;
 			s

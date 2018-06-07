@@ -2,6 +2,7 @@ structure tigersimpleregalloc :> tigersimpleregalloc =
 struct
 	(*structure frame = tigerframe
 	open tigerassem
+	open tigerutils
 	
 	fun simpleregalloc (frm:frame.frame) (body:instr list) =
 	let
@@ -12,13 +13,13 @@ struct
 		(* COMPLETAR: movaMem crea una instrucciÃ³n que mueve un temporario a memoria. movaTemp, de memoria a un temporario.*)
 		fun movaMem(temp, mempos) =
 			let
-				val desp = if mempos<0 then " - " ^ Int.toString(~mempos) else if mempos>0 then " + " ^ Int.toString(mempos) else ""
+				val desp = if mempos<0 then " - " ^ toString(~mempos) else if mempos>0 then " + " ^ toString(mempos) else ""
 			in
 				OPER {assem="mov `s0 M(a" ^ desp ^ ")", src=[temp], dst=[], jump=NONE}
 			end
 		fun movaTemp(mempos, temp) =
 			let
-				val desp = if mempos<0 then " - " ^ Int.toString(~mempos) else if mempos>0 then " + " ^ Int.toString(mempos) else ""
+				val desp = if mempos<0 then " - " ^ toString(~mempos) else if mempos>0 then " + " ^ Int.toString(mempos) else ""
 			in
 				OPER {assem="mov M(a" ^ desp ^ ") `d0", src=[], dst=[temp], jump=NONE}
 			end

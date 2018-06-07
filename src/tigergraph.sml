@@ -75,7 +75,7 @@ fun rm_edge {from=n:node, to=m:node} =
 type 'a table = (node, 'a) Splaymap.dict
 
 (* For debug *)
-fun nodename (g, id) = "n"^(Int.toString(id))
+fun nodename (g, id) = "n"^(toString(id))
 
 
 end

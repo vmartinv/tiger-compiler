@@ -30,4 +30,6 @@ fun remove e xs = List.filter (fn x => x <> e) xs
 
 fun fromListtoSet(cmp, xs) = List.foldl (fn (x,s) => Splayset.add(s, x)) (Splayset.empty cmp) xs
 
+fun toString x = if (x < 0) then ("-"^Int.toString(~x)) else Int.toString(x)
+
 end

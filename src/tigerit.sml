@@ -3,6 +3,7 @@ struct
 
 open tigertab
 open tigertree
+open tigerutils
 
 fun tree s0 =
 	let	fun say s = s
@@ -28,7 +29,7 @@ fun tree s0 =
 		| exp(ESEQ(s,e),d) = indent(d)^sayln("ESEQ(")^stm(s,d+1)^sayln(",")^
 			exp(e,d+1)^say(")")
 		| exp(NAME lab, d) = indent(d)^say("NAME ")^say(lab)
-		| exp(CONST i, d) = indent(d)^say("CONST ")^say(Int.toString i)
+		| exp(CONST i, d) = indent(d)^say("CONST ")^say(toString i)
 		| exp(CALL(e,el),d) = indent(d)^sayln("CALL(")^(exp(e,d+1))^
 			concat(map (fn a => sayln(",")^exp(a,d+2)) el)^say(")")
 
@@ -49,10 +50,12 @@ fun tree s0 =
 		| relop GT = say "GT"
 		| relop LE = say "LE"
 		| relop GE = say "GE"
+(*
 		| relop ULT = say "ULT"
 		| relop ULE = say "ULE"
 		| relop UGT = say "UGT"
 		| relop UGE = say "UGE"
+*)
 
  in	stm(s0,0)^sayln("") end
 

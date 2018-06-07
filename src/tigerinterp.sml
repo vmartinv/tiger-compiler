@@ -14,6 +14,7 @@ struct
 	open tigertab
 	open Dynarray
 	open tigertree
+	open tigerutils
 
 	fun inter showdebug (funfracs: (stm list*tigerframe.frame) list) (stringfracs: (tigertemp.label*string) list) =
 	let
@@ -36,7 +37,7 @@ struct
 			fun printMem () =
 			let
 				val ls = tabAList(!tabMem)
-				fun p (a,b) = (print(Int.toString(a)); print(" -> "); print(Int.toString(!b)); print("\n"))
+				fun p (a,b) = (print(toString(a)); print(" -> "); print(toString(!b)); print("\n"))
 			in
 				(print("MEM:\n"); List.app p ls)
 			end
@@ -52,7 +53,7 @@ struct
 			fun printTemps () =
 			let
 				val ls = tabAList(!tabTemps)
-				fun p (a,b) = (print(a); print(" -> "); print(Int.toString(!b)); print("\n"))
+				fun p (a,b) = (print(a); print(" -> "); print(toString(!b)); print("\n"))
 			in
 				(print("TEMPS:\n"); List.app p ls)
 			end
@@ -315,7 +316,7 @@ struct
 				val _ = if (List.length(ffrac)<>1) then raise Fail ("No se encuentra la función, o repetida: "^f^"\n") else ()
 				val [(body, frame)] = ffrac
 				(* Mostrar qué se está haciendo, si showdebug *)
-				val _ = if showdebug then (print((tigerframe.name frame)^":\n");List.app (print o tigerit.tree) body; print("Argumentos: "); List.app (fn n => (print(Int.toString(n)); print("  "))) args; print("\n")) else ()
+				val _ = if showdebug then (print((tigerframe.name frame)^":\n");List.app (print o tigerit.tree) body; print("Argumentos: "); List.app (fn n => (print(toString(n)); print("  "))) args; print("\n")) else ()
 
 				fun execute l =
 				let

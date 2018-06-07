@@ -112,7 +112,7 @@ fun ppexpr pps e0 =
 			end_block pps)
 		and ppe(UnitExp _) = add_string pps "UnitExp"
 		| ppe(NilExp _) = add_string pps "NilExp"
-		| ppe(IntExp(n, _)) = add_string pps (Int.toString n)
+		| ppe(IntExp(n, _)) = add_string pps (toString n)
 		| ppe(StringExp(s, _)) = add_string pps ("\""^s^"\"")
 		| ppe(BreakExp _) = add_string pps "BreakExp"
 		| ppe(VarExp(v, _)) =

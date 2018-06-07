@@ -10,4 +10,5 @@ sig
     val elimRep: ''a list -> ''a list (*Dada una lista, devuelve la misma, eliminando elementos repetidos*)
     val remove: ''a -> ''a list -> ''a list (*Dados un elemento y una lista, elimina todas las apariciones del elemento de la lista*)
     val fromListtoSet : ('a * 'a -> order) * 'a list -> 'a Splayset.set (* Transforma una lista en un conjunto *)
+    val toString: int -> string
 end
