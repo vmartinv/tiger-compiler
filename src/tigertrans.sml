@@ -218,7 +218,7 @@ let val name' 	= NAME name
 	val static_link = trepar(getActualLev() - #level lev + 1)
 	val params' =  if (not extern) then static_link::(map unEx params) else (map unEx params)
 	val tmps = map (fn _ => TEMP (newtemp())) params'
-	val moves = map MOVE (zip tmps params')   (*Mueven los argumentos a temporarios*)
+	val moves = map MOVE (ListPair.zip(tmps, params'))   (*Mueven los argumentos a temporarios*)
 	val rt = TEMP (newtemp())
 in
 	if isproc then Nx(seq(moves@[EXP(CALL(name', tmps))]))

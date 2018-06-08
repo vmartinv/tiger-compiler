@@ -88,7 +88,7 @@ fun transExp(venv, tenv) =
                 val exps = map trexp args
                 val callTyArgs:Tipo list = map #ty exps
                 val callArgs:exp list = map #exp exps
-                val _ = if length typArgs = length callTyArgs andalso List.all (fn (ta,ca) => tiposIguales ta ca) (zip typArgs callTyArgs)
+                val _ = if length typArgs = length callTyArgs andalso List.all (fn (ta,ca) => tiposIguales ta ca) (ListPair.zip(typArgs, callTyArgs))
                         then ()
                         else error("Los argumentos deberían ser: "^join (map tigerpp.pptipo typArgs) "->"^"\n"
                                  ^ "y se recibio: "^join (map tigerpp.pptipo callTyArgs) "->", nl)
@@ -388,7 +388,7 @@ fun transExp(venv, tenv) =
                             fun agregaArg (((argT,argN),access), venv) =
 								tabRInserta(argN, Var {ty=argT, access=access, level=getActualLev()  }, venv)
                             
-                            val venv'' = foldl agregaArg venv' (zip (zip tipos nombres) accesslist)
+                            val venv'' = foldl agregaArg venv' (ListPair.zip(ListPair.zip(tipos, nombres), accesslist))
                             
 							val {exp=eB, ty = tipoB} = transExp (venv'',tenv) b
                             
@@ -405,7 +405,7 @@ fun transExp(venv, tenv) =
 						   val _ = postFunctionDec()
 						in () end
                 |   checkFunc _ = raise Fail "error interno (checkFunc4w654)\n"
-				val _ = List.app checkFunc (zip fs (map #2 headers))
+				val _ = List.app checkFunc (ListPair.zip(fs, (map #2 headers)))
 			in
 				(venv', tenv, [])
 			end
