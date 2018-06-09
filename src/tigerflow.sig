@@ -14,5 +14,7 @@ val getMov: flowgraph -> bool tigergraph.table
 
 val instrs2graph: tigerassem.instr list -> flowgraph * tigergraph.node list
 
+val printGraph: tigerassem.instr list * flowgraph -> string
+
 
 end

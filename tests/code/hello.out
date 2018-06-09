@@ -1,5 +1,5 @@
 bien!
---FRAME L0:
+;;--FRAME--L0:
 LABEL: L3
 OPER: mov %d0, L1 D:[T2] S:[]
 MOVE: mov %d0, %s0 D:T0 S:T2

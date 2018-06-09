@@ -18,15 +18,15 @@ datatype instr = OPER of {assem: string,
                           
 fun format _ ins = ""
 	(*COMPLETAR*)
+	
+fun printInstr (OPER {assem,dst,src,jump=NONE}) = "OPER: "^assem^" D:["^(String.concatWith "," dst)^"] S:["^(String.concatWith "," src)^"]"
+	 | printInstr (OPER {assem,dst,src,jump=SOME j}) = "OPER: "^assem^" D:["^(String.concatWith "," dst)^"] S:["^(String.concatWith "," src)^"] J:["^(String.concatWith "," j)^"]"
+	 | printInstr (MOV {assem,dst,src}) = "MOVE: "^assem^" D:"^dst^" S:"^src
+	 | printInstr (aLABEL {lab,...}) = "LABEL: "^lab
+
 (*
-printCode : instr list -> string list
+printCode : instr list -> string
 *)
-fun printCode instrs = 
-	let fun printAssem (OPER {assem,dst,src,jump=NONE}) = "OPER: "^assem^" D:["^(String.concatWith "," dst)^"] S:["^(String.concatWith "," src)^"]\n"
-		 | printAssem (OPER {assem,dst,src,jump=SOME j}) = "OPER: "^assem^" D:["^(String.concatWith "," dst)^"] S:["^(String.concatWith "," src)^"] J:["^(String.concatWith "," j)^"]\n"
-		 | printAssem (MOV {assem,dst,src}) = "MOVE: "^assem^" D:"^dst^" S:"^src^"\n"
-		 | printAssem (aLABEL {lab,...}) = "LABEL: "^lab^"\n"
-	in
-		map printAssem instrs
-	end
+fun printCode instrs = concat (map (fn instr => printInstr instr^"\n") instrs)
+
 end

@@ -59,5 +59,22 @@ fun instrs2graph instrs =
     in (g, n)
     end
 
+fun printGraph (instrs, FGRAPH{control = g, def = d, use = u, ismove = m}) =
+(*
+		Splaymap.foldl f e m] applies the folding function f to the entries (k, v)
+   in m, in increasing order of k.
+*)
+	let
+		fun visNodeGraph (instr, node) = "\t"^nodename node^"("^tigerassem.printInstr instr^"): "^String.concatWith ", " (map (nodename) (succ node))^"\n"
+		val succsStr = "succesors:\n"^concat(map visNodeGraph (ListPair.zip (instrs, nodes g)))
+		fun prntLabels v = String.concatWith ", " (map tigertemp.makeString v)
+		fun visNode visitor (k, v, ac) = ac^"\t"^(nodename k)^": "^visitor v^"\n"
+		val defStr = "def:\n"^(Splaymap.foldl (visNode prntLabels) "" d)
+		val useStr = "use:\n"^(Splaymap.foldl (visNode prntLabels) "" u)
+		val ismoveStr = "ismove:\n"^(Splaymap.foldl (visNode Bool.toString) "" m)
+	in succsStr^defStr^useStr^ismoveStr end
+
 end
 
+	
+	

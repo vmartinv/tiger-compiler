@@ -1,0 +1,68 @@
+bien!
+------Canon------
+;;-END-PROC--:
+L0:
+	.string "asd"
+L2:	.long 3
+	.string "asd"
+L1:	.long 3
+;;--END-STRS--:
+--FRAME L0:
+LABEL L6
+MOVE(
+ TEMP T0,
+ NAME L1)
+MOVE(
+ TEMP T1,
+ NAME L2)
+MOVE(
+ TEMP T3,
+ CONST 1)
+EXP(
+ CALL(
+  NAME _stringCompare,
+   TEMP T1,
+   TEMP T0))
+MOVE(
+ TEMP T2,
+ TEMP eax)
+CJUMP(EQ,
+ TEMP T2,
+ CONST 0,
+ L3,L4)
+LABEL L4
+MOVE(
+ TEMP T3,
+ CONST 0)
+LABEL L3
+MOVE(
+ TEMP eax,
+ TEMP T3)
+JUMP( NAME L5)
+LABEL L5
+;;-END-FRAME-:
+;;--FRAME--L0:
+LABEL: L6
+OPER: mov %d0, L1 D:[T4] S:[]
+MOVE: mov %d0, %s0 D:T0 S:T4
+OPER: mov %d0, L2 D:[T5] S:[]
+MOVE: mov %d0, %s0 D:T1 S:T5
+OPER: mov %d0, 1 D:[T6] S:[]
+MOVE: mov %d0, %s0 D:T3 S:T6
+OPER: pushq %s0 D:[] S:[T0]
+OPER: pushq %s0 D:[] S:[T1]
+OPER: call _stringCompare D:[eax,ecd,edx,eax] S:[]
+OPER: add %d0, 8 D:[esp] S:[esp]
+MOVE: mov %d0, %s0 D:T2 S:eax
+OPER: mov %d0, 0 D:[T7] S:[]
+OPER: cmp %s0, %s1 D:[] S:[T2,T7]
+OPER: je %j0 D:[] S:[] J:[L3,L4]
+LABEL: L4
+OPER: mov %d0, 0 D:[T8] S:[]
+MOVE: mov %d0, %s0 D:T3 S:T8
+LABEL: L3
+MOVE: mov %d0, %s0 D:eax S:T3
+OPER: jmp %j0 D:[] S:[] J:[L5]
+LABEL: L5
+;;-END-FRAME-:
+yes!!

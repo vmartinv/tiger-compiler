@@ -1,0 +1,2 @@
+/*TIGER_ARGS=-code -flow*/
+(print ("Hello World");0)

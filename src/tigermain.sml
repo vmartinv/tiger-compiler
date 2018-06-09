@@ -24,7 +24,8 @@ fun compile arbol escapes ir canon code flow inter source =
         val prntArbol = pass (fn x=> if arbol then tigerpp.exprAst x else ())
         val prntIr = pass (fn x => if ir then print(tigertrans.Ir(x)) else ())
         val prntCanon = pass (fn x => if canon then print("------Canon------\n"^tigercanon.Canon(x)) else ())
-        val prntCode = pass (fn (b, f) => if code then print((";;--FRAME--"^(tigerframe.name f)^":\n")^concat (tigerassem.printCode b)^";;-END-FRAME-:\n") else ())
+        val prntCode = pass (fn (b, f) => if code then print(";;--FRAME--"^(tigerframe.name f)^":\n"^tigerassem.printCode b^";;-END-FRAME-:\n") else ())
+        fun prntFlow fr instr g = if flow then print(";;--FLOW--"^(tigerframe.name fr)^":\n"^(tigerflow.printGraph (instr, g))^";;-END-FLOW-:\n") else ()
         fun prntOk _ = print "yes!!\n"
         
         (*Etapas de la compilacion*)
@@ -36,17 +37,21 @@ fun compile arbol escapes ir canon code flow inter source =
         val escap = pass findEscape
         fun seman x = (transProg x; tigertrans.getResult())
  
-        fun instructionSel (body, frame) = (tigercodegen.codegens frame body, frame)
-		fun flowAnalysis (instrs, frame) =
+        fun instructionSel (body, frame) = 
+			let val instrs = tigercodegen.codegens frame body
+			in (instrs, frame)
+			end
+		fun livenessAnalysis (instrs, frame) =
 			let val (flowgraph, nodes) = tigerflow.instrs2graph instrs
+				val _ = prntFlow frame instrs flowgraph
 				val (igraph, tnode) = tigerliveness.interferenceGraph flowgraph
-			in ([], frame) (*COMPLETAR*)
+			in (igraph, flowgraph, frame) (*COMPLETAR*)
 			end
 
 		(*Pipeline ejecutado por cada fragmento*)
 		fun perFragment fragment = 
 			fragment >>= instructionSel >>= prntCode >>=
-				flowAnalysis
+				livenessAnalysis
     in
 		(*Pipeline del compilador*)
         source >>= lee_archivo >>= 
