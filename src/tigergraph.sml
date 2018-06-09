@@ -49,9 +49,15 @@ fun cmp ((_,n), (_,m)) = Int.compare(n,m)
 fun newGraph () = array(0, fakeNode)
 
 fun newNode(g:graph) = (*agrego el nodo al final porque no hay una operación de destrucción de nodos en la interfaz*)
-	let val _ = update(g, bound g, emptyNode)
-	in (g, bound g -1)
-	end
+    let fun look(lo,hi) =
+               (* i < lo indicates i in use
+                  i >= hi indicates i not in use *)
+            if lo=hi then (update(g,lo,emptyNode); (g,lo))
+            else let val m = (lo+hi) div 2
+                  in if isFake(sub(g,m)) then look(lo,m) else look(m+1,hi)
+                 end
+    in look(0, 1 + bound g)
+    end
 
 exception GraphEdge
 

@@ -48,6 +48,7 @@ fun compile arbol escapes ir canon code flow inter source =
 		fun flowAnalysis (strs, frames) =
 			let fun perFrame (instrs, frame) =
 					let val (flowgraph, nodes) = tigerflow.instrs2graph instrs
+					    val (igraph, tnode) = tigerliveness.interferenceGraph flowgraph
 					in ([], frame) (*COMPLETAR*)
 					end
 			in (strs, map perFrame frames)
