@@ -49,7 +49,6 @@ MOVE(
 JUMP( NAME L5)
 LABEL L6
 ;;-END-FRAME-:
-------Code------
 --FRAME L0:
 LABEL: L7
 OPER: mov %d0, 2 D:[T5] S:[]

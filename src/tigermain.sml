@@ -24,10 +24,7 @@ fun compile arbol escapes ir canon code flow inter source =
         val prntArbol = pass (fn x=> if arbol then tigerpp.exprAst x else ())
         val prntIr = pass (fn x => if ir then print(tigertrans.Ir(x)) else ())
         val prntCanon = pass (fn x => if canon then print("------Canon------\n"^tigercanon.Canon(x)) else ())
-        val prntCode =
-			let fun aux2((b, f)) = ("--FRAME "^(tigerframe.name f)^":\n")^concat (tigerassem.printCode b)^";;-END-FRAME-:\n"
-			in pass (fn (strs, xs) => if code then print("------Code------\n"^concat (map aux2 xs)) else ())
-			end
+        val prntCode = pass (fn (b, f) => if code then print((";;--FRAME--"^(tigerframe.name f)^":\n")^concat (tigerassem.printCode b)^";;-END-FRAME-:\n") else ())
         fun prntOk _ = print "yes!!\n"
         
         (*Etapas de la compilacion*)
@@ -38,30 +35,27 @@ fun compile arbol escapes ir canon code flow inter source =
         val expIncludes = expandIncludes (Path.dir source)
         val escap = pass findEscape
         fun seman x = (transProg x; tigertrans.getResult())
-(*
-	instructionSel :
-    [string], [([tigertree.stm], tigerframe.frame)] ->
-    [string], [([tigerassem.instr], tigerframe.frame)] ->
-*)
-        fun instructionSel (strs, frags) =
-			(strs, map (fn (bs, f) => (tigercodegen.codegens f bs, f)) frags)
-		fun flowAnalysis (strs, frames) =
-			let fun perFrame (instrs, frame) =
-					let val (flowgraph, nodes) = tigerflow.instrs2graph instrs
-					    val (igraph, tnode) = tigerliveness.interferenceGraph flowgraph
-					in ([], frame) (*COMPLETAR*)
-					end
-			in (strs, map perFrame frames)
+ 
+        fun instructionSel (body, frame) = (tigercodegen.codegens frame body, frame)
+		fun flowAnalysis (instrs, frame) =
+			let val (flowgraph, nodes) = tigerflow.instrs2graph instrs
+				val (igraph, tnode) = tigerliveness.interferenceGraph flowgraph
+			in ([], frame) (*COMPLETAR*)
 			end
+
+		(*Pipeline ejecutado por cada fragmento*)
+		fun perFragment fragment = 
+			fragment >>= instructionSel >>= prntCode >>=
+				flowAnalysis
     in
+		(*Pipeline del compilador*)
         source >>= lee_archivo >>= 
            lexer >>= parser >>= (*de ASCII al arbol tigerabs.exp*)
            expIncludes >>=  (*etapa agregada para que funcionen los includes*)
            escap >>= prntArbol >>= 
            seman >>= prntIr >>= (*chequeo de tipos y generacion de fragmentos*)
            canonize >>= prntCanon >>=
-           instructionSel >>= prntCode >>=
-           flowAnalysis >>=
+           (fn (stringList, frags) => (stringList, map perFragment frags)) >>= 
            prntOk (*si llega hasta aca esta todo ok*)
     end
 

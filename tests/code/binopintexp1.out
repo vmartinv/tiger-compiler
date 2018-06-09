@@ -1,5 +1,4 @@
 bien!
-------Code------
 --FRAME L0:
 LABEL: L2
 OPER: mov %d0, 2 D:[T3] S:[]
