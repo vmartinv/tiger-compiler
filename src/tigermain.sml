@@ -26,6 +26,7 @@ fun compile arbol escapes ir canon code flow inter source =
         val prntCanon = pass (fn x => if canon then print("------Canon------\n"^tigercanon.Canon(x)) else ())
         val prntCode = pass (fn (b, f) => if code then print(";;--FRAME--"^(tigerframe.name f)^":\n"^tigerassem.printCode b^";;-END-FRAME-:\n") else ())
         fun prntFlow fr instr g = if flow then print(";;--FLOW--"^(tigerframe.name fr)^":\n"^(tigerflow.printGraph (instr, g))^";;-END-FLOW-:\n") else ()
+        fun prntInter fr instr g live_out = if inter then print(";;--INTER--"^(tigerframe.name fr)^":\n"^(tigerliveness.printInter (instr, g, live_out))^";;-END-INTER-:\n") else ()
         fun prntOk _ = print "yes!!\n"
         
         (*Etapas de la compilacion*)
@@ -44,7 +45,8 @@ fun compile arbol escapes ir canon code flow inter source =
 		fun livenessAnalysis (instrs, frame) =
 			let val (flowgraph, nodes) = tigerflow.instrs2graph instrs
 				val _ = prntFlow frame instrs flowgraph
-				val (igraph, tnode) = tigerliveness.interferenceGraph flowgraph
+				val (igraph, live_out) = tigerliveness.interferenceGraph flowgraph
+				val _ = prntInter frame instrs igraph live_out
 			in (igraph, flowgraph, frame) (*COMPLETAR*)
 			end
 

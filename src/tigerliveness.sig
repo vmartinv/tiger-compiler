@@ -9,5 +9,6 @@ datatype igraph =
 
 val interferenceGraph: tigerflow.flowgraph -> igraph * (tigergraph.node -> tigertemp.temp list) (* grafo de interferencia + los temporarios que salen vivos de cada nodo del flow graph *)
 
+val printInter: tigerassem.instr list * igraph * (tigergraph.node -> tigertemp.temp list) -> string
 end
 
