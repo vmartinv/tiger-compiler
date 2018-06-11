@@ -8,11 +8,11 @@ LetExp{decs=[VarDec{name=n,escape=false,typ=NONE,init=1}],
       CallExp{func=print,args=["\x0a"]}0])}
 bien!
 L1:	.long 11
-	.string "son iguales"
+	.ascii "son iguales"
 L2:	.long 14
-	.string "son diferentes"
-L6:	.long 1
-	.string "\x0a"
+	.ascii "son diferentes"
+L6:	.long 4
+	.ascii "\x0a"
 L0:
 MOVE(
  TEMP eax,
@@ -65,14 +65,12 @@ MOVE(
    CONST 0)))
 ;;-END-PROC--:
 ------Canon------
-;;-END-PROC--:
-L0:
-	.string "\x0a"
-L6:	.long 1
-	.string "son diferentes"
+L6:	.long 4
+	.ascii "\x0a"
 L2:	.long 14
-	.string "son iguales"
+	.ascii "son diferentes"
 L1:	.long 11
+	.ascii "son iguales"
 ;;--END-STRS--:
 --FRAME L0:
 LABEL L8

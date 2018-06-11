@@ -15,7 +15,7 @@ datatype instr = OPER of {assem: string,
                | MOV of {assem: string,
                           dst: temp,
                           src: temp}
-                          
+
 fun format _ ins = ""
 	(*COMPLETAR*)
 	
@@ -28,5 +28,8 @@ fun printInstr (OPER {assem,dst,src,jump=NONE}) = "OPER: "^assem^" D:["^(String.
 printCode : instr list -> string
 *)
 fun printCode instrs = concat (map (fn instr => printInstr instr^"\n") instrs)
+
+fun formatString(l, "") = l ^ ":\n"
+	| formatString(l, s) = l^":\t.long "^tigerutils.toString (size s)^"\n"^"\t.ascii \"" ^ s ^ "\"\n"
 
 end

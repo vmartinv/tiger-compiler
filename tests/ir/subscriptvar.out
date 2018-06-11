@@ -49,8 +49,6 @@ MOVE(
       CONST 4))))))
 ;;-END-PROC--:
 ------Canon------
-;;-END-PROC--:
-L0:
 ;;--END-STRS--:
 --FRAME L0:
 LABEL L2

@@ -25,10 +25,6 @@ MOVE(
   TEMP T1))
 ;;-END-PROC--:
 ------Canon------
-;;-END-PROC--:
-L0:
-;;-END-PROC--:
-L1:
 ;;--END-STRS--:
 --FRAME L0:
 LABEL L5

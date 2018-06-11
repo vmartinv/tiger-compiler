@@ -85,7 +85,7 @@ fun printExp (Ex e) = tigerit.tree(EXP e)
 
 fun Ir(e) =
 	let	fun aux2(PROC{body, frame}) = printExp(Nx body)
-		| aux2(STRING(l, s)) = tigerframe.showString (l, s)
+		| aux2(STRING(l, s)) = tigerassem.formatString (l, s)
 	in concat (map aux2 e) end
 fun nombreFrame frame = print(".globl " ^ tigerframe.name frame ^ "\n")
 
@@ -125,9 +125,7 @@ fun stringLen s =
 fun stringExp(s: string) =
 	let	
         val l = newlabel()
-		val len = ".long "^makestring(stringLen s)
-		val str = ".string \""^s^"\""
-		val _ = datosGlobs:=(!datosGlobs @ [STRING(l, len), STRING("", str)])
+		val _ = datosGlobs:=(!datosGlobs @ [STRING(l, s)])
 	in	
         Ex(NAME l) 
     end

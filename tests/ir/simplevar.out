@@ -3,7 +3,7 @@ LetExp{decs=[VarDec{name=s,escape=false,typ=NONE,init="asdasdasd"}
  body=VarExp(SimpleVar(x))}
 bien!
 L1:	.long 9
-	.string "asdasdasd"
+	.ascii "asdasdasd"
 L0:
 MOVE(
  TEMP eax,

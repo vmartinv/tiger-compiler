@@ -15,7 +15,7 @@ fun errParsing(lbuf) = (print("Error en parsing!("
     ^(makestring(!num_linea))^
     ")["^(Lexing.getLexeme lbuf)^"]\n"); raise Fail "fin!")
 
-fun compile arbol escapes ir canon code flow inter source =
+fun compile arbol escapes ir canon code flow inter source_filename =
     let fun pass f x = (f x; x)
         infix >>=
         fun m >>= f = f m
@@ -30,11 +30,11 @@ fun compile arbol escapes ir canon code flow inter source =
         fun prntOk _ = print "yes!!\n"
         
         (*Etapas de la compilacion*)
-        fun abre_archivo file = (open_in file)
+        fun abreArchivo file = (open_in file)
                     handle _ => raise Fail (file^" no existe!")
         val lexer = lexstream
         fun parser l = prog Tok l handle _ => errParsing l
-        val expIncludes = expandIncludes (Path.dir source)
+        val expIncludes = expandIncludes (Path.dir source_filename)
         val escap = pass findEscape
         fun seman x = (transProg x; tigertrans.getResult())
  
@@ -57,13 +57,13 @@ fun compile arbol escapes ir canon code flow inter source =
 				livenessAnalysis
     in
 		(*Pipeline del compilador*)
-        source >>= abre_archivo >>= 
+        source_filename >>= abreArchivo >>=
            lexer >>= parser >>= (*de ASCII al arbol tigerabs.exp*)
            expIncludes >>=  (*etapa agregada para que funcionen los includes*)
            escap >>= prntArbol >>= 
            seman >>= prntIr >>= (*chequeo de tipos y generacion de fragmentos*)
            canonize >>= prntCanon >>=
-           (fn (stringList, frags) => (stringList, map perFragment frags)) >>= 
+           (fn (stringList, frags) => (stringList, map perFragment frags)) >>=
            prntOk (*si llega hasta aca esta todo ok*)
     end
 

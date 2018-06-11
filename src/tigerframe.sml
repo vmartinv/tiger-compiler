@@ -84,11 +84,6 @@ fun exp(InFrame k) efp = MEM(BINOP(PLUS, efp, CONST k))
 fun offset(InFrame k) = k
 | offset(InReg l) = raise Fail "Ooops"
 
-
-fun showString(l, "") = l ^ ":\n"
-	| showString("", s) = "\t" ^ s ^ "\n"
-	| showString(l, s) = l ^ ":\t" ^ s ^ "\n"
-
 fun externalCall(s, l) = let val raux = tigertemp.newtemp() in ESEQ(SEQ(EXP(CALL(NAME s, l)),MOVE(TEMP raux,TEMP rv)),TEMP raux) end
 
 

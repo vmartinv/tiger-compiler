@@ -1,9 +1,7 @@
 bien!
 ------Canon------
-;;-END-PROC--:
-L0:
-	.string "asdasdasd"
 L1:	.long 9
+	.ascii "asdasdasd"
 ;;--END-STRS--:
 --FRAME L0:
 LABEL L3

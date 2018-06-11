@@ -1,7 +1,7 @@
 SeqExp([CallExp{func=print,args=["Hello World"]}0])
 bien!
 L1:	.long 11
-	.string "Hello World"
+	.ascii "Hello World"
 L0:
 MOVE(
  TEMP eax,
@@ -17,10 +17,8 @@ MOVE(
   CONST 0))
 ;;-END-PROC--:
 ------Canon------
-;;-END-PROC--:
-L0:
-	.string "Hello World"
 L1:	.long 11
+	.ascii "Hello World"
 ;;--END-STRS--:
 --FRAME L0:
 LABEL L3

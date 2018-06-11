@@ -167,7 +167,8 @@ fun canonize l =
 		fun canon2 [] a b = (a,b)
 		 | 	canon2 (x::xs) a b =
 			case x of
-				(tigerframe.STRING s) => (canon2 xs) (s::a) b
+				(tigerframe.STRING (s, "")) => (canon2 xs) a b
+				| (tigerframe.STRING s) => (canon2 xs) (s::a) b
 				| (tigerframe.PROC {body=tb,frame=fr}) => (canon2 xs) a ((canon tb,fr)::b)
 	in
 		canon2 l [] []
@@ -179,5 +180,5 @@ type canFrag = (string list) ((tigertree.stm list, tigerframe.frame) list)
 *)
 fun Canon (strs, frags) =
 	let	fun aux2((body, frame)) = ("--FRAME "^(tigerframe.name frame)^":\n")^concat (map tigerit.tree body)^";;-END-FRAME-:\n"
-	in (concat (map tigerframe.showString strs)) ^ ";;--END-STRS--:\n" ^ concat (map aux2 frags) end
+	in (concat (map tigerassem.formatString strs)) ^ ";;--END-STRS--:\n" ^ concat (map aux2 frags) end
 end

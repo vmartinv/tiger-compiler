@@ -3,9 +3,9 @@ LetExp{decs=[VarDec{name=s,escape=false,typ=NONE,init="asd"}
  body=OpExp{left=VarExp(SimpleVar(x)),oper=EqOp,right=VarExp(SimpleVar(s))}}
 bien!
 L1:	.long 3
-	.string "asd"
+	.ascii "asd"
 L2:	.long 3
-	.string "asd"
+	.ascii "asd"
 L0:
 MOVE(
  TEMP eax,
