@@ -15,7 +15,11 @@ fun errParsing(lbuf) = (print("Error en parsing!("
     ^(makestring(!num_linea))^
     ")["^(Lexing.getLexeme lbuf)^"]\n"); raise Fail "fin!")
 
+<<<<<<< HEAD
 fun compile arbol escapes ir canon code flow inter source_filename =
+=======
+fun compile arbol escapes ir canon code flow inter asm source_filename =
+>>>>>>> Some renamings
     let fun pass f x = (f x; x)
         infix >>=
         fun m >>= f = f m
@@ -27,6 +31,7 @@ fun compile arbol escapes ir canon code flow inter source_filename =
         val prntCode = pass (fn (b, f) => if code then print(";;--FRAME--"^(tigerframe.name f)^":\n"^tigerassem.printCode b^";;-END-FRAME-:\n") else ())
         fun prntFlow fr instr g = if flow then print(";;--FLOW--"^(tigerframe.name fr)^":\n"^(tigerflow.printGraph (instr, g))^";;-END-FLOW-:\n") else ()
         fun prntInter fr instr g live_out = if inter then print(";;--INTER--"^(tigerframe.name fr)^":\n"^(tigerliveness.printInter (instr, g, live_out))^";;-END-INTER-:\n") else ()
+        val prntAsm = pass (fn x => if asm then print("------Assembler------\n"^x) else ())
         fun prntOk _ = print "yes!!\n"
         
         (*Etapas de la compilacion*)
@@ -63,14 +68,14 @@ fun compile arbol escapes ir canon code flow inter source_filename =
 					p^concat b^e
 				val insStr = ".text\n"^concat (map serializeFunc funcs)
 			in strsStr^insStr end
-		fun compilarAssembler asm =
-			let val base_file = String.substring (source, 0, size source - size ".tig")
+		fun compileAsm asm_code =
+			let val base_file = String.substring (source_filename, 0, size source_filename - size ".tig")
 				val exe_file = base_file
 				val asm_file = base_file ^ ".s"
 				val outAssem = (TextIO.openOut asm_file)
 							handle _ => raise Fail ("Fallo al escribir el archivo "^asm_file)
-				val _ = TextIO.output(outAssem, asm)
-				val _ = TextIO.closeOut(outAssem)
+				val _ = TextIO.output (outAssem, asm_code)
+				val _ = TextIO.closeOut (outAssem)
 				val _ = if OS.Process.isSuccess (OS.Process.system ("gcc -m32 -O3 -o "^exe_file^" "^asm_file)) 
 					then ()
 					else raise Fail "Error al ejecutar gcc"
@@ -90,7 +95,7 @@ fun compile arbol escapes ir canon code flow inter source_filename =
            canonize >>= prntCanon >>=
            (fn (stringList, frags) => (stringList, map perFragment frags)) >>=
            funny >>=
-           serializer >>= compilarAssembler >>=
+           serializer >>= prntAsm >>= compileAsm >>=
            prntOk (*si llega hasta aca esta todo ok*)
     end
 
@@ -105,12 +110,13 @@ fun main(args) =
         val (code, l5)      = arg(l4, "-code") 
         val (flow, l6)      = arg(l5, "-flow") 
         val (inter, l7)     = arg(l6, "-inter") 
+        val (asm, l8)     = arg(l7, "-asm") 
         
         val file = case List.filter (endswith ".tig") l7 of
                 [file] => file
                 | _ => (print usage; raise Fail "No hay archivos de entrada!")
     in
-         compile arbol escapes ir canon code flow inter file
+         compile arbol escapes ir canon code flow inter asm file
     end handle Fail s => print("Fail: "^s^"\n")
 
 val _ = main(CommandLine.arguments())
