@@ -68,11 +68,11 @@ The parse take a stream of tokens corresponding to a program and produces the ab
 Semantic Analysis - Type Checking  (FRONT-END - ENTREGA 1)
 ---------------------------------
 Semantic Analysis connects variable definitions to their uses, checks that each expression has a correct type and translate AST into a simpler representation suitable for generating machine code.
-First we will handle type checking.
+First we will handle type checking. This phase is characterized by the maintenance of two symbol tables or environments, mapping identifiers to their types, locations and other information that will be used later.
 
   tigerseman.sml     Semántica de Tiger
                         - Por ahora, nos ocupamos del tipado.
-                        - Dos entornos, tab_tipos y tab_vars:
+                        - Dos entornos, tab_tipos y tab_vars (two separate name spaces):
                                Entorno de tipo: string -> Tipo
                                Entorno de valores (variables + funciones): string -> EnvEntry (ver tigersres)
                         - transProg toma el AST del programa y lo transforma en {trans.exp, tips.Tipo} (por ahora exp=(), completar sólo tipo).
@@ -130,10 +130,17 @@ The tigerframe and tigertemp interfaces provide (to tigertrans) machine-independ
                         - Tiger tiene funciones anidadas: una función necesita tener acceso no sólo a su FP, sino al de funcs que la llaman.
                         - Cómo se logra? Usaremos Static Links.
                         - Las variables que escapan van en el frame, las que no escapan pueden ir en registros.
+                           A variable escapes if it is passed by reference, its address is taken or it is accessed from a nested function.
+                        - En tigerframe.sig tenemos la interfaz para marcos de activación que oculta los detalles de la implementación específica que elijamos después para tigerframe.sml.
 
+  tigerescap.sml     Cálculo de escapes
+                        - Una variable escapa cuando es accedida desde un marco de activación distinto del que la alocó.
+                        - escEnv es una tabla que para cada variable nos dice cuál es su profundidad y si escapa o no.
+                        
   tigertemp.sml      Temporarios y etiquetas
                         - temporary -> a value that is temporary held in a register.
                         - label -> some machine-language location whose exact address is yet to be determined.
+                        - Por ahora, tendremos infinitos temporarios y etiquetas.
 
 
 Canonicalize  (BACK-END - ENTREGA 2)
@@ -170,7 +177,7 @@ The flow analysis for the Tiger compiler is done in two stages:
   tigerliveness.sml  Cálculo de liveness y grafo de interferencia
                         - Para el cálculo de liveness, implemento el algoritmo de ecuaciones de liveness (iterativo).
                         - Uso el módulo Splayset para representar los conjuntos.
-			- Considero el tratamiento especial para MOVE (páginas 221,222).
+                        - Considero el tratamiento especial para MOVE (páginas 221,222).
 
 
 Register Allocation   (BACK-END - ENTREGA 3)
