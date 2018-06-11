@@ -79,5 +79,6 @@ OPER: mov %d0, 1 D:[T11] S:[]
 MOVE: mov %d0, %s0 D:T4 S:T11
 OPER: jmp %j0 D:[] S:[] J:[L5]
 LABEL: L6
+OPER:  D:[] S:[eax,esp,ebp,ebx,edi,esi]
 ;;-END-FRAME-:
 yes!!

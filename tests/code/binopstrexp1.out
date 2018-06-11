@@ -64,5 +64,6 @@ LABEL: L3
 MOVE: mov %d0, %s0 D:eax S:T3
 OPER: jmp %j0 D:[] S:[] J:[L5]
 LABEL: L5
+OPER:  D:[] S:[eax,esp,ebp,ebx,edi,esi]
 ;;-END-FRAME-:
 yes!!

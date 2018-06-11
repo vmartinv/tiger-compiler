@@ -40,7 +40,8 @@ fun compile arbol escapes ir canon code flow inter source =
  
         fun instructionSel (body, frame) = 
 			let val instrs = tigercodegen.codegens frame body
-			in (instrs, frame)
+				val insEE2 = tigerframe.procEntryExit2(frame,instrs)
+			in (insEE2, frame)
 			end
 		fun livenessAnalysis (instrs, frame) =
 			let val (flowgraph, nodes) = tigerflow.instrs2graph instrs
