@@ -98,7 +98,7 @@ The tigerframe and tigertemp interfaces provide (to tigertrans) machine-independ
 
   tigerseman.sml     Semántica de Tiger
                         - Ahora nos ocupamos del código intermedio, completando el campo exp que antes era (). Usamos tigertrans.
-
+                        
   tigertree.sml      Árboles de código intermedio
                         - Debe tener componentes individuales que describan solamente cosas extremadamente simples (comparables a assembler).
                         - Diferenciamos dos tipos:
@@ -118,12 +118,12 @@ The tigerframe and tigertemp interfaces provide (to tigertrans) machine-independ
                                secuencia (SEQ)
                                etiqueta (LABEL)
                         - Observación: en este lenguaje tree, no hay constructores para definición de procedimientos y funciones (sólo se puede especificar el cuerpo de cada función). Las secuencias de entradas y salidas de procedimientos las vemos después (as special "glue" that is different for each target machine).
-
+  
   tigertrans.sml     Generación de código intermedio
                         - Cómo traducir un AST a código intermedio? Tres casos:
-                            Expresión que computa un valor -> Ex of tigertree.exp:
-                            Expresión que no retorna valor -> Nx of tigertree.stm:
-                            Condicional o salto            -> Cx of label * label -> tigertree.stm
+                            Expresión que computa un valor -> Ex of tigertree.exp                  (expression)
+                            Expresión que no retorna valor -> Nx of tigertree.stm                  (no result)
+                            Condicional o salto            -> Cx of label * label -> tigertree.stm (conditional)
                           Ver tipo de datos: tigertrans.exp.
                         - Todas las variables y l-values en Tiger ocupan una palabra en memoria y entran en un registro :)
                             
