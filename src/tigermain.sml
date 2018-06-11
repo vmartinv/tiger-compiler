@@ -63,7 +63,7 @@ fun compile arbol escapes ir canon code flow inter asm source_filename =
 				val funcs = [{prolog = prolog, body = body, epilog = epilog}]
 			in (strs, funcs) end
 		fun serializer (strs, funcs) =
-			let val strsStr = ".data\n"^concat (map tigerframe.showString strs)
+			let val strsStr = ".data\n"^concat (map tigerassem.formatString strs)
 				fun serializeFunc {prolog=p, body=b, epilog=e} =
 					p^concat b^e
 				val insStr = ".text\n"^concat (map serializeFunc funcs)
@@ -94,8 +94,10 @@ fun compile arbol escapes ir canon code flow inter asm source_filename =
            seman >>= prntIr >>= (*chequeo de tipos y generacion de fragmentos*)
            canonize >>= prntCanon >>=
            (fn (stringList, frags) => (stringList, map perFragment frags)) >>=
+(*
            funny >>=
            serializer >>= prntAsm >>= compileAsm >>=
+*)
            prntOk (*si llega hasta aca esta todo ok*)
     end
 
