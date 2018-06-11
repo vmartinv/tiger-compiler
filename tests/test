@@ -41,7 +41,7 @@ function compile_tiger(){
 }
 
 function gen_output(){
-    exe="./a.out"
+    exe="${source/.tig/}"
     rm -f $exe || true
     source=${1%.*}.tig
     args=$(sed -r 's/^\s*\/\*TIGER_ARGS\s*=\s*(.*)\*\//\1/;tx;d;:x' $source)
