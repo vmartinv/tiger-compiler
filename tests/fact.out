@@ -1,0 +1,86 @@
+LetExp{decs=[FunctionDec([{name=fact,params=[{name=x,
+              escape=falsetyp=NameTy(int)}],result=int
+             body=IfExp{
+                  test=OpExp{left=VarExp(SimpleVar(x)),oper=EqOp,right=0},
+                  then'=1,
+                  else'=OpExp{left=VarExp(SimpleVar(x)),oper=TimesOp,
+                         right=CallExp{func=fact,
+                               args=[OpExp{left=VarExp(SimpleVar(x)),
+                                      oper=MinusOp,right=1}]}}}}])],
+ body=CallExp{func=fact,args=[2]}}
+bien!
+L1:
+MOVE(
+ TEMP eax,
+ ESEQ(
+  SEQ(
+   CJUMP(EQ,
+    TEMP T0,
+    CONST 0,
+    L2,L3),
+   SEQ(
+    LABEL L2,
+    SEQ(
+     MOVE(
+      TEMP T4,
+      CONST 1),
+     SEQ(
+      JUMP(       NAME L4),
+      SEQ(
+       LABEL L3,
+       SEQ(
+        MOVE(
+         TEMP T4,
+         BINOP(MUL,
+          TEMP T0,
+          ESEQ(
+           SEQ(
+            MOVE(
+             TEMP T1,
+             MEM(
+              BINOP(PLUS,
+               CONST 8,
+               TEMP ebp))),
+            SEQ(
+             MOVE(
+              TEMP T2,
+              BINOP(MINUS,
+               TEMP T0,
+               CONST 1)),
+             SEQ(
+              EXP(
+               CALL(
+                NAME L1,
+                 TEMP T1,
+                 TEMP T2)),
+              MOVE(
+               TEMP T3,
+               TEMP eax)))),
+           TEMP T3))),
+        LABEL L4)))))),
+  TEMP T4))
+;;-END-PROC--:
+L0:
+MOVE(
+ TEMP eax,
+ ESEQ(
+  SEQ(
+   MOVE(
+    TEMP T5,
+    TEMP ebp),
+   SEQ(
+    MOVE(
+     TEMP T6,
+     CONST 2),
+    SEQ(
+     EXP(
+      CALL(
+       NAME L1,
+        TEMP T5,
+        TEMP T6)),
+     MOVE(
+      TEMP T7,
+      TEMP eax)))),
+  TEMP T7))
+;;-END-PROC--:
+yes!!
