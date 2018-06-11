@@ -85,12 +85,8 @@ fun printExp (Ex e) = tigerit.tree(EXP e)
 
 fun Ir(e) =
 	let	fun aux2(PROC{body, frame}) = printExp(Nx body)
-		| aux2(STRING(l, "")) = l^":\n"
-		| aux2(STRING("", s)) = "\t"^s^"\n"
-		| aux2(STRING(l, s)) = l^":\t"^s^"\n"
-		fun aux3 [] = ""
-		| aux3(h::t) = (aux2 h)^(aux3 t)
-	in	aux3 e end
+		| aux2(STRING(l, s)) = tigerframe.showString (l, s)
+	in concat (map aux2 e) end
 fun nombreFrame frame = print(".globl " ^ tigerframe.name frame ^ "\n")
 
 (* While y for necesitan la u'ltima etiqueta para un break *)

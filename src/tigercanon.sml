@@ -179,8 +179,5 @@ type canFrag = (string list) ((tigertree.stm list, tigerframe.frame) list)
 *)
 fun Canon (strs, frags) =
 	let	fun aux2((body, frame)) = ("--FRAME "^(tigerframe.name frame)^":\n")^concat (map tigerit.tree body)^";;-END-FRAME-:\n"
-		fun aux3((l, "")) = l^":\n"
-		| aux3(("", s)) = "\t"^s^"\n"
-		| aux3((l, s)) = l^":\t"^s^"\n"
-	in (concat (map aux3 strs)) ^ ";;--END-STRS--:\n" ^ concat (map aux2 frags) end
+	in (concat (map tigerframe.showString strs)) ^ ";;--END-STRS--:\n" ^ concat (map aux2 frags) end
 end
