@@ -48,7 +48,7 @@ fun compile arbol escapes ir canon code flow inter source =
 				val _ = prntFlow frame instrs flowgraph
 				val (igraph, live_out) = tigerliveness.interferenceGraph flowgraph
 				val _ = prntInter frame instrs igraph live_out
-			in (igraph, flowgraph, frame) (*COMPLETAR*)
+			in (igraph, instrs, frame) (*REVISAR*)
 			end
 
 		(*Pipeline ejecutado por cada fragmento*)
