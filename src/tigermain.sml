@@ -50,21 +50,19 @@ fun compile arbol escapes ir canon code flow inter source_filename =
 				val _ = prntInter frame instrs igraph live_out
 			in (igraph, instrs, frame) (*REVISAR*)
 			end
-
-		(*Pipeline ejecutado por cada fragmento*)
-		fun perFragment fragment = 
-			fragment >>= instructionSel >>= prntCode >>=
-				livenessAnalysis
 		fun funny _ =
-			let
-				fun readlist (infile : string) = let 
-				  val ins = TextIO.openIn infile 
-				  fun loop ins = 
-				   case TextIO.inputLine ins of 
-					  SOME line => line :: loop ins 
-					| NONE      => [] 
-				in loop ins before TextIO.closeIn ins end
-			in concat (readlist "../hello.s") end
+			let val strs = [("msg", ".string \"Hello, world!\\n\""), ("", ".long 15")]
+				val prolog = ".global main\n"^"main:\n\tpush %ebp\n"^"\tmov %esp, %ebp\n"
+				val body = ["\tpush $msg\n","\tcall printf\n", "\tadd $4, %esp\n", "\tmov $0, %eax\n"]
+				val epilog = "\tmov %ebp, %esp\n"^"\tpop %ebp\n"^"\tret\n"
+				val funcs = [{prolog = prolog, body = body, epilog = epilog}]
+			in (strs, funcs) end
+		fun serializer (strs, funcs) =
+			let val strsStr = ".data\n"^concat (map tigerframe.showString strs)
+				fun serializeFunc {prolog=p, body=b, epilog=e} =
+					p^concat b^e
+				val insStr = ".text\n"^concat (map serializeFunc funcs)
+			in strsStr^insStr end
 		fun compilarAssembler asm =
 			let val base_file = String.substring (source, 0, size source - size ".tig")
 				val exe_file = base_file
@@ -77,6 +75,11 @@ fun compile arbol escapes ir canon code flow inter source_filename =
 					then ()
 					else raise Fail "Error al ejecutar gcc"
 			in asm end
+
+		(*Pipeline ejecutado por cada fragmento*)
+		fun perFragment fragment = 
+			fragment >>= instructionSel >>= prntCode >>=
+				livenessAnalysis
     in
 		(*Pipeline del compilador*)
         source_filename >>= abreArchivo >>=
@@ -85,9 +88,9 @@ fun compile arbol escapes ir canon code flow inter source_filename =
            escap >>= prntArbol >>= 
            seman >>= prntIr >>= (*chequeo de tipos y generacion de fragmentos*)
            canonize >>= prntCanon >>=
-           (fn (stringList, frags) => (stringList, map perFragment frags)) >>= 
+           (fn (stringList, frags) => (stringList, map perFragment frags)) >>=
            funny >>=
-           compilarAssembler >>=
+           serializer >>= compilarAssembler >>=
            prntOk (*si llega hasta aca esta todo ok*)
     end
 

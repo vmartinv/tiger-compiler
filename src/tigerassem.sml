@@ -16,7 +16,10 @@ datatype instr = OPER of {assem: string,
                           dst: temp,
                           src: temp}
 
-fun format _ ins = ""
+fun format _ =
+	fn OPER{assem,dst,src,jump} => "\t" ^ assem
+		  | aLABEL{assem,...} => assem
+		  | MOV{assem,dst,src} => "\t" ^ assem
 	(*COMPLETAR*)
 	
 fun printInstr (OPER {assem,dst,src,jump=NONE}) = "OPER: "^assem^" D:["^(String.concatWith "," dst)^"] S:["^(String.concatWith "," src)^"]"
