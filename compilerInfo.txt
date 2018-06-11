@@ -73,8 +73,8 @@ First we will handle type checking. This phase is characterized by the maintenan
   tigerseman.sml     Semántica de Tiger
                         - Por ahora, nos ocupamos del tipado.
                         - Dos entornos, tab_tipos y tab_vars (two separate name spaces):
-                               Entorno de tipo: string -> Tipo
-                               Entorno de valores (variables + funciones): string -> EnvEntry (ver tigersres)
+                           + Entorno de tipo: string -> Tipo
+                           + Entorno de valores (variables + funciones): string -> EnvEntry (ver tigersres)
                         - transProg toma el AST del programa y lo transforma en {trans.exp, tips.Tipo} (por ahora exp=(), completar sólo tipo).
 
   tigertips.sml      Tipos de Tiger
@@ -101,21 +101,23 @@ The tigerframe and tigertemp interfaces provide (to tigertrans) machine-independ
 
   tigertree.sml      Árboles de código intermedio
                         - Debe tener componentes individuales que describan solamente cosas extremadamente simples (comparables a assembler).
-                        - Expresiones - computación de algún valor, posiblemente con efectos laterales:
-                            constantes enteras (CONST)
-                            constantes simbólicas (NAME), se usan para hacer labels
-                            temporarios (TEMP) la máquina abstracta tiene infinitos temporarios, la real tiene finitos registros
-                            operaciones binarias básicas aritméticas y lógicas (BINOP)
-                            contenidos en memoria (MEM)
-                            llamada a procedimiento (CALL)
-                            secuencia que produce valor (ESEQ)
-                        - Sentencias - producen efectos laterales y controlan el flujo:
-                            mover a registro o memoria (MOV)
-                            evaluar una expresión y descartar el resultado (EXP)
-                            salto - transferir control del lugar actual a una dirección determinada (JUMP)
-                            salto condicional (CJUMP)
-                            secuencia (SEQ)
-                            etiqueta (LABEL)
+                        - Diferenciamos dos tipos:
+                           + Expresiones - computación de algún valor, posiblemente con efectos laterales:
+                               constantes enteras (CONST)
+                               constantes simbólicas (NAME), se corresponden con labels de assembler.
+                               temporarios (TEMP), se corresponden con registros de una máquina real (la máquina abstracta tiene infinitos temporarios, la real tiene finitos registros)
+                               operaciones binarias básicas aritméticas y lógicas (BINOP)
+                               contenidos en memoria (MEM)
+                               llamada a procedimiento (CALL)
+                               secuencia que produce valor (ESEQ)
+                           + Sentencias - producen efectos laterales y controlan el flujo:
+                               mover a registro o memoria (MOVE)
+                               evaluar una expresión y descartar el resultado (EXP)
+                               salto - transferir control del lugar actual a una dirección determinada (JUMP)
+                               salto condicional (CJUMP)
+                               secuencia (SEQ)
+                               etiqueta (LABEL)
+                        - Observación: en este lenguaje tree, no hay constructores para definición de procedimientos y funciones (sólo se puede especificar el cuerpo de cada función). Las secuencias de entradas y salidas de procedimientos las vemos después (as special "glue" that is different for each target machine).
 
   tigertrans.sml     Generación de código intermedio
                         - Cómo traducir un AST a código intermedio? Tres casos:
