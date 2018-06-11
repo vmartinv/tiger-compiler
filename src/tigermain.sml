@@ -55,6 +55,28 @@ fun compile arbol escapes ir canon code flow inter source_filename =
 		fun perFragment fragment = 
 			fragment >>= instructionSel >>= prntCode >>=
 				livenessAnalysis
+		fun funny _ =
+			let
+				fun readlist (infile : string) = let 
+				  val ins = TextIO.openIn infile 
+				  fun loop ins = 
+				   case TextIO.inputLine ins of 
+					  SOME line => line :: loop ins 
+					| NONE      => [] 
+				in loop ins before TextIO.closeIn ins end
+			in concat (readlist "../hello.s") end
+		fun compilarAssembler asm =
+			let val base_file = String.substring (source, 0, size source - size ".tig")
+				val exe_file = base_file
+				val asm_file = base_file ^ ".s"
+				val outAssem = (TextIO.openOut asm_file)
+							handle _ => raise Fail ("Fallo al escribir el archivo "^asm_file)
+				val _ = TextIO.output(outAssem, asm)
+				val _ = TextIO.closeOut(outAssem)
+				val _ = if OS.Process.isSuccess (OS.Process.system ("gcc -m32 -O3 -o "^exe_file^" "^asm_file)) 
+					then ()
+					else raise Fail "Error al ejecutar gcc"
+			in asm end
     in
 		(*Pipeline del compilador*)
         source_filename >>= abreArchivo >>=
@@ -63,7 +85,9 @@ fun compile arbol escapes ir canon code flow inter source_filename =
            escap >>= prntArbol >>= 
            seman >>= prntIr >>= (*chequeo de tipos y generacion de fragmentos*)
            canonize >>= prntCanon >>=
-           (fn (stringList, frags) => (stringList, map perFragment frags)) >>=
+           (fn (stringList, frags) => (stringList, map perFragment frags)) >>= 
+           funny >>=
+           compilarAssembler >>=
            prntOk (*si llega hasta aca esta todo ok*)
     end
 
