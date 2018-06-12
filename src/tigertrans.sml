@@ -83,11 +83,11 @@ fun printExp (Ex e) = tigerit.tree(EXP e)
     | printExp (Nx s) = tigerit.tree(s)
     | printExp _ = raise Fail "No debe ocurrir 3324435\n"
 
+fun nombreFrame frame = ";;-PROC-" ^ tigerframe.name frame ^ "--:\n"
 fun Ir(e) =
-    let fun aux2(PROC{body, frame}) = printExp(Nx body)
+    let fun aux2(PROC{body, frame}) = nombreFrame frame ^printExp(Nx body)^";;-END-PROC--:\n"
         | aux2(STRING(l, s)) = tigerassem.formatString (l, s)
     in concat (map aux2 e) end
-fun nombreFrame frame = print(".globl " ^ tigerframe.name frame ^ "\n")
 
 (* While y for necesitan la u'ltima etiqueta para un break *)
 local
@@ -104,11 +104,9 @@ end
 val datosGlobs = ref ([]: frag list)
 fun procEntryExit{level: level, body} =
     let 
-        val label = STRING(name(#frame level), "")
         val body' = PROC{frame= #frame level, body=unNx body}
-        val final = STRING(";;-END-PROC--", "")
     in  
-        datosGlobs:=(!datosGlobs@[label, body', final]) 
+        datosGlobs:=(!datosGlobs@[body']) 
     end
 fun getResult() = !datosGlobs
 fun clearResult() = datosGlobs := []

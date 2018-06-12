@@ -5,7 +5,7 @@ LetExp{decs=[TypeDec([{name=l,
               init=RecordExp{fields=[(elem,15)(next,NilExp)],typ=l}}],
  body=VarExp(FieldVar(SimpleVar(ls),elem))}
 bien!
-L0:
+;;-PROC-L0--:
 MOVE(
  TEMP eax,
  ESEQ(

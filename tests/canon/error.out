@@ -13,7 +13,7 @@ L2:	.long 14
 	.ascii "son diferentes"
 L6:	.long 4
 	.ascii "\x0a"
-L0:
+;;-PROC-L0--:
 MOVE(
  TEMP eax,
  ESEQ(

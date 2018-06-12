@@ -9,7 +9,7 @@ LetExp{decs=[FunctionDec([{name=fact,params=[{name=x,
                                       oper=MinusOp,right=1}]}}}}])],
  body=CallExp{func=fact,args=[2]}}
 bien!
-L1:
+;;-PROC-L1--:
 MOVE(
  TEMP eax,
  ESEQ(
@@ -60,7 +60,7 @@ MOVE(
         LABEL L4)))))),
   TEMP T4))
 ;;-END-PROC--:
-L0:
+;;-PROC-L0--:
 MOVE(
  TEMP eax,
  ESEQ(

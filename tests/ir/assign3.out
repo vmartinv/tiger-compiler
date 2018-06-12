@@ -3,7 +3,7 @@ LetExp{decs=[TypeDec([{name=A,ty=ArrayTy(int)}])
               init=ArrayExp{test=A,size=100,init=51}}],
  body=SeqExp([AssignExp{var=SubscriptVar(SimpleVar(a),23),exp=3}15])}
 bien!
-L0:
+;;-PROC-L0--:
 MOVE(
  TEMP eax,
  ESEQ(

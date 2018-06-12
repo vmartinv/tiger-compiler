@@ -1,6 +1,6 @@
 SeqExp([ForExp{var=i,escape=false,lo=0,hi=2,body=UnitExp}0])
 bien!
-L0:
+;;-PROC-L0--:
 MOVE(
  TEMP eax,
  ESEQ(

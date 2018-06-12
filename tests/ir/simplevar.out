@@ -4,7 +4,7 @@ LetExp{decs=[VarDec{name=s,escape=false,typ=NONE,init="asdasdasd"}
 bien!
 L1:	.long 9
 	.ascii "asdasdasd"
-L0:
+;;-PROC-L0--:
 MOVE(
  TEMP eax,
  ESEQ(

@@ -4,14 +4,14 @@ LetExp{decs=[FunctionDec([{name=g,params=[{name=x,escape=falsetyp=NameTy(int)}
              params=[],result=intbody=CallExp{func=g,args=[0]}}])],
  body=CallExp{func=f,args=[]}}
 bien!
-L1:
+;;-PROC-L1--:
 MOVE(
  TEMP eax,
  BINOP(PLUS,
   TEMP T0,
   CONST 1))
 ;;-END-PROC--:
-L2:
+;;-PROC-L2--:
 MOVE(
  TEMP eax,
  ESEQ(
@@ -37,7 +37,7 @@ MOVE(
       TEMP eax)))),
   TEMP T3))
 ;;-END-PROC--:
-L0:
+;;-PROC-L0--:
 MOVE(
  TEMP eax,
  ESEQ(

@@ -2,7 +2,7 @@ LetExp{decs=[TypeDec([{name=A,ty=ArrayTy(int)}])
              VarDec{name=a,escape=false,typ=NONE,
               init=ArrayExp{test=A,size=100,init=51}}],body=15}
 bien!
-L0:
+;;-PROC-L0--:
 MOVE(
  TEMP eax,
  ESEQ(

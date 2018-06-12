@@ -167,8 +167,7 @@ fun canonize l =
 		fun canon2 [] a b = (a,b)
 		 | 	canon2 (x::xs) a b =
 			case x of
-				(tigerframe.STRING (s, "")) => (canon2 xs) a b
-				| (tigerframe.STRING s) => (canon2 xs) (s::a) b
+				(tigerframe.STRING s) => (canon2 xs) (s::a) b
 				| (tigerframe.PROC {body=tb,frame=fr}) => (canon2 xs) a ((canon tb,fr)::b)
 	in
 		canon2 l [] []

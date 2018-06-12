@@ -1,7 +1,7 @@
 LetExp{decs=[VarDec{name=x,escape=false,typ=NONE,init=5}],
  body=SeqExp([IfExp{test=VarExp(SimpleVar(x)),then'=UnitExp,else'=UnitExp}0])}
 bien!
-L0:
+;;-PROC-L0--:
 MOVE(
  TEMP eax,
  ESEQ(
