@@ -159,7 +159,16 @@ Rewrite the IR for convenience:
 
 Instruction Selection   (BACK-END - ENTREGA 3)
 ---------------------
+The IR expresses only one operation in each tree node, but a real machine instruction can often perform several.
+The job of the instruction selection phase is to find the appropiate machine instructions for the IR.
+We have chosen the architecture i386.
 
+  tigerassem.sml     Abstract assembly-language instructions
+                        - Each instruction is either an OPER, LABEL or MOVE.
+
+  tigercodegen.sml   Code generation
+                        - The maximal munch algorithm is used to transform an IR into a list of assembler instructions.
+                        
 
 Control Flow & Liveness   (BACK-END - ENTREGA 3)
 -----------------------
