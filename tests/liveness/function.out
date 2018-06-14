@@ -1,0 +1,233 @@
+bien!
+;;--FRAME--L0:
+LABEL: L8
+MOVE: mov %'s0, %'d0 D:T5 S:ebp
+OPER: mov $5, %'d0 D:[T9] S:[]
+MOVE: mov %'s0, %'d0 D:T6 S:T9
+OPER: pushq 's0 D:[] S:[T6]
+OPER: pushq 's0 D:[] S:[T5]
+OPER: call L1 D:[eax,ecd,edx,eax] S:[]
+OPER: add $8, 'd0 D:[esp] S:[esp]
+MOVE: mov %'s0, %'d0 D:T7 S:eax
+MOVE: mov %'s0, %'d0 D:eax S:T7
+OPER: jmp 'j0 D:[] S:[] J:[L7]
+LABEL: L7
+OPER:  D:[] S:[eax,esp,ebp,ebx,edi,esi]
+;;-END-FRAME-:
+;;--FLOW--L0:
+succesors:
+	n0(LABEL: L8): n1
+	n1(MOVE: mov %'s0, %'d0 D:T5 S:ebp): n2
+	n2(OPER: mov $5, %'d0 D:[T9] S:[]): n3
+	n3(MOVE: mov %'s0, %'d0 D:T6 S:T9): n4
+	n4(OPER: pushq 's0 D:[] S:[T6]): n5
+	n5(OPER: pushq 's0 D:[] S:[T5]): n6
+	n6(OPER: call L1 D:[eax,ecd,edx,eax] S:[]): n7
+	n7(OPER: add $8, 'd0 D:[esp] S:[esp]): n8
+	n8(MOVE: mov %'s0, %'d0 D:T7 S:eax): n9
+	n9(MOVE: mov %'s0, %'d0 D:eax S:T7): n10
+	n10(OPER: jmp 'j0 D:[] S:[] J:[L7]): n11
+	n11(LABEL: L7): n12
+	n12(OPER:  D:[] S:[eax,esp,ebp,ebx,edi,esi]): 
+def:
+	n0: 
+	n1: T5
+	n2: T9
+	n3: T6
+	n4: 
+	n5: 
+	n6: eax, ecd, edx, eax
+	n7: esp
+	n8: T7
+	n9: eax
+	n10: 
+	n11: 
+	n12: 
+use:
+	n0: 
+	n1: ebp
+	n2: 
+	n3: T9
+	n4: T6
+	n5: T5
+	n6: 
+	n7: esp
+	n8: eax
+	n9: T7
+	n10: 
+	n11: 
+	n12: eax, esp, ebp, ebx, edi, esi
+ismove:
+	n0: false
+	n1: true
+	n2: false
+	n3: true
+	n4: false
+	n5: false
+	n6: false
+	n7: false
+	n8: true
+	n9: true
+	n10: false
+	n11: false
+	n12: false
+;;-END-FLOW-:
+;;--FRAME--L1:
+LABEL: L6
+OPER: mov $0, %'d0 D:[T10] S:[]
+OPER: cmp 's0, 's1 D:[] S:[T0,T10]
+OPER: je 'j0 D:[] S:[] J:[L2,L3]
+LABEL: L3
+MOVE: mov %'s0, %'d0 D:T8 S:T0
+MOVE: mov %'s0, %'d0 D:T12 S:ebp
+OPER: add %'d0, $8 D:[T12] S:[T12]
+OPER: mov %'s0, %'d0 D:[T11] S:[T12]
+MOVE: mov %'s0, %'d0 D:T1 S:T11
+MOVE: mov %'s0, %'d0 D:T13 S:T0
+OPER: sub %'d0, $1 D:[T13] S:[T13]
+MOVE: mov %'s0, %'d0 D:T2 S:T13
+OPER: pushq 's0 D:[] S:[T2]
+OPER: pushq 's0 D:[] S:[T1]
+OPER: call L1 D:[eax,ecd,edx,eax] S:[]
+OPER: add $8, 'd0 D:[esp] S:[esp]
+MOVE: mov %'s0, %'d0 D:T3 S:eax
+MOVE: mov %'s0, %'d0 D:T14 S:T8
+OPER: add %'d0, %'s1 D:[T14] S:[T14,T3]
+MOVE: mov %'s0, %'d0 D:T4 S:T14
+LABEL: L4
+MOVE: mov %'s0, %'d0 D:eax S:T4
+OPER: jmp 'j0 D:[] S:[] J:[L5]
+LABEL: L2
+OPER: mov $0, %'d0 D:[T15] S:[]
+MOVE: mov %'s0, %'d0 D:T4 S:T15
+OPER: jmp 'j0 D:[] S:[] J:[L4]
+LABEL: L5
+OPER:  D:[] S:[eax,esp,ebp,ebx,edi,esi]
+;;-END-FRAME-:
+;;--FLOW--L1:
+succesors:
+	n0(LABEL: L6): n1
+	n1(OPER: mov $0, %'d0 D:[T10] S:[]): n2
+	n2(OPER: cmp 's0, 's1 D:[] S:[T0,T10]): n3
+	n3(OPER: je 'j0 D:[] S:[] J:[L2,L3]): n4, n24
+	n4(LABEL: L3): n5
+	n5(MOVE: mov %'s0, %'d0 D:T8 S:T0): n6
+	n6(MOVE: mov %'s0, %'d0 D:T12 S:ebp): n7
+	n7(OPER: add %'d0, $8 D:[T12] S:[T12]): n8
+	n8(OPER: mov %'s0, %'d0 D:[T11] S:[T12]): n9
+	n9(MOVE: mov %'s0, %'d0 D:T1 S:T11): n10
+	n10(MOVE: mov %'s0, %'d0 D:T13 S:T0): n11
+	n11(OPER: sub %'d0, $1 D:[T13] S:[T13]): n12
+	n12(MOVE: mov %'s0, %'d0 D:T2 S:T13): n13
+	n13(OPER: pushq 's0 D:[] S:[T2]): n14
+	n14(OPER: pushq 's0 D:[] S:[T1]): n15
+	n15(OPER: call L1 D:[eax,ecd,edx,eax] S:[]): n16
+	n16(OPER: add $8, 'd0 D:[esp] S:[esp]): n17
+	n17(MOVE: mov %'s0, %'d0 D:T3 S:eax): n18
+	n18(MOVE: mov %'s0, %'d0 D:T14 S:T8): n19
+	n19(OPER: add %'d0, %'s1 D:[T14] S:[T14,T3]): n20
+	n20(MOVE: mov %'s0, %'d0 D:T4 S:T14): n21
+	n21(LABEL: L4): n22
+	n22(MOVE: mov %'s0, %'d0 D:eax S:T4): n23
+	n23(OPER: jmp 'j0 D:[] S:[] J:[L5]): n28
+	n24(LABEL: L2): n25
+	n25(OPER: mov $0, %'d0 D:[T15] S:[]): n26
+	n26(MOVE: mov %'s0, %'d0 D:T4 S:T15): n27
+	n27(OPER: jmp 'j0 D:[] S:[] J:[L4]): n21
+	n28(LABEL: L5): n29
+	n29(OPER:  D:[] S:[eax,esp,ebp,ebx,edi,esi]): 
+def:
+	n0: 
+	n1: T10
+	n2: 
+	n3: 
+	n4: 
+	n5: T8
+	n6: T12
+	n7: T12
+	n8: T11
+	n9: T1
+	n10: T13
+	n11: T13
+	n12: T2
+	n13: 
+	n14: 
+	n15: eax, ecd, edx, eax
+	n16: esp
+	n17: T3
+	n18: T14
+	n19: T14
+	n20: T4
+	n21: 
+	n22: eax
+	n23: 
+	n24: 
+	n25: T15
+	n26: T4
+	n27: 
+	n28: 
+	n29: 
+use:
+	n0: 
+	n1: 
+	n2: T0, T10
+	n3: 
+	n4: 
+	n5: T0
+	n6: ebp
+	n7: T12
+	n8: T12
+	n9: T11
+	n10: T0
+	n11: T13
+	n12: T13
+	n13: T2
+	n14: T1
+	n15: 
+	n16: esp
+	n17: eax
+	n18: T8
+	n19: T14, T3
+	n20: T14
+	n21: 
+	n22: T4
+	n23: 
+	n24: 
+	n25: 
+	n26: T15
+	n27: 
+	n28: 
+	n29: eax, esp, ebp, ebx, edi, esi
+ismove:
+	n0: false
+	n1: false
+	n2: false
+	n3: false
+	n4: false
+	n5: true
+	n6: true
+	n7: false
+	n8: false
+	n9: true
+	n10: true
+	n11: false
+	n12: true
+	n13: false
+	n14: false
+	n15: false
+	n16: false
+	n17: true
+	n18: true
+	n19: false
+	n20: true
+	n21: false
+	n22: true
+	n23: false
+	n24: false
+	n25: false
+	n26: true
+	n27: false
+	n28: false
+	n29: false
+;;-END-FLOW-:
+yes!!

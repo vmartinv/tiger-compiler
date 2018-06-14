@@ -1,0 +1,8 @@
+/*TIGER_ARGS= -code -flow*/
+let
+    var x : int := 5
+    var y : int := 0
+in
+    if x < 6 then y:=x;
+    if y = 0 then 1 else 2
+end
