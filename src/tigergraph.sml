@@ -52,7 +52,7 @@ fun newNode(g:graph) = (*agrego el nodo al final porque no hay una operación de
     let fun look(lo,hi) =
                (* i < lo indicates i in use
                   i >= hi indicates i not in use *)
-            if lo=hi then (update(g,lo,emptyNode); (g,lo))
+            if lo=hi then (update(g,lo,emptyNode); (g,lo)) (* binary search to find empty slot *)
             else let val m = (lo+hi) div 2
                   in if isFake(sub(g,m)) then look(lo,m) else look(m+1,hi)
                  end

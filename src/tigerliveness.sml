@@ -7,10 +7,10 @@ open tigertemp
 open tigerutils
 
 datatype igraph =
-	IGRAPH of {graph: tigergraph.graph, (*interference graph*)
-	           tnode: tigertemp.temp -> tigergraph.node, (*mapea temporarios del assembler a nodos*)
-	           gtemp: tigergraph.node -> tigertemp.temp, (*mapea nodos a temporarios del assembler*)
-	           moves: (tigergraph.node * tigergraph.node) list} (*en lo posible asignar el mismo registro a cada par*)
+	IGRAPH of {graph: tigergraph.graph,                         (* interference graph *)
+	           tnode: tigertemp.temp -> tigergraph.node,        (* mapea temporarios del assembler a nodos *)
+	           gtemp: tigergraph.node -> tigertemp.temp,        (* mapping inverso al anterior *)
+	           moves: (tigergraph.node * tigergraph.node) list} (* en lo posible asignar el mismo registro a cada par *)
 
 fun livenessCalc (FGRAPH {control, def, use, ismove}) = (* computation of liveness by iteration *)
     let (* auxiliar values *)
