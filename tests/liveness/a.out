@@ -1,0 +1,45 @@
+bien!
+;;--FRAME--L0:
+LABEL: L2
+OPER: mov $1234, %'d0 D:[T1] S:[]
+MOVE: mov %'s0, %'d0 D:T0 S:T1
+MOVE: mov %'s0, %'d0 D:eax S:T0
+OPER: jmp 'j0 D:[] S:[] J:[L1]
+LABEL: L1
+OPER:  D:[] S:[eax,esp,ebp,ebx,edi,esi]
+;;-END-FRAME-:
+;;--FLOW--L0:
+succesors:
+	n0(LABEL: L2): n1
+	n1(OPER: mov $1234, %'d0 D:[T1] S:[]): n2
+	n2(MOVE: mov %'s0, %'d0 D:T0 S:T1): n3
+	n3(MOVE: mov %'s0, %'d0 D:eax S:T0): n4
+	n4(OPER: jmp 'j0 D:[] S:[] J:[L1]): n5
+	n5(LABEL: L1): n6
+	n6(OPER:  D:[] S:[eax,esp,ebp,ebx,edi,esi]): 
+def:
+	n0: 
+	n1: T1
+	n2: T0
+	n3: eax
+	n4: 
+	n5: 
+	n6: 
+use:
+	n0: 
+	n1: 
+	n2: T1
+	n3: T0
+	n4: 
+	n5: 
+	n6: eax, esp, ebp, ebx, edi, esi
+ismove:
+	n0: false
+	n1: false
+	n2: true
+	n3: true
+	n4: false
+	n5: false
+	n6: false
+;;-END-FLOW-:
+yes!!

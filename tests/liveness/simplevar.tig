@@ -1,0 +1,8 @@
+/*TIGER_ARGS= -code -flow*/
+let
+    var s:="asdasdasd"
+    var x:=1234
+    var u:=x+8
+in
+    u-1
+end
