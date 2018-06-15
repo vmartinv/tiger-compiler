@@ -12,7 +12,8 @@ datatype igraph =
 	           gtemp: tigergraph.node -> tigertemp.temp,        (* mapping inverso al anterior *)
 	           moves: (tigergraph.node * tigergraph.node) list} (* en lo posible asignar el mismo registro a cada par *)
 
-fun livenessCalc (FGRAPH {control, def, use, ismove}) = (* computation of liveness by iteration *)
+(* computation of liveness by iteration *)
+fun livenessCalc (FGRAPH {control, def, use, ismove}) =
     let (* auxiliar values *)
         val nodes = nodes control
         val empty: (node, temp Splayset.set) Splaymap.dict = Splaymap.mkDict(cmp)
@@ -31,12 +32,13 @@ fun livenessCalc (FGRAPH {control, def, use, ismove}) = (* computation of livene
             if checkEq(lIn, lIn') andalso checkEq(lOut, lOut')
             then (lIn, lOut) (* fixed point reached! *)
             else let val newIn =  List.foldl (fn (n,map) => Splaymap.insert(map, n, Splayset.union(Splaymap.find(set_use, n), (Splayset.difference(Splaymap.find(lOut, n), Splaymap.find(set_def, n)))))) empty nodes
-                     val newOut = List.foldl (fn (n,map) => Splaymap.insert(map, n, (List.foldl (fn (m,s) => Splayset.union(s, Splaymap.find(lIn, m))) (Splayset.empty String.compare) (succ n)))) empty nodes
+                     val newOut = List.foldl (fn (n,map) => Splaymap.insert(map, n, (List.foldl (fn (m,s) => Splayset.union(s, Splaymap.find(newIn, m))) (Splayset.empty String.compare) (succ n)))) empty nodes (* antes decía lIn en vez de newIn *)
                  in repeatIt newIn lIn newOut lOut
                  end
     in  repeatIt live_in live_in' live_out live_out'
     end
 
+(* interference graph *)
 fun interferenceGraph(cfg) = 
     let (* 1ro : calculo de liveness *)
         val (l_in, l_out) = livenessCalc cfg
@@ -50,7 +52,7 @@ fun interferenceGraph(cfg) =
         val use_tab = getUse cfg
         val temps = (* conjunto de todos los temporarios del programa *)
 					let val def_temps = List.foldl (fn (n, s) => Splayset.union(s, fromListtoSet(String.compare, Splaymap.find(def_tab, n)))) (Splayset.empty String.compare) cfnodes
-                        (* necesario o con los de defs estamos? Usás un temporario que no definís?: *)
+                        (* necesario o con los de defs estamos? Usás un temporario que no definís?: *) (* En la pág 213 dice que una variable puede venir de antes, ej: formal parameter *)
                         val use_temps = List.foldl (fn (n, s) => Splayset.union(s, fromListtoSet(String.compare, Splaymap.find(use_tab, n)))) (Splayset.empty String.compare) cfnodes
                     in Splayset.union(def_temps, use_temps)
                     end
