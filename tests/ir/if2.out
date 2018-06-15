@@ -3,7 +3,7 @@ LetExp{decs=[VarDec{name=x,escape=false,typ=NONE,init=5}],
 bien!
 ;;-PROC-L0--:
 MOVE(
- TEMP eax,
+ TEMP rax,
  ESEQ(
   MOVE(
    TEMP T0,

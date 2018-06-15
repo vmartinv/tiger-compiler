@@ -15,7 +15,7 @@ L6:	.long 4
 	.ascii "\x0a"
 ;;-PROC-L0--:
 MOVE(
- TEMP eax,
+ TEMP rax,
  ESEQ(
   MOVE(
    TEMP T0,
@@ -100,7 +100,7 @@ EXP(
   NAME print,
    TEMP T5))
 MOVE(
- TEMP eax,
+ TEMP rax,
  CONST 0)
 JUMP( NAME L7)
 LABEL L3

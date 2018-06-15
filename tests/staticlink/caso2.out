@@ -3,17 +3,17 @@ LetExp{decs=[FunctionDec([{name=f,params=[],result=intbody=0}])],
 bien!
 ;;-PROC-L1--:
 MOVE(
- TEMP eax,
+ TEMP rax,
  CONST 0)
 ;;-END-PROC--:
 ;;-PROC-L0--:
 MOVE(
- TEMP eax,
+ TEMP rax,
  ESEQ(
   SEQ(
    MOVE(
     TEMP T0,
-    TEMP ebp),
+    TEMP rbp),
    SEQ(
     EXP(
      CALL(
@@ -21,7 +21,7 @@ MOVE(
        TEMP T0)),
     MOVE(
      TEMP T1,
-     TEMP eax))),
+     TEMP rax))),
   TEMP T1))
 ;;-END-PROC--:
 yes!!

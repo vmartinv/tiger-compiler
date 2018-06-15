@@ -7,7 +7,7 @@ LetExp{decs=[TypeDec([{name=l,
 bien!
 ;;-PROC-L0--:
 MOVE(
- TEMP eax,
+ TEMP rax,
  ESEQ(
   MOVE(
    TEMP T1,
@@ -21,7 +21,7 @@ MOVE(
         CONST 0)),
      MOVE(
       TEMP T0,
-      TEMP eax)),
+      TEMP rax)),
     TEMP T0)),
   ESEQ(
    SEQ(
@@ -37,7 +37,7 @@ MOVE(
           TEMP T2)),
        MOVE(
         TEMP T3,
-        TEMP eax)),
+        TEMP rax)),
       TEMP T3))),
    MEM(
     BINOP(PLUS,

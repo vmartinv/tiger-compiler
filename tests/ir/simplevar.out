@@ -6,7 +6,7 @@ L1:	.long 9
 	.ascii "asdasdasd"
 ;;-PROC-L0--:
 MOVE(
- TEMP eax,
+ TEMP rax,
  ESEQ(
   SEQ(
    MOVE(

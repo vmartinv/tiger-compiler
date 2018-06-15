@@ -4,7 +4,7 @@ L1:	.long 11
 	.ascii "Hello World"
 ;;-PROC-L0--:
 MOVE(
- TEMP eax,
+ TEMP rax,
  ESEQ(
   SEQ(
    MOVE(
@@ -30,7 +30,7 @@ EXP(
   NAME print,
    TEMP T0))
 MOVE(
- TEMP eax,
+ TEMP rax,
  CONST 0)
 JUMP( NAME L2)
 LABEL L2

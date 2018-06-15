@@ -2,7 +2,7 @@ IfExp{test=3,then'=4,else'=2}
 bien!
 ;;-PROC-L0--:
 MOVE(
- TEMP eax,
+ TEMP rax,
  ESEQ(
   SEQ(
    JUMP(    NAME L1),

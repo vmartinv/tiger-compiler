@@ -21,14 +21,17 @@ open tigertree
 
 type level = int
 
-val fp = "ebp"				(* frame pointer *)
-val sp = "esp"				(* stack pointer *)
-val rv = "eax"				(* return value  *)
-val ov = "edx"				(* overflow value *)
-val wSz = 4					(* word size in bytes *)
-val log2WSz = 2				(* base two logarithm of word size in bytes *)
+val rax = "rax"
+val rdx = "rdx"
+val fp =  "rbp"				(* frame pointer  (ebp en el 386) *)
+val sp =  "rsp"				(* stack pointer  (esp en el 386) *)
+val rv =  "rax"			 	(* return value   (eax en el 386) *)
+val ov =  "rdx"				(* overflow value (edx en el 386) *)
+
+val wSz = 8					(* word size in bytes *)
+val log2WSz = 3				(* base two logarithm of word size in bytes *)
 val fpPrev = 0				(* offset (bytes) *)
-val fpPrevLev = 8			(* offset (bytes) *)
+val fpPrevLev = ~wSz		(* offset (bytes) *)
 (*
 val argsInicial = 0			(* words *)
 val argsOffInicial = 0		(* words *)
@@ -39,11 +42,14 @@ val localsInicial = 0		(* words *)
 val localsGap = ~wSz 			(* bytes *)
 val calldefs = [rv]
 val specialregs = [fp, sp]
-val argregs = []
-val callersaves = [rv, "ecd", "edx"]
-val calleesaves = ["ebx", "edi", "esi"] (*VER: ESP and EBP will also be preserved by the calling convention*)
+val argregs = ["rdi","rsi","rdx","rcx","r8","r9"] (* registros donde van los primeros argumentos segun la convención de llamada *)
+val callersaves = ["rax","rdx","rcx","r10","r11"] @ argregs (* registros preservador por el invocador *) (* DUDA: En el libro pg 208 dice que deberia ser disjunto con argregs *)
+val calleesaves = ["rbx","r12","r13","r14","r15"] (* registros preservador por la funcion invocada *)
 val calldefs = callersaves @ [rv]
 val coloredregisters = [](*COMPLETAR*)
+(*En lo de Mariano
+val coloredregisters = callersaves @ calleesaves
+Ya lo de arriba lo modifique por si necesito algun regintro en codegen*)
 
 type register = string
 datatype access = InFrame of int | InReg of tigertemp.label      (* Describe args y vars locales que pueden estar en el marco o en registros *)

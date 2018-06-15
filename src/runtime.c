@@ -99,7 +99,7 @@ string empty = {0, ""};
 long *_initArray(long size, long init)
 {
     int i;
-    long *a = malloc(size * sizeof(long) + 1);
+    long *a = malloc((1+size) * sizeof(long));
 	a[0] = size;
     for (i = 1; i <= size; i++)
 		a[i] = init;

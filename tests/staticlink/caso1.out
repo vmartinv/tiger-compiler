@@ -6,22 +6,22 @@ LetExp{decs=[FunctionDec([{name=g,params=[{name=x,escape=falsetyp=NameTy(int)}
 bien!
 ;;-PROC-L1--:
 MOVE(
- TEMP eax,
+ TEMP rax,
  BINOP(PLUS,
   TEMP T0,
   CONST 1))
 ;;-END-PROC--:
 ;;-PROC-L2--:
 MOVE(
- TEMP eax,
+ TEMP rax,
  ESEQ(
   SEQ(
    MOVE(
     TEMP T1,
     MEM(
      BINOP(PLUS,
-      CONST 8,
-      TEMP ebp))),
+      CONST -8,
+      TEMP rbp))),
    SEQ(
     MOVE(
      TEMP T2,
@@ -34,17 +34,17 @@ MOVE(
         TEMP T2)),
      MOVE(
       TEMP T3,
-      TEMP eax)))),
+      TEMP rax)))),
   TEMP T3))
 ;;-END-PROC--:
 ;;-PROC-L0--:
 MOVE(
- TEMP eax,
+ TEMP rax,
  ESEQ(
   SEQ(
    MOVE(
     TEMP T4,
-    TEMP ebp),
+    TEMP rbp),
    SEQ(
     EXP(
      CALL(
@@ -52,7 +52,7 @@ MOVE(
        TEMP T4)),
     MOVE(
      TEMP T5,
-     TEMP eax))),
+     TEMP rax))),
   TEMP T5))
 ;;-END-PROC--:
 yes!!

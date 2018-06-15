@@ -8,7 +8,7 @@ L2:	.long 3
 	.ascii "asd"
 ;;-PROC-L0--:
 MOVE(
- TEMP eax,
+ TEMP rax,
  ESEQ(
   SEQ(
    MOVE(
@@ -33,7 +33,7 @@ MOVE(
            TEMP T0)),
         MOVE(
          TEMP T2,
-         TEMP eax)),
+         TEMP rax)),
        TEMP T2),
       CONST 0,
       L3,L4),

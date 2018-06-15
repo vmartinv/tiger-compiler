@@ -4,7 +4,7 @@ LetExp{decs=[TypeDec([{name=A,ty=ArrayTy(int)}])
 bien!
 ;;-PROC-L0--:
 MOVE(
- TEMP eax,
+ TEMP rax,
  ESEQ(
   MOVE(
    TEMP T1,
@@ -17,7 +17,7 @@ MOVE(
         CONST 51)),
      MOVE(
       TEMP T0,
-      TEMP eax)),
+      TEMP rax)),
     TEMP T0)),
   CONST 15))
 ;;-END-PROC--:

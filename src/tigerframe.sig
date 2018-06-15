@@ -3,6 +3,8 @@ sig
 
 type frame
 type register = string
+val rax : tigertemp.temp
+val rdx : tigertemp.temp
 val rv : tigertemp.temp (* return value *)
 val ov : tigertemp.temp (* overflow value *)
 val fp : tigertemp.temp (* frame pointer *)

@@ -6,7 +6,7 @@ LetExp{decs=[VarDec{name=s,escape=false,typ=NONE,init=2}
 bien!
 ;;-PROC-L0--:
 MOVE(
- TEMP eax,
+ TEMP rax,
  ESEQ(
   SEQ(
    MOVE(
