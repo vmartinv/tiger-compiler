@@ -26,7 +26,7 @@ fun compile arbol escapes ir canon code flow inter source_filename =
         val prntCanon = pass (fn x => if canon then print("------Canon------\n"^tigercanon.Canon(x)) else ())
         val prntCode = pass (fn (b, f) => if code then print(";;--FRAME--"^(tigerframe.name f)^":\n"^tigerassem.printCode b^";;-END-FRAME-:\n") else ())
         fun prntFlow fr instr g = if flow then print(";;--FLOW--"^(tigerframe.name fr)^":\n"^(tigerflow.printGraph (instr, g))^";;-END-FLOW-:\n") else ()
-        fun prntInter fr instr g live_out = if inter then print(";;--INTER--"^(tigerframe.name fr)^":\n"^(tigerliveness.printInter (instr, g, live_out))^";;-END-INTER-:\n") else ()
+        fun prntInter fr g live_out = if inter then print(";;--INTER--"^(tigerframe.name fr)^":\n"^(tigerliveness.printInter (g, live_out))^";;-END-INTER-:\n") else ()
         fun prntOk _ = print "yes!!\n"
         
         (*Etapas de la compilacion*)
@@ -39,24 +39,24 @@ fun compile arbol escapes ir canon code flow inter source_filename =
         fun seman x = (transProg x; tigertrans.getResult())
  
         fun instructionSel (body, frame) = 
-			let val instrs = tigercodegen.codegens frame body
-				val insEE2 = tigerframe.procEntryExit2(frame,instrs)
-			in (insEE2, frame)
-			end
-		fun livenessAnalysis (instrs, frame) =
-			let val (flowgraph, nodes) = tigerflow.instrs2graph instrs
-				val _ = prntFlow frame instrs flowgraph
-				val (igraph, live_out) = tigerliveness.interferenceGraph flowgraph
-				val _ = prntInter frame instrs igraph live_out
-			in (igraph, instrs, frame) (*REVISAR*)
-			end
+            let val instrs = tigercodegen.codegens frame body
+                val insEE2 = tigerframe.procEntryExit2(frame,instrs)
+            in (insEE2, frame)
+            end
+        fun livenessAnalysis (instrs, frame) =
+            let val (flowgraph, nodes) = tigerflow.instrs2graph instrs
+                val _ = prntFlow frame instrs flowgraph
+                val (igraph, live_out) = tigerliveness.interferenceGraph flowgraph
+                val _ = prntInter frame igraph live_out
+            in (igraph, instrs, frame) (*REVISAR*)
+            end
 
-		(*Pipeline ejecutado por cada fragmento*)
-		fun perFragment fragment = 
-			fragment >>= instructionSel >>= prntCode >>=
-				livenessAnalysis
+        (*Pipeline ejecutado por cada fragmento*)
+        fun perFragment fragment = 
+            fragment >>= instructionSel >>= prntCode >>=
+                livenessAnalysis
     in
-		(*Pipeline del compilador*)
+        (*Pipeline del compilador*)
         source_filename >>= abreArchivo >>=
            lexer >>= parser >>= (*de ASCII al arbol tigerabs.exp*)
            expIncludes >>=  (*etapa agregada para que funcionen los includes*)

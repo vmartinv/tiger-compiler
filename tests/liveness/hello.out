@@ -13,18 +13,6 @@ LABEL: L2
 OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
 ;;-END-FRAME-:
 ;;--FLOW--L0:
-succesors:
-	n0(LABEL: L3): n1
-	n1(OPER: movq $L1, %'d0 D:[T2] S:[]): n2
-	n2(MOVE: movq %'s0, %'d0 D:T0 S:T2): n3
-	n3(OPER: pushq 's0 D:[] S:[T0]): n4
-	n4(OPER: call print D:[rax,rdx,rcx,r10,r11,rdi,rsi,rdx,rcx,r8,r9,rax] S:[]): n5
-	n5(OPER: addq $8, %'d0 D:[rsp] S:[rsp]): n6
-	n6(OPER: movq $0, %'d0 D:[T3] S:[]): n7
-	n7(MOVE: movq %'s0, %'d0 D:rax S:T3): n8
-	n8(OPER: jmp 'j0 D:[] S:[] J:[L2]): n9
-	n9(LABEL: L2): n10
-	n10(OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]): 
 def:
 	n0: 
 	n1: T2
@@ -61,5 +49,17 @@ ismove:
 	n8: false
 	n9: false
 	n10: false
+succesors:
+	n0(LABEL: L3): n1
+	n1(OPER: movq $L1, %'d0 D:[T2] S:[]): n2
+	n2(MOVE: movq %'s0, %'d0 D:T0 S:T2): n3
+	n3(OPER: pushq 's0 D:[] S:[T0]): n4
+	n4(OPER: call print D:[rax,rdx,rcx,r10,r11,rdi,rsi,rdx,rcx,r8,r9,rax] S:[]): n5
+	n5(OPER: addq $8, %'d0 D:[rsp] S:[rsp]): n6
+	n6(OPER: movq $0, %'d0 D:[T3] S:[]): n7
+	n7(MOVE: movq %'s0, %'d0 D:rax S:T3): n8
+	n8(OPER: jmp 'j0 D:[] S:[] J:[L2]): n9
+	n9(LABEL: L2): n10
+	n10(OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]): 
 ;;-END-FLOW-:
 yes!!

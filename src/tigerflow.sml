@@ -6,10 +6,10 @@ open tigerassem
 open tigerutils
 
 datatype flowgraph =
-	FGRAPH of {control: tigergraph.graph,                   (*flow graph*)
-	           def: (tigertemp.temp list) tigergraph.table, (*temporarios definidos en cada nodo*)
-	           use: (tigertemp.temp list) tigergraph.table, (*temporarios usados en cada nodo*)
-	           ismove: bool tigergraph.table}               (*dice si cada nodo es un MOVE - se puede borrar si def y use son iguales*)
+    FGRAPH of {control: tigergraph.graph,                   (*flow graph*)
+               def: (tigertemp.temp list) tigergraph.table, (*temporarios definidos en cada nodo*)
+               use: (tigertemp.temp list) tigergraph.table, (*temporarios usados en cada nodo*)
+               ismove: bool tigergraph.table}               (*dice si cada nodo es un MOVE - se puede borrar si def y use son iguales*)
 
 fun getGraph (FGRAPH{control, ...}) = control
 fun getDef (FGRAPH{def, ...}) = def
@@ -22,7 +22,7 @@ fun makeFlowGraph instrs =
         val g = newGraph ()
         val nodes = List.map (fn _ => newNode g) instrs
         val labelDict:(label, node) Splaymap.dict = (* diccionario de labels *)
-			let fun aux((aLABEL{lab, ...},n),map) = Splaymap.insert(map, lab, n)
+            let fun aux((aLABEL{lab, ...},n),map) = Splaymap.insert(map, lab, n)
                   | aux(_, map) = map
             in List.foldl aux (Splaymap.mkDict (String.compare)) (ListPair.zip(instrs, nodes))
             end
@@ -61,20 +61,20 @@ fun instrs2graph instrs =
 
 fun printGraph (instrs, FGRAPH{control = g, def = d, use = u, ismove = m}) =
 (*
-		Splaymap.foldl f e m] applies the folding function f to the entries (k, v)
+        Splaymap.foldl f e m] applies the folding function f to the entries (k, v)
    in m, in increasing order of k.
 *)
-	let
-		fun visNodeGraph (instr, node) = "\t"^nodename node^"("^tigerassem.printInstr instr^"): "^String.concatWith ", " (map (nodename) (succ node))^"\n"
-		val succsStr = "succesors:\n"^concat(map visNodeGraph (ListPair.zip (instrs, nodes g)))
-		fun prntLabels v = String.concatWith ", " (map tigertemp.makeString v)
-		fun visNode visitor (k, v, ac) = ac^"\t"^(nodename k)^": "^visitor v^"\n"
-		val defStr = "def:\n"^(Splaymap.foldl (visNode prntLabels) "" d)
-		val useStr = "use:\n"^(Splaymap.foldl (visNode prntLabels) "" u)
-		val ismoveStr = "ismove:\n"^(Splaymap.foldl (visNode Bool.toString) "" m)
-	in succsStr^defStr^useStr^ismoveStr end
+    let
+        fun visNodeGraph (instr, node) = "\t"^nodename node^"("^tigerassem.printInstr instr^"): "^String.concatWith ", " (map (nodename) (succ node))^"\n"
+        val succsStr = "succesors:\n"^concat(map visNodeGraph (ListPair.zip (instrs, nodes g)))
+        fun prntLabels v = String.concatWith ", " (map tigertemp.makeString v)
+        fun visNode visitor (k, v, ac) = ac^"\t"^(nodename k)^": "^visitor v^"\n"
+        val defStr = "def:\n"^(Splaymap.foldl (visNode prntLabels) "" d)
+        val useStr = "use:\n"^(Splaymap.foldl (visNode prntLabels) "" u)
+        val ismoveStr = "ismove:\n"^(Splaymap.foldl (visNode Bool.toString) "" m)
+    in defStr^useStr^ismoveStr^succsStr end
 
 end
 
-	
-	
+    
+    

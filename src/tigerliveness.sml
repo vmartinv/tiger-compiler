@@ -7,10 +7,10 @@ open tigertemp
 open tigerutils
 
 datatype igraph =
-	IGRAPH of {graph: tigergraph.graph,                         (* interference graph *)
-	           tnode: tigertemp.temp -> tigergraph.node,        (* mapea temporarios del assembler a nodos *)
-	           gtemp: tigergraph.node -> tigertemp.temp,        (* mapping inverso al anterior *)
-	           moves: (tigergraph.node * tigergraph.node) list} (* en lo posible asignar el mismo registro a cada par *)
+    IGRAPH of {graph: tigergraph.graph,                         (* interference graph *)
+               tnode: tigertemp.temp -> tigergraph.node,        (* mapea temporarios del assembler a nodos *)
+               gtemp: tigergraph.node -> tigertemp.temp,        (* mapping inverso al anterior *)
+               moves: (tigergraph.node * tigergraph.node) list} (* en lo posible asignar el mismo registro a cada par *)
 
 (* computation of liveness by iteration *)
 fun livenessCalc (FGRAPH {control, def, use, ismove}) =
@@ -51,7 +51,7 @@ fun interferenceGraph(cfg) =
         val def_tab = getDef cfg
         val use_tab = getUse cfg
         val temps = (* conjunto de todos los temporarios del programa *)
-					let val def_temps = List.foldl (fn (n, s) => Splayset.union(s, fromListtoSet(String.compare, Splaymap.find(def_tab, n)))) (Splayset.empty String.compare) cfnodes
+                    let val def_temps = List.foldl (fn (n, s) => Splayset.union(s, fromListtoSet(String.compare, Splaymap.find(def_tab, n)))) (Splayset.empty String.compare) cfnodes
                         (* necesario o con los de defs estamos? Usás un temporario que no definís?: *) (* En la pág 213 dice que una variable puede venir de antes, ej: formal parameter *)
                         val use_temps = List.foldl (fn (n, s) => Splayset.union(s, fromListtoSet(String.compare, Splaymap.find(use_tab, n)))) (Splayset.empty String.compare) cfnodes
                     in Splayset.union(def_temps, use_temps)
@@ -69,7 +69,7 @@ fun interferenceGraph(cfg) =
         
         (* creo las aristas del grafo de interferencia, con tratamiento especial para MOVE (ver pags 221,222) y creo moves *)
         val ismove_tab = getMov cfg        
-        fun addEdges t ts = List.app (fn x => mk_edge{from = tnode t, to = tnode x}) ts        
+        fun addEdges t ts = List.app (fn x => mk_edge{from = tnode t, to = tnode x}) (remove t ts)     
         fun addEdgesMov n ms = let val a = List.hd (Splaymap.find(def_tab, n))
                                    val c = List.hd (Splaymap.find(use_tab, n))
                                    val _ = addEdges a (remove c (live_out n))
@@ -83,17 +83,17 @@ fun interferenceGraph(cfg) =
         val moves = List.foldl (fn (n,mvs) => if Splaymap.find(ismove_tab, n) then addEdgesMov n mvs else addEdgesNoMov n mvs) [] cfnodes
         
         (* finalmente, el grafo de interferencia *)
-        val ig = IGRAPH{graph = g, tnode = tnode, gtemp = gtemp, moves = moves}
+        val ig = IGRAPH{graph = g, tnode = tnode, gtemp = gtemp, moves = []}
         
     in (ig, live_out)
     end
 
-fun printInter (instrs, IGRAPH{graph = g, tnode = tnode, gtemp = gtemp, moves = moves}, live_out) =
-	let
-		fun visNodeGraph (instr, node) = "\t"^nodename node^"("^gtemp node^"): "^String.concatWith ", " (map (gtemp) (succ node))^"\n"
-		val succsStr = "succesors:\n"^concat(map visNodeGraph (ListPair.zip (instrs, nodes g)))
-		val movesStr = "moves:\n\t"^String.concatWith ", " (map (fn (a,b) => "("^nodename a ^", "^nodename b^")") moves)^"\n"
-	in succsStr^movesStr end
+fun printInter (IGRAPH{graph = g, tnode = tnode, gtemp = gtemp, moves = moves}, live_out) =
+    let
+        fun visNodeGraph node = "\t"^nodename node^"("^gtemp node^"): "^String.concatWith ", " (map (gtemp) (adj node))^"\n"
+        val succsStr = "adj:\n"^concat(map visNodeGraph (nodes g))
+        val movesStr = "moves:\n\t"^String.concatWith ", " (map (fn (a,b) => "("^nodename a ^", "^nodename b^")") moves)^"\n"
+    in succsStr^movesStr end
 
 end
 
