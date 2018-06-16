@@ -1,0 +1,8 @@
+/*TIGER_ARGS= -code*/
+let
+    var x:= 0
+in
+    for i:=0 to 5 do
+      x := x + i;
+    x
+end
