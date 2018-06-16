@@ -1,42 +1,42 @@
 bien!
 ;;--FRAME--L0:
 LABEL: L5
-OPER: mov $5, %'d0 D:[T1] S:[]
-MOVE: mov %'s0, %'d0 D:T0 S:T1
+OPER: movq $5, %'d0 D:[T1] S:[]
+MOVE: movq %'s0, %'d0 D:T0 S:T1
 LABEL: L2
-OPER: mov $0, %'d0 D:[T2] S:[]
-OPER: cmp 's0, 's1 D:[] S:[T0,T2]
+OPER: movq $0, %'d0 D:[T2] S:[]
+OPER: cmpq 's0, 's1 D:[] S:[T0,T2]
 OPER: jg 'j0 D:[] S:[] J:[L3,L1]
 LABEL: L1
-MOVE: mov %'s0, %'d0 D:eax S:T0
+MOVE: movq %'s0, %'d0 D:rax S:T0
 OPER: jmp 'j0 D:[] S:[] J:[L4]
 LABEL: L3
-MOVE: mov %'s0, %'d0 D:T3 S:T0
-OPER: sub %'d0, $1 D:[T3] S:[T3]
-MOVE: mov %'s0, %'d0 D:T0 S:T3
+MOVE: movq %'s0, %'d0 D:T3 S:T0
+OPER: subq %'d0, $1 D:[T3] S:[T3]
+MOVE: movq %'s0, %'d0 D:T0 S:T3
 OPER: jmp 'j0 D:[] S:[] J:[L2]
 LABEL: L4
-OPER:  D:[] S:[eax,esp,ebp,ebx,edi,esi]
+OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
 ;;-END-FRAME-:
 ;;--FLOW--L0:
 succesors:
 	n0(LABEL: L5): n1
-	n1(OPER: mov $5, %'d0 D:[T1] S:[]): n2
-	n2(MOVE: mov %'s0, %'d0 D:T0 S:T1): n3
+	n1(OPER: movq $5, %'d0 D:[T1] S:[]): n2
+	n2(MOVE: movq %'s0, %'d0 D:T0 S:T1): n3
 	n3(LABEL: L2): n4
-	n4(OPER: mov $0, %'d0 D:[T2] S:[]): n5
-	n5(OPER: cmp 's0, 's1 D:[] S:[T0,T2]): n6
+	n4(OPER: movq $0, %'d0 D:[T2] S:[]): n5
+	n5(OPER: cmpq 's0, 's1 D:[] S:[T0,T2]): n6
 	n6(OPER: jg 'j0 D:[] S:[] J:[L3,L1]): n7, n10
 	n7(LABEL: L1): n8
-	n8(MOVE: mov %'s0, %'d0 D:eax S:T0): n9
+	n8(MOVE: movq %'s0, %'d0 D:rax S:T0): n9
 	n9(OPER: jmp 'j0 D:[] S:[] J:[L4]): n15
 	n10(LABEL: L3): n11
-	n11(MOVE: mov %'s0, %'d0 D:T3 S:T0): n12
-	n12(OPER: sub %'d0, $1 D:[T3] S:[T3]): n13
-	n13(MOVE: mov %'s0, %'d0 D:T0 S:T3): n14
+	n11(MOVE: movq %'s0, %'d0 D:T3 S:T0): n12
+	n12(OPER: subq %'d0, $1 D:[T3] S:[T3]): n13
+	n13(MOVE: movq %'s0, %'d0 D:T0 S:T3): n14
 	n14(OPER: jmp 'j0 D:[] S:[] J:[L2]): n3
 	n15(LABEL: L4): n16
-	n16(OPER:  D:[] S:[eax,esp,ebp,ebx,edi,esi]): 
+	n16(OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]): 
 def:
 	n0: 
 	n1: T1
@@ -46,7 +46,7 @@ def:
 	n5: 
 	n6: 
 	n7: 
-	n8: eax
+	n8: rax
 	n9: 
 	n10: 
 	n11: T3
@@ -72,7 +72,7 @@ use:
 	n13: T3
 	n14: 
 	n15: 
-	n16: eax, esp, ebp, ebx, edi, esi
+	n16: rax, rsp, rbp, rbx, r12, r13, r14, r15
 ismove:
 	n0: false
 	n1: false

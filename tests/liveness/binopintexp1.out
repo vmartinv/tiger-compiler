@@ -1,32 +1,32 @@
 bien!
 ;;--FRAME--L0:
 LABEL: L2
-OPER: mov $2, %'d0 D:[T3] S:[]
-MOVE: mov %'s0, %'d0 D:T0 S:T3
-OPER: mov $34, %'d0 D:[T4] S:[]
-MOVE: mov %'s0, %'d0 D:T1 S:T4
-MOVE: mov %'s0, %'d0 D:T5 S:T0
-OPER: add %'d0, %'s1 D:[T5] S:[T5,T1]
-MOVE: mov %'s0, %'d0 D:T2 S:T5
-MOVE: mov %'s0, %'d0 D:eax S:T2
+OPER: movq $2, %'d0 D:[T3] S:[]
+MOVE: movq %'s0, %'d0 D:T0 S:T3
+OPER: movq $34, %'d0 D:[T4] S:[]
+MOVE: movq %'s0, %'d0 D:T1 S:T4
+MOVE: movq %'s0, %'d0 D:T5 S:T0
+OPER: addq %'d0, %'s1 D:[T5] S:[T5,T1]
+MOVE: movq %'s0, %'d0 D:T2 S:T5
+MOVE: movq %'s0, %'d0 D:rax S:T2
 OPER: jmp 'j0 D:[] S:[] J:[L1]
 LABEL: L1
-OPER:  D:[] S:[eax,esp,ebp,ebx,edi,esi]
+OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
 ;;-END-FRAME-:
 ;;--FLOW--L0:
 succesors:
 	n0(LABEL: L2): n1
-	n1(OPER: mov $2, %'d0 D:[T3] S:[]): n2
-	n2(MOVE: mov %'s0, %'d0 D:T0 S:T3): n3
-	n3(OPER: mov $34, %'d0 D:[T4] S:[]): n4
-	n4(MOVE: mov %'s0, %'d0 D:T1 S:T4): n5
-	n5(MOVE: mov %'s0, %'d0 D:T5 S:T0): n6
-	n6(OPER: add %'d0, %'s1 D:[T5] S:[T5,T1]): n7
-	n7(MOVE: mov %'s0, %'d0 D:T2 S:T5): n8
-	n8(MOVE: mov %'s0, %'d0 D:eax S:T2): n9
+	n1(OPER: movq $2, %'d0 D:[T3] S:[]): n2
+	n2(MOVE: movq %'s0, %'d0 D:T0 S:T3): n3
+	n3(OPER: movq $34, %'d0 D:[T4] S:[]): n4
+	n4(MOVE: movq %'s0, %'d0 D:T1 S:T4): n5
+	n5(MOVE: movq %'s0, %'d0 D:T5 S:T0): n6
+	n6(OPER: addq %'d0, %'s1 D:[T5] S:[T5,T1]): n7
+	n7(MOVE: movq %'s0, %'d0 D:T2 S:T5): n8
+	n8(MOVE: movq %'s0, %'d0 D:rax S:T2): n9
 	n9(OPER: jmp 'j0 D:[] S:[] J:[L1]): n10
 	n10(LABEL: L1): n11
-	n11(OPER:  D:[] S:[eax,esp,ebp,ebx,edi,esi]): 
+	n11(OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]): 
 def:
 	n0: 
 	n1: T3
@@ -36,7 +36,7 @@ def:
 	n5: T5
 	n6: T5
 	n7: T2
-	n8: eax
+	n8: rax
 	n9: 
 	n10: 
 	n11: 
@@ -52,7 +52,7 @@ use:
 	n8: T2
 	n9: 
 	n10: 
-	n11: eax, esp, ebp, ebx, edi, esi
+	n11: rax, rsp, rbp, rbx, r12, r13, r14, r15
 ismove:
 	n0: false
 	n1: false
