@@ -1,0 +1,31 @@
+bien!
+;;--FRAME--L0:
+LABEL: L6
+OPER: movq $0, %'d0 D:[T2] S:[]
+MOVE: movq %'s0, %'d0 D:T0 S:T2
+OPER: movq $0, %'d0 D:[T3] S:[]
+OPER: movq $5, %'d0 D:[T4] S:[]
+OPER: cmpq 's0, 's1 D:[] S:[T3,T4]
+OPER: jle 'j0 D:[] S:[] J:[L2,L1]
+LABEL: L1
+MOVE: movq %'s0, %'d0 D:rax S:T0
+OPER: jmp 'j0 D:[] S:[] J:[L5]
+LABEL: L2
+OPER: movq $0, %'d0 D:[T5] S:[]
+MOVE: movq %'s0, %'d0 D:T1 S:T5
+LABEL: L3
+MOVE: movq %'s0, %'d0 D:T6 S:T0
+OPER: addq %'d0, %'s1 D:[T6] S:[T6,T1]
+MOVE: movq %'s0, %'d0 D:T0 S:T6
+OPER: movq $5, %'d0 D:[T7] S:[]
+OPER: cmpq 's0, 's1 D:[] S:[T1,T7]
+OPER: je 'j0 D:[] S:[] J:[L1,L4]
+LABEL: L4
+MOVE: movq %'s0, %'d0 D:T8 S:T1
+OPER: addq %'d0, $1 D:[T8] S:[T8]
+MOVE: movq %'s0, %'d0 D:T1 S:T8
+OPER: jmp 'j0 D:[] S:[] J:[L3]
+LABEL: L5
+OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
+;;-END-FRAME-:
+yes!!

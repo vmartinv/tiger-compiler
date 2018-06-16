@@ -1,0 +1,5 @@
+let 
+	var SDLK_LEFT := 1073741824
+in
+	0
+end
