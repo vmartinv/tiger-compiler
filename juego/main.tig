@@ -1,0 +1,485 @@
+let
+    type Aint = array of int
+    type AAint = array of Aint
+    type AAAint = array of AAint
+	type Pointer = {v:int}
+    type Pto = {x:int, y:int}
+	/****************SDL LIBRARY*******************************/
+	type SDL_Window = {}
+	type SDL_Renderer = {}
+	type SDL_Surface = {}
+	type SDL_Texture = {}
+	type SDL_Rect = {x:int, y:int, w:int, h:int}
+	type SDL_Point = {}
+	type TTF_Font = {}
+	type SDL_Color = {r:int, g:int, b:int, a:int}
+	type SDL_RendererFlip = int
+	type SDL_Keysym = {scancode:int, sym:int, mod:int}
+	type SDL_KeyboardEvent = {timestamp:int, windowID:int, state:int, repeat:int, keysym:SDL_Keysym}
+	type SDL_Event = {tipo:int, key:SDL_KeyboardEvent}
+	type SDL_DisplayMode = {format:int, w:int, h:int, refresh_rate:int, driverdata:Pointer}
+    extern function printSDL_Consts()
+    extern function SDL_Init(x:int):int
+    extern function SDL_CreateWindow_Tig(name:string, x:int, y:int, w:int, h:int, flags:int):SDL_Window
+    extern function SDL_CreateRenderer(win:SDL_Window, w:int, h:int):SDL_Renderer
+    extern function IMG_LoadTexture_Tig(ren:SDL_Renderer, name:string):SDL_Texture
+    extern function SDL_CreateTextureFromSurface(ren:SDL_Renderer, sur:SDL_Surface):SDL_Texture
+    extern function SDL_FreeSurface(sur:SDL_Surface)
+    extern function SDL_GetWindowSurface(win:SDL_Window):SDL_Surface
+    extern function SDL_RenderClear(sur:SDL_Renderer)
+    extern function SDL_RenderCopy_Tig(sur:SDL_Renderer, tex:SDL_Texture, srcrect:SDL_Rect, dstrect:SDL_Rect)
+    extern function SDL_BlitSurface_Tig(src:SDL_Surface, srcrect:SDL_Rect, dst:SDL_Surface, dstrect:SDL_Rect):int
+    extern function SDL_RenderPresent(sur:SDL_Renderer)
+    extern function SDL_GetDesktopDisplayMode_Tig(displayIndex:int, dm:SDL_DisplayMode):int
+    extern function SDL_Delay(d:int)
+    extern function SDL_DestroyTexture(d:SDL_Texture)
+    extern function SDL_DestroyRenderer(d:SDL_Renderer)
+    extern function SDL_DestroyWindow(d:SDL_Window)
+    extern function SDL_PollEvent_Tig():SDL_Event
+    extern function SDL_GetError_Tig():string
+    extern function SDL_Quit()
+    extern function TTF_Init()
+    extern function TTF_Quit()
+    extern function TTF_OpenFont_Tig(file:string, size:int):TTF_Font
+    extern function TTF_RenderText_Blended_Wrapped_Tig(font:TTF_Font, txt:string, color:SDL_Color, wraplength:int):SDL_Surface
+    extern function TTF_CloseFont(font:TTF_Font)
+    extern function toString(x:int):string
+    extern function SDL_GetSurfaceSize(sur:SDL_Surface):Pto
+    extern function SDL_RenderSetLogicalSize_Tig(ren:SDL_Renderer, w:int, h:int):int
+    extern function SDL_GetWindowSize(win:SDL_Window, w:Pointer, h:Pointer)
+    extern function SDL_RenderFillRect_Tig(ren:SDL_Renderer, rect:SDL_Rect):int
+    extern function SDL_SetRenderDrawColor_Tig(ren:SDL_Renderer, r:int, g:int, b:int, a:int):int
+    extern function atoi_Tig(s:string):int
+    var SDL_INIT_VIDEO := 32
+    var SDL_RENDERER_ACCELERATED := 2
+    var SDL_RENDERER_PRESENTVSYNC := 4
+    var SDL_WINDOW_SHOWN := 4
+    var SDL_WINDOWPOS_CENTERED := 805240832
+    var SDL_FLIP_NONE := 0
+    var SDL_QUIT := 256
+    var SDL_KEYDOWN := 768
+    var SDLK_ESCAPE := 27
+    var SDLK_LEFT := 1073741904
+    var SDLK_RIGHT := 1073741903
+    var SDLK_UP  := 1073741906
+    var SDLK_DOWN := 1073741905
+    var SDLK_BACKSPACE := 8
+    var SDLK_DELETE  := 127
+    var SDLK_d := 100
+    var SDLK_r := 114
+    var SDLK_q := 113
+	
+    var VACIO := ord("0")
+	var CAJA := ord("2")
+	var CAJA_ACTIVADA := ord("E")
+    type Level = {width:int, height:int, zoom:int, player_init:Pto, objs_init:string}
+    type ListLevel = {l:Level, next:ListLevel}
+    var LEVELS := ListLevel{
+		l=Level{player_init=Pto{x=0, y=2}, zoom=5,
+			width=4, height=4, objs_init=concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat((
+			"4559"), /*Layer 0: Terrain*/
+			"633D"),
+			"788A"),
+			"0000"),
+			
+			"1111"), /*Layer 1: Walkable objects*/
+			"0001"),
+			"0000"),
+			"0000"),
+			
+			"2200"), /*Layer 1: Objects*/
+			"0222"),
+			"0000"),
+			"BFFG"),
+			"")
+		},
+		next=ListLevel{
+		l=Level{player_init=Pto{x=2, y=1}, zoom=5,
+			width=5, height=4, objs_init=concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat((
+			"45559"), /*Layer 0: Terrain*/
+			"6333D"),
+			"7888A"),
+			"00000"),
+			
+			"10001"), /*Layer 1: Walkable objects*/
+			"00000"),
+			"10001"),
+			"00000"),
+			
+			"00200"), /*Layer 1: Objects*/
+			"02020"),
+			"00200"),
+			"BFFFG"),
+			"")
+		},
+		next=nil}
+	}
+    type APto = array of Pto
+	var PLAYER_TILE := 300
+	type GameStatus = int
+	var ST_CONTINUE:GameStatus := 0
+	var ST_QUIT:GameStatus := 1
+	var ST_WON:GameStatus := 2
+    type ListMov = {dir:int, pushed:int, next:ListMov}
+    function sz_list_level(xl:ListLevel):int =
+		if xl=nil then 0 else 1+sz_list_level(xl.next)
+    function sz_list_movs(xm:ListMov):int =
+		if xm=nil then 0 else 1+sz_list_movs(xm.next)
+	/****************GAME STATE********************************/
+	var curlevel:Level := nil
+	var idxlevel := 0
+	var tilespos := APto[500] of Pto{x=0, y=0}
+    var objs := AAAint[3] of (AAint[500] of (Aint[500] of 0))
+    var playerpos := Pto{x=0, y=0} 
+    var screenoffset := Pto{x=0, y=0}
+    var movhistory:ListMov := nil
+    var realscreensize:Pto := nil
+    var firstidxlevel := 0
+	/****************RENDER LOGIC******************************/
+    var SCREEN_WIDTH := 800
+    var SCREEN_HEIGHT := 600
+    var TILE_WIDTH := 16
+    var TILE_HEIGHT := 16
+	var win:SDL_Window := nil
+	var ren:SDL_Renderer := nil
+	var tiles:SDL_Texture := nil
+	var gamestatustex:SDL_Texture := nil
+	var gamestatusdstrect:SDL_Rect := nil
+	var font:TTF_Font := nil
+	var WHITE := SDL_Color{r=255, g=255, b=255, a=255}
+    function init() =
+		let var x_ := SDL_Init(SDL_INIT_VIDEO)
+			var dm := SDL_DisplayMode{format=0, w=0, h=0, refresh_rate=0, driverdata=nil}
+		in (
+			SDL_GetDesktopDisplayMode_Tig(0, dm);
+			realscreensize := Pto{x=dm.w, y=dm.h};
+			win := SDL_CreateWindow_Tig("cajas", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, realscreensize.x*3/4, realscreensize.y*3/4, SDL_WINDOW_SHOWN);
+			ren := SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED+SDL_RENDERER_PRESENTVSYNC);
+			/*SDL_RenderSetLogicalSize_Tig(ren, SCREEN_WIDTH, SCREEN_HEIGHT);*/
+			TTF_Init();
+			init_resources()
+		) end
+    function destroy() = (
+		destroy_resources();
+		TTF_Quit();
+		SDL_DestroyRenderer(ren);
+		SDL_DestroyWindow(win);
+		SDL_Quit()
+    )
+	function init_resources() = (
+		tiles := IMG_LoadTexture_Tig(ren, "tiles_packed.png");
+		font := TTF_OpenFont_Tig("yoster.ttf", (SCREEN_WIDTH*4)/100)
+	)
+    function destroy_resources() = (
+		SDL_DestroyTexture(tiles);
+		if gamestatustex<>nil then SDL_DestroyTexture(gamestatustex)
+		else ();
+		TTF_CloseFont(font)
+    )
+	function render_gamestatus() =
+		let var niveltxt := concat("Nivel ", toString(idxlevel+1))
+			var movstxt := concat("Movimientos ", toString(sz_list_movs(movhistory)))
+			var text := concat(concat(niveltxt, "\n"), movstxt)
+			var sur := TTF_RenderText_Blended_Wrapped_Tig(font, text, WHITE, SCREEN_WIDTH)
+			var tam := SDL_GetSurfaceSize(sur)
+			var margin := tam.y/4
+		in	(
+			if gamestatustex<>nil then SDL_DestroyTexture(gamestatustex)
+			else ();
+			gamestatusdstrect := SDL_Rect{x=margin, y=margin, w=tam.x, h=tam.y};
+			gamestatustex := SDL_CreateTextureFromSurface(ren, sur);
+			SDL_FreeSurface(sur)
+		) end
+	function get_src_rect(idx:int):SDL_Rect =
+		SDL_Rect{x=tilespos[idx].x*TILE_WIDTH, y=tilespos[idx].y*TILE_HEIGHT, w=TILE_WIDTH, h=TILE_HEIGHT}
+	function get_dest_rect(i:int, j:int):SDL_Rect =
+		let var dx := j*TILE_WIDTH*curlevel.zoom + screenoffset.x
+			var dy := i*TILE_HEIGHT*curlevel.zoom + screenoffset.y
+		in SDL_Rect{x=dx, y=dy, w=TILE_WIDTH*curlevel.zoom, h=TILE_HEIGHT*curlevel.zoom} end
+	function draw_tile(k:int, i:int, j:int) =
+		if objs[k][i][j]<>VACIO then (
+			SDL_RenderCopy_Tig(ren, tiles, get_src_rect(objs[k][i][j]), get_dest_rect(i, j))
+		)
+		else ()
+	function draw_player() =
+		let var dx := playerpos.x*TILE_WIDTH*curlevel.zoom + screenoffset.x
+			var dy := (playerpos.y-1)*TILE_HEIGHT*curlevel.zoom + screenoffset.y
+			var srcrect := SDL_Rect{x=tilespos[PLAYER_TILE].x*TILE_WIDTH, y=tilespos[PLAYER_TILE].y*TILE_HEIGHT, w=TILE_WIDTH, h=TILE_HEIGHT*2}
+			var dstrect := SDL_Rect{x=dx, y=dy, w=TILE_WIDTH*curlevel.zoom, h=TILE_HEIGHT*curlevel.zoom*2}
+		in SDL_RenderCopy_Tig(ren, tiles, srcrect, dstrect) end
+	function draw_gamestatus() =
+		SDL_RenderCopy_Tig(ren, gamestatustex, nil, gamestatusdstrect)
+	function fps_regulator() =
+		SDL_Delay(50)
+	function draw_level() = 
+		let var scw := Pointer{v=0}
+			var sch := Pointer{v=0}
+			var x_ := SDL_GetWindowSize(win, scw, sch)
+		in (
+			SDL_RenderClear(ren);
+			screenoffset := Pto{x=(scw.v-TILE_WIDTH*curlevel.zoom*curlevel.width) / 2, y=(sch.v-TILE_HEIGHT*curlevel.zoom*curlevel.height) / 2};
+			for k := 0 to 2 do (
+				for i := 0 to (curlevel.height-1) do (
+					for j := 0 to (curlevel.width-1) do (
+						draw_tile(k, i, j)
+					)
+				)
+			);
+			draw_player();
+			draw_gamestatus();
+			SDL_RenderPresent(ren);
+			fps_regulator()
+		) end
+	/****************INPUT LOGIC*******************************/
+	function check_key_down(key:int):GameStatus = (
+		if key=SDLK_ESCAPE | key=SDLK_q then ST_QUIT
+		else if is_dir(key) then (
+			let var ns := move_player(key)
+			in if ns=ST_CONTINUE then check_events() else ns end
+		)
+		else if key=SDLK_DELETE | key=SDLK_BACKSPACE | key=SDLK_d then (undo_step(); check_events())
+		else if key=SDLK_r then (set_level(curlevel, idxlevel); check_events())
+		else ST_CONTINUE
+	)
+    function check_events():GameStatus = 
+		let var event := SDL_PollEvent_Tig()
+		in
+			if event=nil then ST_CONTINUE
+			else if event.tipo=SDL_QUIT then ST_QUIT
+			else if event.tipo=SDL_KEYDOWN then check_key_down(event.key.keysym.sym)
+			else ST_CONTINUE
+		end
+	/****************GAME LOGIC********************************/
+	function is_dir(x:int):int =
+		(x=SDLK_UP | x=SDLK_RIGHT | x=SDLK_DOWN | x=SDLK_LEFT)
+	function opposite_dir(dir:int):int = (
+		if dir=SDLK_UP then SDLK_DOWN
+		else if dir=SDLK_RIGHT then SDLK_LEFT
+		else if dir=SDLK_DOWN then SDLK_UP
+		else if dir=SDLK_LEFT then SDLK_RIGHT
+		else -1
+	)
+	function move_dir(p:Pto, dir:int):Pto = (
+		if dir=SDLK_UP then Pto{x=p.x, y=p.y-1}
+		else if dir=SDLK_RIGHT then Pto{x=p.x+1, y=p.y}
+		else if dir=SDLK_DOWN then Pto{x=p.x, y=p.y+1}
+		else if dir=SDLK_LEFT then Pto{x=p.x-1, y=p.y}
+		else Pto{x=p.x, y=p.y}
+	)
+	function is_valid_pos(p:Pto):int =
+		(0<=p.x&p.x<curlevel.width &0<=p.y&p.y<curlevel.height)
+	function check_win():GameStatus =
+		let var ans := ST_WON
+		in (
+			for i := 0 to (curlevel.height-1) do (
+				for j := 0 to (curlevel.width-1) do (
+					if objs[1][i][j]<>VACIO & objs[2][i][j]=VACIO then
+						ans := ST_CONTINUE
+					else ()
+				)
+			);
+			ans
+		) end
+	function move_player(d:int):GameStatus =
+		let var np := move_dir(playerpos, d)
+		    var nb := move_dir(np, d)
+		in (
+			/*print(concat(concat(concat(concat("np = ", toString(np.x)), ", "), toString(np.y)), "\n"));*/
+			if is_valid_pos(np) then
+				if objs[2][np.y][np.x]=VACIO then (
+					playerpos := np;
+					movhistory := ListMov{dir=d, pushed=0, next=movhistory};
+					render_gamestatus();
+					ST_CONTINUE
+				)
+				else (
+					if is_valid_pos(nb) & objs[2][nb.y][nb.x]=VACIO then (
+						playerpos := np;
+						objs[2][nb.y][nb.x] := objs[2][np.y][np.x];
+						if objs[1][nb.y][nb.x]<>VACIO then
+							objs[2][nb.y][nb.x] := CAJA_ACTIVADA
+						else
+							objs[2][nb.y][nb.x] := CAJA;
+						objs[2][np.y][np.x] := VACIO;
+						movhistory := ListMov{dir=d, pushed=1, next=movhistory};
+						render_gamestatus();
+						check_win()
+					)
+					else ST_CONTINUE		
+				)
+			else ST_CONTINUE
+		) end
+	function undo_step() = (
+		if movhistory=nil then ()
+		else (
+			if movhistory.pushed then (
+				let var boxpos := move_dir(playerpos, movhistory.dir)
+				in (
+					if objs[1][playerpos.y][playerpos.x]<>VACIO then
+						objs[2][playerpos.y][playerpos.x] := CAJA_ACTIVADA
+					else
+						objs[2][playerpos.y][playerpos.x] := CAJA;
+					objs[2][boxpos.y][boxpos.x] := VACIO
+				) end
+			) else ();
+			playerpos := move_dir(playerpos, opposite_dir(movhistory.dir));
+			movhistory := movhistory.next;
+			render_gamestatus()
+		)
+	)
+    function get_level(idx:int, xl:ListLevel):Level =
+		if idx=0 then xl.l else get_level(idx-1, xl.next)
+    function set_level(l:Level, idx:int) = (
+		setup_mundo(l.height, l.width, l.objs_init, objs);
+		tilespos[ord("1")] := Pto{x = 17, y = 7}; /*Agujero*/
+		tilespos[ord("2")] := Pto{x = 16, y = 7}; /*Caja*/
+		tilespos[ord("3")] := Pto{x = 4, y = 2};
+		tilespos[ord("4")] := Pto{x = 0, y = 0};
+		tilespos[ord("5")] := Pto{x = 1, y = 0};
+		tilespos[ord("6")] := Pto{x = 0, y = 1};
+		tilespos[ord("7")] := Pto{x = 0, y = 4};
+		tilespos[ord("8")] := Pto{x = 1, y = 4};
+		tilespos[ord("9")] := Pto{x = 5, y = 0};
+		tilespos[ord("A")] := Pto{x = 5, y = 4};
+		tilespos[ord("B")] := Pto{x = 14, y = 4}; /*Pico Abajo Izquierda*/
+		tilespos[ord("F")] := Pto{x = 15, y = 4}; /*Pico Abajo Centro*/
+		tilespos[ord("G")] := Pto{x = 16, y = 4};  /*Pico Abajo Derecha*/
+		tilespos[ord("D")] := Pto{x = 5, y = 1};
+		tilespos[ord("E")] := Pto{x = 18, y = 7}; /*Caja activada*/
+		tilespos[PLAYER_TILE] := Pto{x = 14, y = 6}; /*Jugador*/
+		playerpos := Pto{x=l.player_init.x, y=l.player_init.y};
+		movhistory := nil;
+		idxlevel := idx;
+		curlevel := l;
+		render_gamestatus();
+		()
+	)
+    function setup_mundo(lh:int, lw:int, init:string, m:AAAint) = (
+		for k := 0 to 2 do (
+			m[k] := AAint[500] of (Aint[500] of 0);
+			for i := 0 to (lh-1) do (
+				m[k][i] := Aint[500] of 0;
+				for j := 0 to (lw-1) do (
+					m[k][i][j] := ord(substring(init, k*lw*lh + i*lw + j, 1));
+					if k=2 & m[k][i][j]=CAJA & m[1][i][j]<>VACIO then m[k][i][j] := CAJA_ACTIVADA
+					else ()
+				)
+			)
+		)
+	)
+	function game_loop():GameStatus =
+		let var newStatus := check_events()
+		in (
+			if newStatus<>ST_CONTINUE then newStatus
+			else (
+				draw_level();
+				game_loop()
+			)
+		) end
+	function max(a:int, b:int):int =
+		if a>b then a else b
+	function min(a:int, b:int):int =
+		if a<b then a else b
+	function wingame() =
+		let type aColor = array of SDL_Color
+			var clrs := aColor[5] of nil
+			var DRW := "011110000000000000011110111111011122121110111111113333111211112111333311113331113122221311133311113322131321123131223311113112133312213331211311131121111322223111121131311233333122221333332113111231111321123111132111112314131132231131413211112331414122221414133211121233331122221133332121122122122122221221221221112311332122221233113211012113311222222113311210001113112211112211311100001113122231132221311100000113322333333223311000000011131331133131110000000011333113311333110000000001313333333313100000000000111131131111000000000000011111111110000000000000000111111000000000"
+		    var TEXT := "Ganaste el juego!"
+			var scw := Pointer{v=0}
+			var sch := Pointer{v=0}
+			var x_ := SDL_GetWindowSize(win, scw, sch)
+			var screen := SDL_Rect{x=0, y=0, w=scw.v, h=sch.v}
+			var font := TTF_OpenFont_Tig("yoster.ttf", max(screen.h, screen.w)/10)
+			var TXTCOLOR := SDL_Color{r=237, g=137, b=35, a=255}
+			var sur := TTF_RenderText_Blended_Wrapped_Tig(font, TEXT, TXTCOLOR, screen.w)
+			var x_ := TTF_CloseFont(font)
+			var tex := SDL_CreateTextureFromSurface(ren, sur)
+			var tam := SDL_GetSurfaceSize(sur)
+			var x_ := SDL_FreeSurface(sur)
+			var textrect := SDL_Rect{x=(screen.w-tam.x)/2, y=tam.y/2, w=tam.x, h=tam.y}
+			var th := (min(screen.h-textrect.h-textrect.y, screen.w)*3)/(4*24)
+			var tw := th
+			var offset := Pto{x=(screen.w-tw*24)/2, y=textrect.h+textrect.y+max(0, (screen.h-(textrect.h+textrect.y)-th*24)/2)}
+			function createRect(i:int, j:int):SDL_Rect = 
+				SDL_Rect{x=offset.x+j*tw, y=offset.y+i*th, w=tw, h=th}
+			function drawRect(rect:SDL_Rect, c:SDL_Color) = (
+				if c.a>0 then (
+					SDL_SetRenderDrawColor_Tig(ren, c.r, c.g, c.b, c.a);
+					SDL_RenderFillRect_Tig(ren, rect);
+					()
+				)
+				else ()
+			)
+		in (
+			clrs[0] := SDL_Color{r=0, g=0, b=0, a=0};
+			clrs[1] := SDL_Color{r=0, g=0, b=0, a=255};
+			clrs[2] := SDL_Color{r=237, g=137, b=35, a=255};
+			clrs[3] := SDL_Color{r=255, g=255, b=255, a=255};
+			clrs[4] := SDL_Color{r=0, g=142, b=14, a=255};
+			SDL_RenderClear(ren);
+			drawRect(screen, clrs[3]);
+			for i:= 0 to 23 do (
+				for j:= 0 to 23 do (
+					drawRect(createRect(i, j), clrs[ord(substring(DRW, i*24+j, 1))-ord("0")])
+				)
+			);
+			SDL_RenderCopy_Tig(ren, tex, nil, textrect);
+			SDL_RenderPresent(ren);
+			SDL_DestroyTexture(tex);
+			SDL_Delay(50);
+			if check_events2()=ST_CONTINUE then wingame()
+			else ()
+		) end
+    function check_events2():GameStatus = 
+		let var event := SDL_PollEvent_Tig()
+		in
+			if event=nil then ST_CONTINUE
+			else if event.tipo=SDL_QUIT then ST_QUIT
+			else if event.tipo=SDL_KEYDOWN & (event.key.keysym.sym=SDLK_ESCAPE | event.key.keysym.sym=SDLK_q) then ST_QUIT
+			else ST_CONTINUE
+		end
+	function game_runner(idx:int) = (
+		set_level(get_level(idx, LEVELS), idx);
+		if game_loop()=ST_WON then (
+			draw_level();
+			SDL_Delay(5000);
+			if idx+1>=sz_list_level(LEVELS) then
+				idx := 0
+			else
+				idx := idx + 1;
+			if idx=firstidxlevel then
+				wingame()
+			else
+				game_runner(idx)
+		)
+		else ()
+	)
+	
+	function help():string = concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat((
+		"Objetivo:\n"),
+		"    Sokoban se origino en Japon. El objetivo del juego es usar la menor cantidad\n"),
+		"    de pasos para llevar las cajas a las posiciones marcadas. Las cajas solo\n"),
+		"    pueden ser empujadas hacia adelante. Solo se puede empujar una sola caja al\n"),
+		"    mismo tiempo. Sokoban es un juego con reglas simples pero con muchos niveles\n"),
+		"    de dificultad, algunos niveles puede tardarte varias horas o incluso dias.\n"),
+		"Controles:\n"),
+		"    Arriba, derecha, abajo, izquierda: movimiento\n"),
+		"    D, Delete, Supr: deshacer ultimo movimiento\n"),
+		"    R: reiniciar nivel\n"),
+		"    Esc/Q: salir\n"),
+		"")
+	function get_string():string =
+		let var c := getchar()
+		in if c="\n" then "" else concat(c, get_string()) end
+in
+	/*printSDL_Consts();*/
+	print(help());
+	print("Ingrese nivel o presione enter para comenzar...\n");
+	firstidxlevel := atoi_Tig(get_string())-1;
+	if firstidxlevel<0 | firstidxlevel>=sz_list_level(LEVELS) then firstidxlevel := 0
+	else ();
+    init();
+    game_runner(firstidxlevel);
+    destroy();
+    0
+end
