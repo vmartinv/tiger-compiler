@@ -23,6 +23,7 @@ function usage(){
     echo -e "\t${GREEN}add [all]${NC}\t\t\tSearch and add cases not in the test suite"
     echo -e "\t${GREEN}run file1.tig file2.tig ...${NC}\tRun (and check) specific cases"
     echo -e "\t${GREEN}run [all]${NC}\t\t\tRun the test suite (all added cases)"
+    echo -e "\t${GREEN}fix${NC}\t\t\tRun and ask to correct each failing case"
     echo -e "\t${GREEN}del file1.tig file2.tig ...${NC}\tRemove specific cases from the test suite"
     echo
     echo -e "Note: file.tig is considered to be in the test suite iif file.out exists."
