@@ -83,7 +83,7 @@ fun interferenceGraph(cfg) =
         val moves = List.foldl (fn (n,mvs) => if Splaymap.find(ismove_tab, n) then addEdgesMov n mvs else addEdgesNoMov n mvs) [] cfnodes
         
         (* finalmente, el grafo de interferencia *)
-        val ig = IGRAPH{graph = g, tnode = tnode, gtemp = gtemp, moves = []}
+        val ig = IGRAPH{graph = g, tnode = tnode, gtemp = gtemp, moves = moves}
         
     in (ig, live_out)
     end

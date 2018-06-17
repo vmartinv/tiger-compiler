@@ -28,4 +28,13 @@ fun fromListtoSet(cmp, xs) = List.foldl (fn (x,s) => Splayset.add(s, x)) (Splays
 
 fun toString x = if (x < 0) then ("-"^Int.toString(~x)) else Int.toString(x)
 
+fun measure name f = fn x =>
+	let val timer = Timer.startCPUTimer()
+		val result = f x
+		val time = Timer.checkCPUTimer timer
+		val time_ms = Time.toMilliseconds (#usr time)
+		val str =  name^" tardo "^Int.toString(time_ms)^" ms.\n"
+		val _ = print(str)
+	in result end
+
 end
