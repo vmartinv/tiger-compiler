@@ -163,15 +163,18 @@ fun transExp(venv, tenv) =
 					| NONE => error("Tipo inexistente ("^typ^")", nl)
 				
 				(* Verificar que cada campo esté en orden y tenga una expresión del tipo que corresponde *)
+				
+				fun first3 (a,_,_) = a
+				fun first2 (a,_) = a
 				fun verificar _ [] [] = []
-				  | verificar _ (c::cs) [] = error("Faltan campos", nl)
-				  | verificar _ [] (c::cs) = error("Sobran campos", nl)
 				  | verificar n ((s,t,_)::cs) ((sy,{exp,ty})::ds) =
-						if s<>sy then error("Error de campo", nl)
+						if s<>sy then error("Falta el campo "^s, nl)
 						else if tiposIguales ty (!t) then (exp, n)::(verificar (n+1) cs ds)
 							 else error("Error de tipo del campo "^s, nl)
-                             
-				val lf = verificar 0 cs tfields
+				  | verificar _ cs [] = error("Faltan los campos "^String.concatWith ", " (map first3 cs), nl)
+				  | verificar _ [] ds = error("Sobran los campos "^String.concatWith ", " (map first2 ds), nl)
+				 fun dup f (a, b) = (f a, f b)
+				val lf = verificar 0 (Listsort.sort (String.compare o (dup first3)) cs) (Listsort.sort (String.compare o (dup first2)) tfields)
 			in
 				{exp=recordExp lf, ty=tyr}
 			end

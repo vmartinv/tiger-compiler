@@ -1,3 +1,4 @@
+/*TIGER_ARGS=-ir -code -flow -inter*/
 let
     type Aint = array of int
     type AAint = array of Aint

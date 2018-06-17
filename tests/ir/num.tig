@@ -1,5 +1,5 @@
 let 
-	var SDLK_LEFT := 1073741824
+	var SDLK_LEFT := 1073741825
 in
 	0
 end
