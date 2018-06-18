@@ -89,6 +89,12 @@ First we will handle type checking. This phase is characterized by the maintenan
   tigerescap.sml     Cálculo de escapes
                         - Una variable escapa cuando es accedida desde un marco de activación distinto del que la alocó.
                         - escEnv es una tabla que para cada variable nos dice cuál es su profundidad y si escapa o no.
+                        
+  tigertab.sml       Tablas
+  
+  tigertopsort.sml   Sort topológico
+  
+  tigerinclude.sml   Maneja los includes
 
 
 Semantic Analysis - Intermediate Representation  (FRONT-END - ENTREGA 2)
@@ -200,16 +206,21 @@ The flow analysis for the Tiger compiler is done in two stages:
 
 Register Allocation   (BACK-END - ENTREGA 3)
 -------------------
+We use the interference graph to assign temporaries to registers (coloring).
+
+  tigerregalloc.sml  Register Allocation
+  
+  tigercolor. sml    Coloring Algorithm
+
+
+
 
 Other modules:
 
+  tigermain.sml      Main
+
   tigerutils.sml     Utils
   tigerpp.sml        Pretty printer
-  tigerinclude.sml   Maneja los includes
-  tigertab.sml       Tablas
-  tigertopsort.sml   Sort topológico
   tigerpila.sml      Pilas
   tigerit.sml        
-  tigermain.sml
-
 
