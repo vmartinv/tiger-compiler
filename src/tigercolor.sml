@@ -82,7 +82,27 @@ val selectStack : nodeStack =
 
 (***** Move sets *****)
 
+(* Moves that have been coalesced *)
+val coalescedMoves : moveSet =
+    tigerset.emptySet moveCmp
+    
+(* Moves whose source and target interfere *)
+val constrainedMoves : moveSet =
+    tigerset.emptySet moveCmp
 
+(* Moves that will no longer be considered for coalescing *)
+val frozenMoves : moveSet =
+    tigerset.emptySet moveCmp
+    
+(* Moves enables for possible coalescing *)
+val worklistMoves : moveSet =
+    tigerset.emptySet moveCmp
+    
+(* Moves not yet ready for coalescing *)
+val activeMoves : moveSet =
+    tigerset.emptySet moveCmp
+    
+    
 (***** Other data structure *****)
         
 (* Interference edge *)
@@ -108,6 +128,7 @@ val alias : (node, nodeSet) Splaymap.dict =
 (* Color *)
 val color : (node, tigerframe.register) Splaymap.dict =
     Splaymap.mkDict nodeCmp
+
 
 
 (********** Coloring Algorithm **********)
