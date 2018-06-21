@@ -52,31 +52,31 @@ val notPrecolored : nodeSet =
     
 (* Temporaries not precolored and not yet processed *)
 val initial : nodeSet = 
-    tigerset.emptySet nodeCmp
+    tigerset.empty nodeCmp
 
 (* Low-degree non-move-related nodes *)
 val simplifyWorkList : nodeSet =
-    tigerset.emptySet nodeCmp
+    tigerset.empty nodeCmp
 
 (* Low-degree move-related nodes *)
 val freezeWorkList : nodeSet =
-    tigerset.emptySet nodeCmp
+    tigerset.empty nodeCmp
 
 (* High-degree nodes *)
 val spillWorkList : nodeSet =
-    tigerset.emptySet nodeCmp
+    tigerset.empty nodeCmp
 
 (* Nodes marked for spilling during this round *)
 val spilledNodes : nodeSet =
-    tigerset.emptySet nodeCmp
+    tigerset.empty nodeCmp
 
 (* Nodes that have been coalesced *)
 val coalescedNodes : nodeSet =
-    tigerset.emptySet nodeCmp
+    tigerset.empty nodeCmp
 
 (* Nodes successfully colored *)
 val coloredNodes : nodeSet =
-    tigerset.emptySet nodeCmp
+    tigerset.empty nodeCmp
 
 (* Stack containing temporaries remove from the graph by simplification *)
 val selectStack : nodeStack = 
@@ -84,36 +84,36 @@ val selectStack : nodeStack =
 
 (* Set of nodes removed from the graph *)
 val selectStackNodes : nodeSet =
-    tigerset.emptySet nodeCmp
+    tigerset.empty nodeCmp
 
 (***** Move sets *****)
 
 (* Moves that have been coalesced *)
 val coalescedMoves : moveSet =
-    tigerset.emptySet moveCmp
+    tigerset.empty moveCmp
     
 (* Moves whose source and target interfere *)
 val constrainedMoves : moveSet =
-    tigerset.emptySet moveCmp
+    tigerset.empty moveCmp
 
 (* Moves that will no longer be considered for coalescing *)
 val frozenMoves : moveSet =
-    tigerset.emptySet moveCmp
+    tigerset.empty moveCmp
     
 (* Moves enables for possible coalescing *)
-val worklistMoves : moveSet =
-    tigerset.emptySet moveCmp
+val workListMoves : moveSet =
+    tigerset.empty moveCmp
     
 (* Moves not yet ready for coalescing *)
 val activeMoves : moveSet =
-    tigerset.emptySet moveCmp
+    tigerset.empty moveCmp
     
     
 (***** Other data structure *****)
         
 (* Interference edge *)
 val adjSet : edgeSet = 
-    tigerset.emptySet edgeCmp
+    tigerset.empty edgeCmp
 
 (* Adjacency list - just not precolored *)
 val adjList : (node, nodeSet) Splaymap.dict = 
@@ -141,36 +141,44 @@ val color : (node, tigerframe.register) Splaymap.dict =
 
 (* Adjacent nodes *)
 fun adjacent (n:node) =
-    tigerset.diff (Splaymap.find(adjList, n)) (tigerset.union selectStackNodes coalescedNodes)
-
-(* Completar:
+    tigerset.difference (Splaymap.find(adjList, n)) (tigerset.union selectStackNodes coalescedNodes)
 
 (* Node moves *)
 fun nodeMoves (n:node) =
+    tigerset.intersection (Splaymap.find(moveList, n)) (tigerset.union activeMoves workListMoves)
 
 (* Move Related *)
 fun moveRelated (n:node) =
+    not (tigerset.equal (nodeMoves n) (tigerset.empty moveCmp))
 
 (* Enable Moves *)
 fun enableMoves (ns : nodeSet) =
+    tigerset.app (fn n => tigerset.app
+                          (fn m => if (tigerset.member activeMoves m) then
+                                       (tigerset.delete activeMoves m)
+                                   else
+                                       (tigerset.add workListMoves m))
+                          (nodeMoves n))
+                  ns
 
 (* Decrement degree *)
 fun decrementDegree (n:node) =
     let
         val d = Splaymap.find(degree, n)
+        val nSet = tigerset.empty nodeCmp
     in 
         Splaymap.insert(degree, n, d-1);
+        tigerset.add nSet n;
         if (d = K) then (
-            enableMoves (tigerset.add (adjacent n) n)
-            tigerset.delete spillWorkList n
-            if moveRelated(n) then
+            enableMoves (tigerset.union (adjacent n) nSet);
+            tigerset.delete spillWorkList n;
+            if (moveRelated n) then
                 tigerset.add freezeWorkList n
             else
                 tigerset.add simplifyWorkList n            
         ) else
             ()
     end
-*)
 
 (* Simplify function *)
 fun simplify () =
@@ -178,8 +186,8 @@ fun simplify () =
         val n = tigerset.get(simplifyWorkList)
     in
        tigerset.delete simplifyWorkList n;
-       tigerpila.pushPila selectStack n (*;
-       tigerset.app decrementDegree (adjacent n) *)
+       tigerpila.pushPila selectStack n;
+       tigerset.app decrementDegree (adjacent n)
     end
 
 

@@ -6,31 +6,40 @@ type 'item set = 'item Splayset.set ref
 
 exception NotFound
 
-fun emptySet cmp = ref (Splayset.empty cmp)
+fun empty cmp = ref (Splayset.empty cmp)
 
 fun listToSet (l, cmp) = ref (Splayset.addList(Splayset.empty cmp, l))
 
-val isEmpty s =
+fun isEmpty s =
     Splayset.isEmpty(!s)
 
-val get s =
+fun equal s t =
+    Splayset.equal(!s, !t)
+
+fun member s n =
+    Splayset.member(!s, n)
+
+fun get s =
     case Splayset.find true (!s) of
           SOME i => i
         | _      => raise NotFound
         
-val add s n =
+fun add s n =
     s := Splayset.add(!s, n)
     
-val delete s n =
+fun delete s n =
     if Splayset.member(!s, n) then s := Splayset.delete(!s, n) else () (* ok? *)
 
-val union s t =
+fun union s t =
+    ref (Splayset.intersection(!s,!t))
+    
+fun union s t =
     ref (Splayset.union(!s,!t))
     
-val diff s t =
+fun difference s t =
     ref (Splayset.difference(!s,!t))
 
-val app f s =
+fun app f s =
     Splayset.app f (!s)
 
 end
