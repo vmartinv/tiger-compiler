@@ -210,7 +210,9 @@ We use the interference graph to assign temporaries to registers (coloring).
 
   tigerregalloc.sml  Register Allocation
   
-  tigercolor. sml    Coloring Algorithm
+  tigercolor.sml     Coloring Algorithm
+  
+  tigerset           Abstract Data Type for sets
 
 
 
