@@ -36,6 +36,9 @@ fun moveCmp ((t1, t2), (t3, t4)) = edgeCmp ((t1, t2), (t3, t4))
 
 (********** Data structures **********)
 
+(* Number of registers *)
+val K = 32 (* completar *)
+
 (***** Temporaries work-lists and sets *****)
 
 (* Machine registers *)
@@ -79,6 +82,9 @@ val coloredNodes : nodeSet =
 val selectStack : nodeStack = 
     tigerpila.nuevaPila()
 
+(* Set of nodes removed from the graph *)
+val selectStackNodes : nodeSet =
+    tigerset.emptySet nodeCmp
 
 (***** Move sets *****)
 
@@ -133,16 +139,50 @@ val color : (node, tigerframe.register) Splaymap.dict =
 
 (********** Coloring Algorithm **********)
 
+(* Adjacent nodes *)
+fun adjacent (n:node) =
+    tigerset.diff (Splaymap.find(adjList, n)) (tigerset.union selectStackNodes coalescedNodes)
 
-(* Simplify function
-fun simplify () =
-    val n = get(simplifyWorkList)
-    delete(simplifyWorkList, n)
-    push(n, selectStack)
-    forall m in adj(n)
-        decrementDegree(m)
-end
+(* Completar:
+
+(* Node moves *)
+fun nodeMoves (n:node) =
+
+(* Move Related *)
+fun moveRelated (n:node) =
+
+(* Enable Moves *)
+fun enableMoves (ns : nodeSet) =
+
+(* Decrement degree *)
+fun decrementDegree (n:node) =
+    let
+        val d = Splaymap.find(degree, n)
+    in 
+        Splaymap.insert(degree, n, d-1);
+        if (d = K) then (
+            enableMoves (tigerset.add (adjacent n) n)
+            tigerset.delete spillWorkList n
+            if moveRelated(n) then
+                tigerset.add freezeWorkList n
+            else
+                tigerset.add simplifyWorkList n            
+        ) else
+            ()
+    end
 *)
+
+(* Simplify function *)
+fun simplify () =
+    let 
+        val n = tigerset.get(simplifyWorkList)
+    in
+       tigerset.delete simplifyWorkList n;
+       tigerpila.pushPila selectStack n (*;
+       tigerset.app decrementDegree (adjacent n) *)
+    end
+
+
 
 
 
