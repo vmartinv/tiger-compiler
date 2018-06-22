@@ -78,11 +78,11 @@ val coalescedNodes : nodeSet =
 val coloredNodes : nodeSet =
     tigerset.empty nodeCmp
 
-(* Stack containing temporaries remove from the graph by simplification *)
+(* Stack containing temporaries remove from the graph *)
 val selectStack : nodeStack = 
     tigerpila.nuevaPila()
 
-(* Set of nodes removed from the graph *)
+(* Set of nodes removed from the graph (stack nodes) *)
 val selectStackNodes : nodeSet =
     tigerset.empty nodeCmp
 
@@ -140,29 +140,29 @@ val color : (node, tigerframe.register) Splaymap.dict =
 (********** Coloring Algorithm **********)
 
 (* Adjacent nodes *)
-fun adjacent (n:node) =
+fun Adjacent (n:node) =
     tigerset.difference (Splaymap.find(adjList, n)) (tigerset.union selectStackNodes coalescedNodes)
 
 (* Node moves *)
-fun nodeMoves (n:node) =
+fun NodeMoves (n:node) =
     tigerset.intersection (Splaymap.find(moveList, n)) (tigerset.union activeMoves workListMoves)
 
 (* Move Related *)
-fun moveRelated (n:node) =
-    not (tigerset.equal (nodeMoves n) (tigerset.empty moveCmp))
+fun MoveRelated (n:node) =
+    not (tigerset.equal (NodeMoves n) (tigerset.empty moveCmp))
 
 (* Enable Moves *)
-fun enableMoves (ns : nodeSet) =
+fun EnableMoves (ns : nodeSet) =
     tigerset.app (fn n => tigerset.app
                           (fn m => if (tigerset.member activeMoves m) then
                                        (tigerset.delete activeMoves m)
                                    else
                                        (tigerset.add workListMoves m))
-                          (nodeMoves n))
+                          (NodeMoves n))
                   ns
 
 (* Decrement degree *)
-fun decrementDegree (n:node) =
+fun DecrementDegree (n:node) =
     let
         val d = Splaymap.find(degree, n)
         val nSet = tigerset.empty nodeCmp
@@ -170,9 +170,9 @@ fun decrementDegree (n:node) =
         Splaymap.insert(degree, n, d-1);
         tigerset.add nSet n;
         if (d = K) then (
-            enableMoves (tigerset.union (adjacent n) nSet);
+            EnableMoves (tigerset.union (Adjacent n) nSet);
             tigerset.delete spillWorkList n;
-            if (moveRelated n) then
+            if (MoveRelated n) then
                 tigerset.add freezeWorkList n
             else
                 tigerset.add simplifyWorkList n            
@@ -183,11 +183,11 @@ fun decrementDegree (n:node) =
 (* Simplify function *)
 fun simplify () =
     let 
-        val n = tigerset.get(simplifyWorkList)
+        val n = tigerset.get simplifyWorkList
     in
        tigerset.delete simplifyWorkList n;
        tigerpila.pushPila selectStack n;
-       tigerset.app decrementDegree (adjacent n)
+       tigerset.app DecrementDegree (Adjacent n)
     end
 
 
