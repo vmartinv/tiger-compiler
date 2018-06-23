@@ -38,8 +38,8 @@ fun codegen frame stm =
         | munchExp (BINOP (MINUS, CONST i, e1)) = result ( fn r => (emit(OPER{assem = "movq $"^(toString i)^", %'d0", src = [], dst=[r], jump=NONE}); emit(OPER{assem = "subq %'s1, %'d0", src = [r, munchExp e1], dst = [r], jump = NONE})))
         | munchExp (BINOP (MINUS, e1, CONST i)) = result ( fn r => (emit(MOV{assem = "movq %'s0, %'d0", src = munchExp e1, dst=r}); emit(OPER{assem = "subq %'d0, $"^(toString i), src = [r], dst = [r], jump = NONE})))
         | munchExp (BINOP (MINUS, e1, e2)) = result ( fn r => (emit(MOV{assem = "movq %'s0, %'d0", src=munchExp e1, dst=r}); emit(OPER{assem = "subq %'d0, %'s1", src = [r, munchExp e2], dst = [r], jump = NONE})))
-        | munchExp (BINOP (MUL, CONST i, e1)) = munchExp (BINOP (MUL, e1, CONST i))
         | munchExp (BINOP (MUL, e1, CONST i)) = result ( fn r => (emit(OPER{assem = "imulq %'d0, %'s0, $"^(toString(i)), src=[munchExp e1], dst=[r], jump=NONE})))
+        | munchExp (BINOP (MUL, CONST i, e1)) = munchExp (BINOP (MUL, e1, CONST i))
         | munchExp (BINOP (MUL, e1, e2)) = result ( fn r => (emit(OPER{assem = "imulq %'d0, %'s0, %'s1", src=[munchExp e1, munchExp e2], dst=[r], jump=NONE})))
         | munchExp (BINOP (DIV, CONST i, e1)) = result ( fn r => (
 			let val m1 = munchExp e1
@@ -72,7 +72,7 @@ fun codegen frame stm =
 			end))
 		| munchExp exp = raise Fail "Casos no cubiertos en tigercodegen.munchExp"
 	    and munchStm (SEQ (a,b)) = (munchStm a; munchStm b)
-	    | munchStm (MOVE(MEM e1, e2)) = emit (MOV{assem="movq %'s0, %'d0", src=munchExp e2, dst=munchExp e1})
+        | munchStm (MOVE (MEM e1, e2)) = emit(OPER{assem = "movq %'s0, (%'s1)", src=[munchExp e2,munchExp e1],dst=[],jump=NONE})
 	    | munchStm (MOVE(TEMP l, e))  = emit (MOV{assem="movq %'s0, %'d0", src=munchExp e, dst=l})
 	    | munchStm (LABEL lab) = emit (aLABEL{assem = (makeString lab) ^ ":", lab=lab })
         | munchStm (JUMP (NAME l, [lp])) = if l <> lp then raise Fail "jump que no salta al nombre de su etiqueta 23987\n" else 
@@ -82,7 +82,7 @@ fun codegen frame stm =
 (*ojo que tal vez el cmp tiene los argumentos al reves*)
 			(emit(OPER{assem = "cmpq 's0, 's1", src=[munchExp e1, munchExp e2], dst=[], jump=NONE});
             emit(OPER{assem = (salto rop) ^ " 'j0", src = [], dst = [], jump = SOME [l1,l2]}))
-        | munchStm (EXP (CALL (NAME lab,args))) =
+        | munchStm (EXP (CALL (NAME lab,args))) = 
 			let (* val _ = emit(OPER{assem="xorq %'d0, %'d0", src=[], dst=[tigerframe.rax], jump=NONE}) (*Hace falta?? d0 no debia tener sempre 0?*)
 				*)
 				val _ =emit(OPER{assem="call "^(makeString lab), src=munchArgs args, dst=tigerframe.calldefs, jump=NONE})
