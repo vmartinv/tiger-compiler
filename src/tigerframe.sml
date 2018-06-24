@@ -56,10 +56,6 @@ val coloredregisters = callersaves @ calleesaves @ argregs @ specialregs (* temp
 val coloredregisters = callersaves @ calleesaves
 Ya lo de arriba lo modifique por si necesito algun registro en codegen*)
 
-val argregs' = [RSI,RDX,RCX,R8,R9]
-val callersaves = [RV,RDI,RSI,RDX,RCX,R8,R9,R10,R11]
-val calleesaves = [FP,SP,RBX,R12,R13,R14,R15]
-
 
 type register = string
 datatype access = InFrame of int | InReg of tigertemp.label      (* Describe args y vars locales que pueden estar en el marco o en registros *)
