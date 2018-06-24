@@ -71,45 +71,36 @@ let
     var SDLK_q := 113
 	
     var VACIO := ord("0")
+	var AGUJERO := ord("1")
 	var CAJA := ord("2")
-	var CAJA_ACTIVADA := ord("E")
+	var CAJA_ACTIVADA := ord("3")
     type Level = {width:int, height:int, zoom:int, player_init:Pto, objs_init:string}
     type ListLevel = {l:Level, next:ListLevel}
     var LEVELS := ListLevel{
 		l=Level{player_init=Pto{x=0, y=2}, zoom=5,
-			width=4, height=4, objs_init=concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat((
+			width=4, height=4, objs_init=concat(concat(concat(concat(concat(concat(concat(concat((
 			"4559"), /*Layer 0: Terrain*/
-			"633D"),
+			"6EED"),
 			"788A"),
 			"0000"),
 			
-			"1111"), /*Layer 1: Walkable objects*/
-			"0001"),
-			"0000"),
-			"0000"),
-			
-			"2200"), /*Layer 1: Objects*/
-			"0222"),
+			"3311"), /*Layer 1: Objects*/
+			"0223"),
 			"0000"),
 			"BFFG"),
 			"")
 		},
 		next=ListLevel{
 		l=Level{player_init=Pto{x=2, y=1}, zoom=5,
-			width=5, height=4, objs_init=concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat((
+			width=5, height=4, objs_init=concat(concat(concat(concat(concat(concat(concat(concat((
 			"45559"), /*Layer 0: Terrain*/
-			"6333D"),
+			"6EEED"),
 			"7888A"),
 			"00000"),
 			
-			"10001"), /*Layer 1: Walkable objects*/
-			"00000"),
-			"10001"),
-			"00000"),
-			
-			"00200"), /*Layer 1: Objects*/
+			"10201"), /*Layer 1: Objects*/
 			"02020"),
-			"00200"),
+			"10201"),
 			"BFFFG"),
 			"")
 		},
@@ -130,7 +121,7 @@ let
 	var curlevel:Level := nil
 	var idxlevel := 0
 	var tilespos := APto[500] of Pto{x=0, y=0}
-    var objs := AAAint[3] of (AAint[500] of (Aint[500] of 0))
+    var objs := AAAint[3] of (AAint[500] of (Aint[500] of VACIO))
     var playerpos := Pto{x=0, y=0} 
     var screenoffset := Pto{x=0, y=0}
     var movhistory:ListMov := nil
@@ -173,7 +164,7 @@ let
 		font := TTF_OpenFont_Tig("yoster.ttf", (SCREEN_WIDTH*4)/100);
 		tilespos[ord("1")] := Pto{x = 17, y = 7}; /*Agujero*/
 		tilespos[ord("2")] := Pto{x = 16, y = 7}; /*Caja*/
-		tilespos[ord("3")] := Pto{x = 4, y = 2};
+		tilespos[ord("3")] := Pto{x = 18, y = 7}; /*Caja activada*/
 		tilespos[ord("4")] := Pto{x = 0, y = 0};
 		tilespos[ord("5")] := Pto{x = 1, y = 0};
 		tilespos[ord("6")] := Pto{x = 0, y = 1};
@@ -185,7 +176,7 @@ let
 		tilespos[ord("F")] := Pto{x = 15, y = 4}; /*Pico Abajo Centro*/
 		tilespos[ord("G")] := Pto{x = 16, y = 4};  /*Pico Abajo Derecha*/
 		tilespos[ord("D")] := Pto{x = 5, y = 1};
-		tilespos[ord("E")] := Pto{x = 18, y = 7}; /*Caja activada*/
+		tilespos[ord("E")] := Pto{x = 4, y = 2};
 		tilespos[PLAYER_TILE] := Pto{x = 22, y = 6}; /*Jugador arriba*/
 		tilespos[PLAYER_TILE+1] := Pto{x = 20, y = 6}; /*Jugador derecha*/
 		tilespos[PLAYER_TILE+2] := Pto{x = 14, y = 6}; /*Jugador abajo*/
@@ -373,14 +364,23 @@ let
 	)
     function setup_mundo(lh:int, lw:int, init:string, m:AAAint) = (
 		for k := 0 to 2 do (
-			m[k] := AAint[500] of (Aint[500] of 0);
+			m[k] := AAint[500] of (Aint[500] of VACIO);
+			for i := 1 to (lh-1) do (
+				m[k][i] := Aint[500] of VACIO
+			)
+		);
+		for k := 0 to 1 do (
 			for i := 0 to (lh-1) do (
-				m[k][i] := Aint[500] of 0;
 				for j := 0 to (lw-1) do (
-					m[k][i][j] := ord(substring(init, k*lw*lh + i*lw + j, 1));
-					if k=2 & m[k][i][j]=CAJA & m[1][i][j]<>VACIO then m[k][i][j] := CAJA_ACTIVADA
-					else ()
+					m[k*2][i][j] := ord(substring(init, k*lw*lh + i*lw + j, 1))
 				)
+			)
+		);
+		for i := 0 to (lh-1) do (
+			for j := 0 to (lw-1) do (
+				if m[2][i][j]=CAJA_ACTIVADA then m[1][i][j] := AGUJERO
+				else if m[2][i][j]=AGUJERO then (m[1][i][j] := AGUJERO; m[2][i][j] := VACIO)
+				else m[1][i][j] := VACIO
 			)
 		)
 	)
