@@ -26,6 +26,6 @@ OPER: addq %'d0, $1 D:[T8] S:[T8]
 MOVE: movq %'s0, %'d0 D:T1 S:T8
 OPER: jmp 'j0 D:[] S:[] J:[L3]
 LABEL: L5
-OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
+OPER:  D:[] S:[rax,rsp,rbp,rdi,rsi,rbx,r12,r13,r14,r15]
 ;;-END-FRAME-:
 yes!!
