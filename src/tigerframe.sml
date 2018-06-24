@@ -45,7 +45,7 @@ val argregs = ["rdi","rsi","rdx","rcx","r8","r9"] (* registros donde van los pri
 val callersaves = ["rax","r10","r11"] (*REVISAR*) (* registros preservados por el invocador *)
 val calleesaves = ["rbx","r12","r13","r14","r15"] (*REVISAR*) (* registros preservador por la funcion invocada *)
 val calldefs = callersaves
-val coloredregisters = [](*COMPLETAR*)
+val coloredregisters = callersaves @ calleesaves @ argregs @ specialregs (* temporarios pre coloreados (all machine registers) ¿Están todos? *)
 (*En lo de Mariano
 val coloredregisters = callersaves @ calleesaves
 Ya lo de arriba lo modifique por si necesito algun registro en codegen*)
