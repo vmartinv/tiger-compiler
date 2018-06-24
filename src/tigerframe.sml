@@ -42,13 +42,18 @@ val localsInicial = 0       (* words *)
 val localsGap = ~wSz            (* bytes *)
 val specialregs = [fp, sp]
 val argregs = ["rdi","rsi","rdx","rcx","r8","r9"] (* registros donde van los primeros argumentos segun la convención de llamada *)
-val callersaves = ["rax","r10","r11"] (*REVISAR*) (* registros preservador por el invocador *)
+val callersaves = ["rax","r10","r11"] (*REVISAR*) (* registros preservados por el invocador *)
 val calleesaves = ["rbx","r12","r13","r14","r15"] (*REVISAR*) (* registros preservador por la funcion invocada *)
 val calldefs = callersaves
 val coloredregisters = [](*COMPLETAR*)
 (*En lo de Mariano
 val coloredregisters = callersaves @ calleesaves
 Ya lo de arriba lo modifique por si necesito algun registro en codegen*)
+
+val argregs' = [RSI,RDX,RCX,R8,R9]
+val callersaves = [RV,RDI,RSI,RDX,RCX,R8,R9,R10,R11]
+val calleesaves = [FP,SP,RBX,R12,R13,R14,R15]
+
 
 type register = string
 datatype access = InFrame of int | InReg of tigertemp.label      (* Describe args y vars locales que pueden estar en el marco o en registros *)
