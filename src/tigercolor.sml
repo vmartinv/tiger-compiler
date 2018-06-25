@@ -193,10 +193,6 @@ fun Build (instrs : tigerassem.instr list) =
         List.app buildNode fgnodes
     end
 
-(* Adjacent nodes *)
-fun Adjacent (n:node) =
-    tigerset.difference (tigermap.get adjList n) (tigerset.union selectStackNodes coalescedNodes)
-
 (* Node moves *)
 fun NodeMoves (n:node) =
     tigerset.intersection (tigermap.get moveList n) (tigerset.union activeMoves workListMoves)
@@ -204,6 +200,21 @@ fun NodeMoves (n:node) =
 (* Move Related *)
 fun MoveRelated (n:node) =
     not (tigerset.equal (NodeMoves n) (tigerset.empty moveCmp))
+    
+(* MakeWorkList *)
+fun MakeWorkList () =
+    tigerset.app (fn n => (tigerset.delete initial n;
+                           if ((tigermap.get degree n) >= K)
+                           then tigerset.add spillWorkList n
+                           else if (MoveRelated n)
+                                then tigerset.add freezeWorkList n
+                                else tigerset.add simplifyWorkList n
+                          ))
+                 initial
+
+(* Adjacent nodes *)
+fun Adjacent (n:node) =
+    tigerset.difference (tigermap.get adjList n) (tigerset.union selectStackNodes coalescedNodes)
 
 (* Enable Moves *)
 fun EnableMoves (ns : nodeSet) =
