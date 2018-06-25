@@ -9,13 +9,16 @@ exception NotFound
 fun empty cmp =
     ref (Splayset.empty cmp)
 
+fun singleton cmp item =
+    ref (Splayset.add (Splayset.empty cmp) item)
+    
 fun isEmpty s =
     Splayset.isEmpty(!s)
 
 fun equal s t =
     Splayset.equal(!s, !t)
 
-fun listToSet (l, cmp) =
+fun listToSet l cmp =
     ref (Splayset.addList(Splayset.empty cmp, l))
 
 fun member s n =

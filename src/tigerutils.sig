@@ -1,6 +1,6 @@
 signature tigerutils =
 sig
-	val join: string list -> string -> string
+    val join: string list -> string -> string
     val endswith: string -> string -> bool
     val zip3R: 'a list -> 'b list -> 'c list -> ('a * 'b * 'c) list (*zip 3 relajado*)
     val flatten: 'a list list -> 'a list
@@ -11,4 +11,6 @@ sig
     val fromListtoSet : ('a * 'a -> order) * 'a list -> 'a Splayset.set (* Transforma una lista en un conjunto *)
     val toString: int -> string
     val measure: string -> ('a -> 'b) -> ('a -> 'b)
+    val elimList : ('a * 'a -> order) -> 'a -> 'a list -> 'a list
+    val diffList : ('a * 'a -> order) -> 'a list -> 'a list -> 'a list
 end

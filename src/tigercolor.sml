@@ -3,8 +3,11 @@ struct
 
 open tigertemp
 open tigerliveness
+open tigerassem
 open tigerset
+open tigermap
 open tigerpila
+open tigerutils
 
 
 (********** Types **********)
@@ -43,7 +46,7 @@ val K = 32 (* completar *)
 
 (* Machine registers *)
 val precolored : nodeSet =
-    tigerset.listToSet(tigerframe.coloredregisters, nodeCmp)
+    tigerset.listToSet tigerframe.coloredregisters nodeCmp
 
 (* util?:
 val notPrecolored : nodeSet =
@@ -116,36 +119,87 @@ val adjSet : edgeSet =
     tigerset.empty edgeCmp
 
 (* Adjacency list - just not precolored *)
-val adjList : (node, nodeSet) Splaymap.dict = 
-    Splaymap.mkDict nodeCmp
+val adjList : (node, nodeSet) tigermap.map = 
+    tigermap.empty nodeCmp
 
 (* Node degree *)
-val degree : (node, int) Splaymap.dict =
-    Splaymap.mkDict nodeCmp
+val degree : (node, int) tigermap.map =
+    tigermap.empty nodeCmp
 
 (* Move list *)
-val moveList : (node, moveSet) Splaymap.dict =
-    Splaymap.mkDict nodeCmp
+val moveList : (node, moveSet) tigermap.map =
+    tigermap.empty nodeCmp
 
 (* Alias *)
-val alias : (node, nodeSet) Splaymap.dict =
-    Splaymap.mkDict nodeCmp
+val alias : (node, nodeSet) tigermap.map =
+    tigermap.empty nodeCmp
 
 (* Color *)
-val color : (node, tigerframe.register) Splaymap.dict =
-    Splaymap.mkDict nodeCmp
+val color : (node, tigerframe.register) tigermap.map =
+    tigermap.empty nodeCmp
 
 
 
 (********** Coloring Algorithm **********)
 
+(* AddEdge *)
+fun AddEdge (u : node, v : node) =
+    if ((not (tigerset.member adjSet (u, v))) andalso (not (nodeEq(u, v)))) then (
+        tigerset.add adjSet (u, v);
+        tigerset.add adjSet (v, u);
+        if (not (tigerset.member precolored u))
+        then (
+            tigermap.insert adjList u (tigerset.union (tigermap.get adjList u) (tigerset.singleton nodeCmp v));
+            tigermap.insert degree u ((tigermap.get degree u) + 1)
+            )
+        else ();
+        if (not (tigerset.member precolored v))
+        then (
+            tigermap.insert adjList v (tigerset.union (tigermap.get adjList v) (tigerset.singleton nodeCmp u));
+            tigermap.insert degree v ((tigermap.get degree v) + 1)
+            )
+        else ()
+        )
+    else ()
+
+(* Build, levemente distinto al libro porque no tenemos bloques, tenemos instrucciones simples *)
+fun Build (instrs : tigerassem.instr list) =
+    let
+        val (fg, fgnodes) = tigerflow.instrs2graph instrs
+        val (tigerflow.FGRAPH{control, def, use, ismove}) = fg
+        val (_, liveOut) = tigerliveness.interferenceGraph fg
+        fun buildNode i =
+            let 
+                val live = listToSet (liveOut i) nodeCmp
+                val def_i = Splaymap.find(def, i)
+                val use_i = Splaymap.find(use, i)
+            in
+                if (Splaymap.find(ismove, i))
+                then (
+                    List.app (fn n => tigerset.delete live n)
+                             use_i;
+                    List.app (fn n => tigermap.insert moveList n (tigerset.union (tigermap.get moveList n) (tigerset.singleton moveCmp (List.hd (def_i), List.hd use_i))))
+                             (def_i @ use_i);
+                    tigerset.add workListMoves (List.hd def_i, List.hd use_i)
+                )
+                else ();
+                List.app (fn t => tigerset.add live t)
+                         def_i;
+                List.app (fn d => (tigerset.app (fn l => AddEdge(l, d))
+                                                live))
+                         def_i
+            end
+    in
+        List.app buildNode fgnodes
+    end
+
 (* Adjacent nodes *)
 fun Adjacent (n:node) =
-    tigerset.difference (Splaymap.find(adjList, n)) (tigerset.union selectStackNodes coalescedNodes)
+    tigerset.difference (tigermap.get adjList n) (tigerset.union selectStackNodes coalescedNodes)
 
 (* Node moves *)
 fun NodeMoves (n:node) =
-    tigerset.intersection (Splaymap.find(moveList, n)) (tigerset.union activeMoves workListMoves)
+    tigerset.intersection (tigermap.get moveList n) (tigerset.union activeMoves workListMoves)
 
 (* Move Related *)
 fun MoveRelated (n:node) =
@@ -164,10 +218,10 @@ fun EnableMoves (ns : nodeSet) =
 (* Decrement degree *)
 fun DecrementDegree (n:node) =
     let
-        val d = Splaymap.find(degree, n)
+        val d = tigermap.get degree n
         val nSet = tigerset.empty nodeCmp
     in 
-        Splaymap.insert(degree, n, d-1);
+        tigermap.insert degree n (d-1); (*degree := Splaymap.insert(degree, n, d-1);*)
         tigerset.add nSet n;
         if (d = K) then (
             EnableMoves (tigerset.union (Adjacent n) nSet);
@@ -181,7 +235,7 @@ fun DecrementDegree (n:node) =
     end
 
 (* Simplify function *)
-fun simplify () =
+fun Simplify () =
     let 
         val n = tigerset.get simplifyWorkList
     in
@@ -190,16 +244,19 @@ fun simplify () =
        tigerset.app DecrementDegree (Adjacent n)
     end
 
+(* Coloring function 
+fun color (instrs : tigerassem.instr list) = (* COMPLETAR *)
+    LivenessAnalysis();
+    Init instrs;
+    Build();
+    MakeWorkList();
+    repeat 
+*)
+
+(* Register Allocation *)
+fun alloc (body : tigerassem.instr list, fr : tigerframe.frame) = (* COMPLETAR *)
+    ([], Splaymap.mkDict(String.compare))
 
 
-
-
-(* Coloring function *)
-fun color c = (* COMPLETAR *)
-    let 
-        val precolored = ["a", "b", "c", "d", "e", "f"]
-
-    in
-        (Splaymap.mkDict(String.compare), [])
-    end
 end
+
