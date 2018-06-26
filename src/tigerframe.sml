@@ -55,6 +55,8 @@ val coloredregisters = callersaves @ calleesaves @ argregs @ specialregs (* temp
 (*En lo de Mariano
 val coloredregisters = callersaves @ calleesaves
 Ya lo de arriba lo modifique por si necesito algun registro en codegen*)
+val usableregisters = callersaves @ calleesaves @ argregs (* ok? *)
+
 
 
 type register = string

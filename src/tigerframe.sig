@@ -27,6 +27,7 @@ val calldefs : tigertemp.temp list
 val callersaves : tigertemp.temp list
 val specialregs : tigertemp.temp list
 val coloredregisters : tigertemp.temp list
+val usableregisters : register list
 val argregs : register list
 val exp : access -> tigertree.exp -> tigertree.exp
 val offset : access -> int
