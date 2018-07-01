@@ -104,17 +104,16 @@ fun seq [] = EXP (CONST 0)
     | seq (x::xs) = SEQ (x, seq xs)
 
 fun procEntryExit1 ( fr : frame,body) = 
-    body
-(*
    let val argsAcc = #argsAcc fr
        fun aux [] _ = []
-       |   aux (acc::accs) n = MOVE( exp acc (TEMP fp), if n < List.length argregs then TEMP (List.nth(argregs,n)) else MEM(BINOP(PLUS, CONST ((n-List.length argregs)*8+16), TEMP fp)) ) :: aux accs (n+1)
+       |   aux (acc::accs) n = MOVE( exp acc (TEMP fp), 
+       if n < List.length argregs then TEMP (List.nth(argregs,n)) 
+       else MEM(BINOP(PLUS, CONST ((n-List.length argregs)*8+16), TEMP fp)) ) :: aux accs (n+1)
        val moveargs = aux (!argsAcc) 0 (*Instrucciones para mover de los argumentos a los locals donde la función ve internamente las cosas *)
        val freshtmps = List.tabulate (List.length calleesaves , fn _ => TEMP (tigertemp.newtemp()))
        val saveregs = List.map MOVE (ListPair.zip(freshtmps,List.map TEMP calleesaves)) (* Instrucciones para salvar en temporarios los callee saves *)
        val restoreregs = List.map MOVE(ListPair.zip(List.map TEMP calleesaves,freshtmps)) (* Restaurar los callee saves *)
        in seq( saveregs @ moveargs @ [body] @ restoreregs ) end   
-*)
 fun procEntryExit2(frame:frame,instrs) = instrs @ [tigerassem.OPER{assem="",src=[rv,sp,fp]@calleesaves, dst=[], jump=NONE}]
 
 end
