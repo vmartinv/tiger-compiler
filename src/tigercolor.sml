@@ -8,7 +8,7 @@ open tigerset
 open tigermap
 open tigerpila
 open tigerutils
-
+open tigerframe
 
 (********** Types **********)
 
@@ -193,10 +193,6 @@ fun Build (instrs : tigerassem.instr list) =
         List.app buildNode fgnodes
     end
 
-(* Adjacent nodes *)
-fun Adjacent (n:node) =
-    tigerset.difference (tigermap.get adjList n) (tigerset.union selectStackNodes coalescedNodes)
-
 (* Node moves *)
 fun NodeMoves (n:node) =
     tigerset.intersection (tigermap.get moveList n) (tigerset.union activeMoves workListMoves)
@@ -204,6 +200,21 @@ fun NodeMoves (n:node) =
 (* Move Related *)
 fun MoveRelated (n:node) =
     not (tigerset.equal (NodeMoves n) (tigerset.empty moveCmp))
+    
+(* MakeWorkList *)
+fun MakeWorkList () =
+    tigerset.app (fn n => (tigerset.delete initial n;
+                           if ((tigermap.get degree n) >= K)
+                           then tigerset.add spillWorkList n
+                           else if (MoveRelated n)
+                                then tigerset.add freezeWorkList n
+                                else tigerset.add simplifyWorkList n
+                          ))
+                 initial
+
+(* Adjacent nodes *)
+fun Adjacent (n:node) =
+    tigerset.difference (tigermap.get adjList n) (tigerset.union selectStackNodes coalescedNodes)
 
 (* Enable Moves *)
 fun EnableMoves (ns : nodeSet) =
@@ -244,6 +255,39 @@ fun Simplify () =
        tigerset.app DecrementDegree (Adjacent n)
     end
 
+(* Get Alias, modificar después *)
+fun GetAlias (n:node) =
+    n
+
+(* AssignColors *)
+fun AssignColors () =
+    let
+        val x = 3 (* sin el let nome compila *)
+    in
+        while (not (tigerpila.isEmpty selectStack))
+        do (
+           let
+               val n = tigerpila.topPila selectStack
+               val okColors = tigerset.listToSet tigerframe.usableregisters nodeCmp
+           in
+               tigerpila.popPila selectStack;
+               tigerset.app (fn w => if (tigerset.member (tigerset.union coloredNodes precolored) (GetAlias w))
+                                     then (tigerset.delete okColors (tigermap.get color (GetAlias w)))
+                                     else ())
+                            (tigermap.get adjList n);
+                if (tigerset.isEmpty okColors)
+                then tigerset.add spilledNodes n
+                else (
+                    tigerset.add coloredNodes n;
+                    tigermap.insert color n (tigerset.get okColors)
+                )
+            end
+        );
+        tigerset.app (fn n => tigermap.insert color n (tigermap.get color (GetAlias n))) coalescedNodes
+    end 
+            
+           
+
 (* Coloring function 
 fun color (instrs : tigerassem.instr list) = (* COMPLETAR *)
     LivenessAnalysis();
@@ -253,10 +297,23 @@ fun color (instrs : tigerassem.instr list) = (* COMPLETAR *)
     repeat 
 *)
 
-(* Register Allocation *)
+(* Register Allocation - Simple *)
 fun alloc (body : tigerassem.instr list, fr : tigerframe.frame) = (* COMPLETAR *)
-    ([], Splaymap.mkDict(String.compare))
-
+    let
+        val x = 3 (* sin el let nome compila *)
+    in
+        Build body;
+        MakeWorkList ();
+        (* Modificar después para la versión completa *)
+        while (not (tigerset.isEmpty simplifyWorkList))
+        do (
+           if (not (tigerset.isEmpty simplifyWorkList))
+           then Simplify ()
+           else ()        
+        );
+        AssignColors();
+        ([], Splaymap.mkDict(String.compare))
+    end
 
 end
 
