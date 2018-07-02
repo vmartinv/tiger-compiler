@@ -2,53 +2,275 @@ LetExp{decs=[FunctionDec([{name=f,params=[],result=intbody=0}])],
  body=CallExp{func=f,args=[]}}
 bien!
 ;;-PROC-L1--:
-MOVE(
- TEMP rax,
- CONST 0)
-;;-END-PROC--:
-;;-PROC-L0--:
-MOVE(
- TEMP rax,
- ESEQ(
+SEQ(
+ MOVE(
+  TEMP T0,
+  TEMP rdi),
+ SEQ(
+  MOVE(
+   TEMP T1,
+   TEMP rsi),
   SEQ(
    MOVE(
-    TEMP T0,
-    TEMP rbp),
+    TEMP T2,
+    TEMP rbx),
    SEQ(
-    EXP(
-     CALL(
-      NAME L1,
-       TEMP T0)),
     MOVE(
-     TEMP T1,
-     TEMP rax))),
-  TEMP T1))
+     TEMP T3,
+     TEMP r12),
+    SEQ(
+     MOVE(
+      TEMP T4,
+      TEMP r13),
+     SEQ(
+      MOVE(
+       TEMP T5,
+       TEMP r14),
+      SEQ(
+       MOVE(
+        TEMP T6,
+        TEMP r15),
+       SEQ(
+        MOVE(
+         MEM(
+          BINOP(PLUS,
+           TEMP rbp,
+           CONST -8)),
+         TEMP rcx),
+        SEQ(
+         MOVE(
+          TEMP rax,
+          CONST 0),
+         SEQ(
+          MOVE(
+           TEMP rdi,
+           TEMP T0),
+          SEQ(
+           MOVE(
+            TEMP rsi,
+            TEMP T1),
+           SEQ(
+            MOVE(
+             TEMP rbx,
+             TEMP T2),
+            SEQ(
+             MOVE(
+              TEMP r12,
+              TEMP T3),
+             SEQ(
+              MOVE(
+               TEMP r13,
+               TEMP T4),
+              SEQ(
+               MOVE(
+                TEMP r14,
+                TEMP T5),
+               MOVE(
+                TEMP r15,
+                TEMP T6))))))))))))))))
+;;-END-PROC--:
+;;-PROC-L0--:
+SEQ(
+ MOVE(
+  TEMP T9,
+  TEMP rdi),
+ SEQ(
+  MOVE(
+   TEMP T10,
+   TEMP rsi),
+  SEQ(
+   MOVE(
+    TEMP T11,
+    TEMP rbx),
+   SEQ(
+    MOVE(
+     TEMP T12,
+     TEMP r12),
+    SEQ(
+     MOVE(
+      TEMP T13,
+      TEMP r13),
+     SEQ(
+      MOVE(
+       TEMP T14,
+       TEMP r14),
+      SEQ(
+       MOVE(
+        TEMP T15,
+        TEMP r15),
+       SEQ(
+        MOVE(
+         MEM(
+          BINOP(PLUS,
+           TEMP rbp,
+           CONST -8)),
+         TEMP rcx),
+        SEQ(
+         MOVE(
+          TEMP rax,
+          ESEQ(
+           SEQ(
+            MOVE(
+             TEMP T7,
+             TEMP rbp),
+            SEQ(
+             EXP(
+              CALL(
+               NAME L1,
+                TEMP T7)),
+             MOVE(
+              TEMP T8,
+              TEMP rax))),
+           TEMP T8)),
+         SEQ(
+          MOVE(
+           TEMP rdi,
+           TEMP T9),
+          SEQ(
+           MOVE(
+            TEMP rsi,
+            TEMP T10),
+           SEQ(
+            MOVE(
+             TEMP rbx,
+             TEMP T11),
+            SEQ(
+             MOVE(
+              TEMP r12,
+              TEMP T12),
+             SEQ(
+              MOVE(
+               TEMP r13,
+               TEMP T13),
+              SEQ(
+               MOVE(
+                TEMP r14,
+                TEMP T14),
+               MOVE(
+                TEMP r15,
+                TEMP T15))))))))))))))))
 ;;-END-PROC--:
 ------Canon------
 ;;--END-STRS--:
 --FRAME L0:
 LABEL L5
 MOVE(
- TEMP T0,
+ TEMP T9,
+ TEMP rdi)
+MOVE(
+ TEMP T10,
+ TEMP rsi)
+MOVE(
+ TEMP T11,
+ TEMP rbx)
+MOVE(
+ TEMP T12,
+ TEMP r12)
+MOVE(
+ TEMP T13,
+ TEMP r13)
+MOVE(
+ TEMP T14,
+ TEMP r14)
+MOVE(
+ TEMP T15,
+ TEMP r15)
+MOVE(
+ MEM(
+  BINOP(PLUS,
+   TEMP rbp,
+   CONST -8)),
+ TEMP rcx)
+MOVE(
+ TEMP T7,
  TEMP rbp)
 EXP(
  CALL(
   NAME L1,
-   TEMP T0))
+   TEMP T7))
 MOVE(
- TEMP T1,
+ TEMP T8,
  TEMP rax)
 MOVE(
  TEMP rax,
- TEMP T1)
+ TEMP T8)
+MOVE(
+ TEMP rdi,
+ TEMP T9)
+MOVE(
+ TEMP rsi,
+ TEMP T10)
+MOVE(
+ TEMP rbx,
+ TEMP T11)
+MOVE(
+ TEMP r12,
+ TEMP T12)
+MOVE(
+ TEMP r13,
+ TEMP T13)
+MOVE(
+ TEMP r14,
+ TEMP T14)
+MOVE(
+ TEMP r15,
+ TEMP T15)
 JUMP( NAME L4)
 LABEL L4
 ;;-END-FRAME-:
 --FRAME L1:
 LABEL L3
 MOVE(
+ TEMP T0,
+ TEMP rdi)
+MOVE(
+ TEMP T1,
+ TEMP rsi)
+MOVE(
+ TEMP T2,
+ TEMP rbx)
+MOVE(
+ TEMP T3,
+ TEMP r12)
+MOVE(
+ TEMP T4,
+ TEMP r13)
+MOVE(
+ TEMP T5,
+ TEMP r14)
+MOVE(
+ TEMP T6,
+ TEMP r15)
+MOVE(
+ MEM(
+  BINOP(PLUS,
+   TEMP rbp,
+   CONST -8)),
+ TEMP rcx)
+MOVE(
  TEMP rax,
  CONST 0)
+MOVE(
+ TEMP rdi,
+ TEMP T0)
+MOVE(
+ TEMP rsi,
+ TEMP T1)
+MOVE(
+ TEMP rbx,
+ TEMP T2)
+MOVE(
+ TEMP r12,
+ TEMP T3)
+MOVE(
+ TEMP r13,
+ TEMP T4)
+MOVE(
+ TEMP r14,
+ TEMP T5)
+MOVE(
+ TEMP r15,
+ TEMP T6)
 JUMP( NAME L2)
 LABEL L2
 ;;-END-FRAME-:

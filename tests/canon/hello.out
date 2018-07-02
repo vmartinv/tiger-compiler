@@ -3,18 +3,81 @@ bien!
 L1:	.long 11
 	.ascii "Hello World"
 ;;-PROC-L0--:
-MOVE(
- TEMP rax,
- ESEQ(
+SEQ(
+ MOVE(
+  TEMP T2,
+  TEMP rdi),
+ SEQ(
+  MOVE(
+   TEMP T3,
+   TEMP rsi),
   SEQ(
    MOVE(
-    TEMP T0,
-    NAME L1),
-   EXP(
-    CALL(
-     NAME print,
-      TEMP T0))),
-  CONST 0))
+    TEMP T4,
+    TEMP rbx),
+   SEQ(
+    MOVE(
+     TEMP T5,
+     TEMP r12),
+    SEQ(
+     MOVE(
+      TEMP T6,
+      TEMP r13),
+     SEQ(
+      MOVE(
+       TEMP T7,
+       TEMP r14),
+      SEQ(
+       MOVE(
+        TEMP T8,
+        TEMP r15),
+       SEQ(
+        MOVE(
+         MEM(
+          BINOP(PLUS,
+           TEMP rbp,
+           CONST -8)),
+         TEMP rcx),
+        SEQ(
+         MOVE(
+          TEMP rax,
+          ESEQ(
+           SEQ(
+            MOVE(
+             TEMP T0,
+             NAME L1),
+            EXP(
+             CALL(
+              NAME print,
+               TEMP T0))),
+           CONST 0)),
+         SEQ(
+          MOVE(
+           TEMP rdi,
+           TEMP T2),
+          SEQ(
+           MOVE(
+            TEMP rsi,
+            TEMP T3),
+           SEQ(
+            MOVE(
+             TEMP rbx,
+             TEMP T4),
+            SEQ(
+             MOVE(
+              TEMP r12,
+              TEMP T5),
+             SEQ(
+              MOVE(
+               TEMP r13,
+               TEMP T6),
+              SEQ(
+               MOVE(
+                TEMP r14,
+                TEMP T7),
+               MOVE(
+                TEMP r15,
+                TEMP T8))))))))))))))))
 ;;-END-PROC--:
 ------Canon------
 L1:	.long 11
@@ -22,6 +85,33 @@ L1:	.long 11
 ;;--END-STRS--:
 --FRAME L0:
 LABEL L3
+MOVE(
+ TEMP T2,
+ TEMP rdi)
+MOVE(
+ TEMP T3,
+ TEMP rsi)
+MOVE(
+ TEMP T4,
+ TEMP rbx)
+MOVE(
+ TEMP T5,
+ TEMP r12)
+MOVE(
+ TEMP T6,
+ TEMP r13)
+MOVE(
+ TEMP T7,
+ TEMP r14)
+MOVE(
+ TEMP T8,
+ TEMP r15)
+MOVE(
+ MEM(
+  BINOP(PLUS,
+   TEMP rbp,
+   CONST -8)),
+ TEMP rcx)
 MOVE(
  TEMP T0,
  NAME L1)
@@ -32,6 +122,27 @@ EXP(
 MOVE(
  TEMP rax,
  CONST 0)
+MOVE(
+ TEMP rdi,
+ TEMP T2)
+MOVE(
+ TEMP rsi,
+ TEMP T3)
+MOVE(
+ TEMP rbx,
+ TEMP T4)
+MOVE(
+ TEMP r12,
+ TEMP T5)
+MOVE(
+ TEMP r13,
+ TEMP T6)
+MOVE(
+ TEMP r14,
+ TEMP T7)
+MOVE(
+ TEMP r15,
+ TEMP T8)
 JUMP( NAME L2)
 LABEL L2
 ;;-END-FRAME-:

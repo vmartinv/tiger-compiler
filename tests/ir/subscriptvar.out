@@ -4,54 +4,144 @@ LetExp{decs=[TypeDec([{name=A,ty=ArrayTy(int)}])
  body=VarExp(SubscriptVar(SimpleVar(a),20))}
 bien!
 ;;-PROC-L0--:
-MOVE(
- TEMP rax,
- ESEQ(
+SEQ(
+ MOVE(
+  TEMP T5,
+  TEMP rdi),
+ SEQ(
   MOVE(
-   TEMP T1,
-   ESEQ(
-    SEQ(
-     EXP(
-      CALL(
-       NAME _initArray,
-        CONST 100,
-        CONST 51)),
-     MOVE(
-      TEMP T0,
-      TEMP rax)),
-    TEMP T0)),
-  ESEQ(
+   TEMP T6,
+   TEMP rsi),
+  SEQ(
+   MOVE(
+    TEMP T7,
+    TEMP rbx),
    SEQ(
     MOVE(
-     TEMP T2,
-     TEMP T1),
+     TEMP T8,
+     TEMP r12),
     SEQ(
      MOVE(
-      TEMP T3,
-      CONST 20),
-     EXP(
-      ESEQ(
+      TEMP T9,
+      TEMP r13),
+     SEQ(
+      MOVE(
+       TEMP T10,
+       TEMP r14),
+      SEQ(
+       MOVE(
+        TEMP T11,
+        TEMP r15),
        SEQ(
-        EXP(
-         CALL(
-          NAME _checkIndexArray,
-           TEMP T2,
-           TEMP T3)),
         MOVE(
-         TEMP T4,
-         TEMP rax)),
-       TEMP T4)))),
-   MEM(
-    BINOP(PLUS,
-     TEMP T2,
-     BINOP(MUL,
-      TEMP T3,
-      CONST 8))))))
+         MEM(
+          BINOP(PLUS,
+           TEMP rbp,
+           CONST -8)),
+         TEMP rcx),
+        SEQ(
+         MOVE(
+          TEMP rax,
+          ESEQ(
+           MOVE(
+            TEMP T1,
+            ESEQ(
+             SEQ(
+              EXP(
+               CALL(
+                NAME _initArray,
+                 CONST 100,
+                 CONST 51)),
+              MOVE(
+               TEMP T0,
+               TEMP rax)),
+             TEMP T0)),
+           ESEQ(
+            SEQ(
+             MOVE(
+              TEMP T2,
+              TEMP T1),
+             SEQ(
+              MOVE(
+               TEMP T3,
+               CONST 20),
+              EXP(
+               ESEQ(
+                SEQ(
+                 EXP(
+                  CALL(
+                   NAME _checkIndexArray,
+                    TEMP T2,
+                    TEMP T3)),
+                 MOVE(
+                  TEMP T4,
+                  TEMP rax)),
+                TEMP T4)))),
+            MEM(
+             BINOP(PLUS,
+              TEMP T2,
+              BINOP(MUL,
+               TEMP T3,
+               CONST 8)))))),
+         SEQ(
+          MOVE(
+           TEMP rdi,
+           TEMP T5),
+          SEQ(
+           MOVE(
+            TEMP rsi,
+            TEMP T6),
+           SEQ(
+            MOVE(
+             TEMP rbx,
+             TEMP T7),
+            SEQ(
+             MOVE(
+              TEMP r12,
+              TEMP T8),
+             SEQ(
+              MOVE(
+               TEMP r13,
+               TEMP T9),
+              SEQ(
+               MOVE(
+                TEMP r14,
+                TEMP T10),
+               MOVE(
+                TEMP r15,
+                TEMP T11))))))))))))))))
 ;;-END-PROC--:
 ------Canon------
 ;;--END-STRS--:
 --FRAME L0:
 LABEL L2
+MOVE(
+ TEMP T5,
+ TEMP rdi)
+MOVE(
+ TEMP T6,
+ TEMP rsi)
+MOVE(
+ TEMP T7,
+ TEMP rbx)
+MOVE(
+ TEMP T8,
+ TEMP r12)
+MOVE(
+ TEMP T9,
+ TEMP r13)
+MOVE(
+ TEMP T10,
+ TEMP r14)
+MOVE(
+ TEMP T11,
+ TEMP r15)
+MOVE(
+ MEM(
+  BINOP(PLUS,
+   TEMP rbp,
+   CONST -8)),
+ TEMP rcx)
 EXP(
  CALL(
   NAME _initArray,
@@ -87,6 +177,27 @@ MOVE(
    BINOP(MUL,
     TEMP T3,
     CONST 8))))
+MOVE(
+ TEMP rdi,
+ TEMP T5)
+MOVE(
+ TEMP rsi,
+ TEMP T6)
+MOVE(
+ TEMP rbx,
+ TEMP T7)
+MOVE(
+ TEMP r12,
+ TEMP T8)
+MOVE(
+ TEMP r13,
+ TEMP T9)
+MOVE(
+ TEMP r14,
+ TEMP T10)
+MOVE(
+ TEMP r15,
+ TEMP T11)
 JUMP( NAME L1)
 LABEL L1
 ;;-END-FRAME-:
