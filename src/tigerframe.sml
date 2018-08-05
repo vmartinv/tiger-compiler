@@ -45,7 +45,7 @@ val argregs = ["rcx","rdx","r8","r9"]
 (* registros donde van los primeros argumentos segun la convención de llamada *)
 val callersaves = ["rax","r10","r11"] (*REVISAR*) 
 (* registros preservados por el invocador *)
-val calleesaves = ["rdi","rsi","rbp","rsp","rbx","r12","r13","r14","r15"]
+val calleesaves = ["rdi","rsi","rbx","r12","r13","r14","r15"]
 (* registros preservados por la funcion invocada *)
 
 (*https://msdn.microsoft.com/es-es/library/9z1stfyw.aspx*)
