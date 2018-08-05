@@ -32,20 +32,20 @@ fun codegen frame stm =
         | munchExp (TEMP t) = t
         | munchExp (CALL _) = raise Fail "CALL no debería aparecer luego de canonizar 234235"
         | munchExp (ESEQ _) = raise Fail "ESEQ no debería aparecer luego de canonizar 3453453"
-        | munchExp (BINOP (PLUS, CONST i, e1)) = result ( fn r => (emit(MOV{assem = "movq %'s0, %'d0", src = munchExp e1, dst=r}); emit(OPER{assem = "addq %'d0, $"^(toString i), src = [r], dst = [r], jump = NONE})))
+        | munchExp (BINOP (PLUS, CONST i, e1)) = result ( fn r => (emit(MOV{assem = "movq %'s0, %'d0", src = munchExp e1, dst=r}); emit(OPER{assem = "addq $"^(toString i)^", %'d0", src = [r], dst = [r], jump = NONE})))
         | munchExp (BINOP (PLUS, e1, CONST i)) = munchExp (BINOP (PLUS, CONST i, e1))
-        | munchExp (BINOP (PLUS, e1, e2)) = result ( fn r => (emit(MOV{assem = "movq %'s0, %'d0", src=munchExp e1, dst=r}); emit(OPER{assem = "addq %'d0, %'s1", src = [r, munchExp e2], dst = [r], jump = NONE})))
+        | munchExp (BINOP (PLUS, e1, e2)) = result ( fn r => (emit(MOV{assem = "movq %'s0, %'d0", src=munchExp e1, dst=r}); emit(OPER{assem = "addq %'s1, %'d0", src = [r, munchExp e2], dst = [r], jump = NONE})))
         | munchExp (BINOP (MINUS, CONST i, e1)) = result ( fn r => (emit(OPER{assem = "movq $"^(toString i)^", %'d0", src = [], dst=[r], jump=NONE}); emit(OPER{assem = "subq %'s1, %'d0", src = [r, munchExp e1], dst = [r], jump = NONE})))
-        | munchExp (BINOP (MINUS, e1, CONST i)) = result ( fn r => (emit(MOV{assem = "movq %'s0, %'d0", src = munchExp e1, dst=r}); emit(OPER{assem = "subq %'d0, $"^(toString i), src = [r], dst = [r], jump = NONE})))
-        | munchExp (BINOP (MINUS, e1, e2)) = result ( fn r => (emit(MOV{assem = "movq %'s0, %'d0", src=munchExp e1, dst=r}); emit(OPER{assem = "subq %'d0, %'s1", src = [r, munchExp e2], dst = [r], jump = NONE})))
-        | munchExp (BINOP (MUL, e1, CONST i)) = result ( fn r => (emit(OPER{assem = "imulq %'d0, %'s0, $"^(toString(i)), src=[munchExp e1], dst=[r], jump=NONE})))
+        | munchExp (BINOP (MINUS, e1, CONST i)) = result ( fn r => (emit(MOV{assem = "movq %'s0, %'d0", src = munchExp e1, dst=r}); emit(OPER{assem = "subq $"^(toString i)^", %'d0", src = [r], dst = [r], jump = NONE})))
+        | munchExp (BINOP (MINUS, e1, e2)) = result ( fn r => (emit(MOV{assem = "movq %'s0, %'d0", src=munchExp e1, dst=r}); emit(OPER{assem = "subq %'s1, %'d0", src = [r, munchExp e2], dst = [r], jump = NONE})))
+        | munchExp (BINOP (MUL, e1, CONST i)) = result ( fn r => (emit(OPER{assem = "imulq $"^(toString i)^", %'s0, %'d0", src=[munchExp e1], dst=[r], jump=NONE})))
         | munchExp (BINOP (MUL, CONST i, e1)) = munchExp (BINOP (MUL, e1, CONST i))
-        | munchExp (BINOP (MUL, e1, e2)) = result ( fn r => (emit(OPER{assem = "imulq %'d0, %'s0, %'s1", src=[munchExp e1, munchExp e2], dst=[r], jump=NONE})))
+        | munchExp (BINOP (MUL, e1, e2)) = result ( fn r => (emit(MOV{assem = "movq %'s0, %'d0", src=munchExp e1, dst=r}); emit(OPER{assem = "imulq %'s1, %'d0", src = [r, munchExp e2], dst = [r], jump = NONE})))
         | munchExp (BINOP (DIV, CONST i, e1)) = result ( fn r => (
 			let val m1 = munchExp e1
 				val _ = emit(OPER{assem = "movq $"^(toString i)^", %'d0", src=[], dst=[tigerframe.rax], jump = NONE}) 
-				val _ = emit(OPER{assem = "cqto", src=[tigerframe.rax], dst=[tigerframe.rax,tigerframe.rdx], jump = NONE})
-				val _ = emit(OPER{assem = "idivq %s1'", src = [tigerframe.rax, m1], dst = [tigerframe.rax, tigerframe.rdx], jump = NONE})
+				val _ = emit(OPER{assem = "cqto", src=[tigerframe.rax], dst=[tigerframe.rdx], jump = NONE})
+				val _ = emit(OPER{assem = "idivq %'s2", src = [tigerframe.rax, tigerframe.rdx, m1], dst = [tigerframe.rax, tigerframe.rdx], jump = NONE})
 				val _ = emit(MOV{assem = "movq %'s0, %'d0", src=tigerframe.rax, dst=r} ) 
 			in
 				()
@@ -53,9 +53,8 @@ fun codegen frame stm =
         | munchExp (BINOP (DIV, e1, CONST i)) = result ( fn r => (
 			let val m1 = munchExp e1
 				val _ = emit(MOV{assem = "movq %'s0, %'d0", src=m1, dst=tigerframe.rax} )
-				val _ = emit(OPER{assem = "movq $"^(toString i)^", %'d0", src=[], dst=[r], jump = NONE})
-				val _ = emit(OPER{assem = "cqto", src=[tigerframe.rax], dst=[tigerframe.rax,tigerframe.rdx], jump = NONE})
-				val _ = emit(OPER{assem = "idivq %'s1", src = [tigerframe.rax, r], dst = [tigerframe.rax, tigerframe.rdx], jump = NONE})
+				val _ = emit(OPER{assem = "cqto", src=[tigerframe.rax], dst=[tigerframe.rdx], jump = NONE})
+				val _ = emit(OPER{assem = "idivq $"^(toString i), src = [tigerframe.rax, tigerframe.rdx], dst = [tigerframe.rax, tigerframe.rdx], jump = NONE})
 				val _ = emit(MOV{assem = "movq %'s0, %'d0", src=tigerframe.rax, dst=r} )
 			in
 				()
@@ -63,9 +62,9 @@ fun codegen frame stm =
 		| munchExp (BINOP (DIV, e1, e2)) = result ( fn r => (
 			let val m1 = munchExp e1
 				val m2 = munchExp e2
-				val _ = emit(MOV{assem = "movq %'s0, %'d0", src=m1, dst=tigerframe.rax} ); 
-				val _ = emit(OPER{assem = "cqto", src=[tigerframe.rax], dst=[tigerframe.rax,tigerframe.rdx], jump = NONE}); 
-				val _ = emit(OPER{assem = "idivq %'s1", src = [tigerframe.rax, m2], dst = [tigerframe.rax, tigerframe.rdx], jump = NONE}); 
+				val _ = emit(MOV{assem = "movq %'s0, %'d0", src=m1, dst=tigerframe.rax} )
+				val _ = emit(OPER{assem = "cqto", src=[tigerframe.rax], dst=[tigerframe.rdx], jump = NONE})
+				val _ = emit(OPER{assem = "idivq %'s2", src = [tigerframe.rax, tigerframe.rdx, m2], dst = [tigerframe.rax, tigerframe.rdx], jump = NONE}); 
 				val _ = emit(MOV{assem = "movq %'s0, %'d0", src=tigerframe.rax, dst=r})
 			in
 				()

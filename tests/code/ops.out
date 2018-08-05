@@ -9,19 +9,19 @@ MOVE: movq %'s0, %'d0 D:T4 S:r13
 MOVE: movq %'s0, %'d0 D:T5 S:r14
 MOVE: movq %'s0, %'d0 D:T6 S:r15
 MOVE: movq %'s0, %'d0 D:T7 S:rbp
-OPER: addq %'d0, $-8 D:[T7] S:[T7]
+OPER: addq $-8, %'d0 D:[T7] S:[T7]
 OPER: movq %'s0, (%'s1) D:[] S:[rcx,T7]
 OPER: movq $3, %'d0 D:[T10] S:[]
 OPER: movq $5, %'d0 D:[T11] S:[]
 OPER: subq %'s1, %'d0 D:[T10] S:[T10,T11]
+MOVE: movq %'s0, %'d0 D:T9 S:T10
 OPER: movq $2, %'d0 D:[T13] S:[]
 MOVE: movq %'s0, %'d0 D:T12 S:T13
-OPER: addq %'d0, $8 D:[T12] S:[T12]
-OPER: imulq %'d0, %'s0, %'s1 D:[T9] S:[T10,T12]
+OPER: addq $8, %'d0 D:[T12] S:[T12]
+OPER: imulq %'s1, %'d0 D:[T9] S:[T9,T12]
 MOVE: movq %'s0, %'d0 D:rax S:T9
-OPER: movq $10, %'d0 D:[T8] S:[]
-OPER: cqto D:[rax,rdx] S:[rax]
-OPER: idivq %'s1 D:[rax,rdx] S:[rax,T8]
+OPER: cqto D:[rdx] S:[rax]
+OPER: idivq $10 D:[rax,rdx] S:[rax,rdx]
 MOVE: movq %'s0, %'d0 D:T8 S:rax
 MOVE: movq %'s0, %'d0 D:rax S:T8
 MOVE: movq %'s0, %'d0 D:rdi S:T0

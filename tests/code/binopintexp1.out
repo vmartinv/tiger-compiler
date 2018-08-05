@@ -9,14 +9,14 @@ MOVE: movq %'s0, %'d0 D:T7 S:r13
 MOVE: movq %'s0, %'d0 D:T8 S:r14
 MOVE: movq %'s0, %'d0 D:T9 S:r15
 MOVE: movq %'s0, %'d0 D:T10 S:rbp
-OPER: addq %'d0, $-8 D:[T10] S:[T10]
+OPER: addq $-8, %'d0 D:[T10] S:[T10]
 OPER: movq %'s0, (%'s1) D:[] S:[rcx,T10]
 OPER: movq $2, %'d0 D:[T11] S:[]
 MOVE: movq %'s0, %'d0 D:T0 S:T11
 OPER: movq $34, %'d0 D:[T12] S:[]
 MOVE: movq %'s0, %'d0 D:T1 S:T12
 MOVE: movq %'s0, %'d0 D:T13 S:T0
-OPER: addq %'d0, %'s1 D:[T13] S:[T13,T1]
+OPER: addq %'s1, %'d0 D:[T13] S:[T13,T1]
 MOVE: movq %'s0, %'d0 D:T2 S:T13
 MOVE: movq %'s0, %'d0 D:rax S:T2
 MOVE: movq %'s0, %'d0 D:rdi S:T3

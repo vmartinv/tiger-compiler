@@ -97,7 +97,7 @@ MOVE: movq %'s0, %'d0 D:T8 S:r13
 MOVE: movq %'s0, %'d0 D:T9 S:r14
 MOVE: movq %'s0, %'d0 D:T10 S:r15
 MOVE: movq %'s0, %'d0 D:T11 S:rbp
-OPER: addq %'d0, $-8 D:[T11] S:[T11]
+OPER: addq $-8, %'d0 D:[T11] S:[T11]
 OPER: movq %'s0, (%'s1) D:[] S:[rcx,T11]
 OPER: movq $L1, %'d0 D:[T12] S:[]
 MOVE: movq %'s0, %'d0 D:T0 S:T12
