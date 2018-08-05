@@ -59,19 +59,19 @@ function print_case(){
     if [ -f "$source" ]; then
         echo -e "${PURPLE}Source code:${NC}"
         cat "$source"
-        echo -e "${PURPLE}Output:${NC}"
+        #~ echo -e "${PURPLE}Output:${NC}"
         if [ "$#" -ne 1 ]; then
 			output=$2
 		else
 			output=$(gen_output "$source" 2>&1)
 		fi
-		echo "$output"
+		#~ echo "$output"
 		correct=${source%.*}.out
 		if [ -f "$correct" ]; then
-			echo -e "${PURPLE}Expected Output:${NC}"
-			cat "$correct"
-			echo -e "${PURPLE}Diff <expected >actual:${NC}"
-			diff "$correct" <(echo "$output")
+			#~ echo -e "${PURPLE}Expected Output:${NC}"
+			#~ cat "$correct"
+			#~ echo -e "${PURPLE}Diff <expected >actual:${NC}"
+			meld "$correct" <(echo "$output")
 		fi
     fi
     echo

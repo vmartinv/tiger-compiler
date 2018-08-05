@@ -90,9 +90,9 @@ fun interferenceGraph(cfg) =
 
 fun printInter (IGRAPH{graph = g, tnode = tnode, gtemp = gtemp, moves = moves}, live_out) =
     let
-        fun visNodeGraph node = "\t"^nodename node^"("^gtemp node^"): "^String.concatWith ", " (Listsort.sort String.compare (map (gtemp) (adj node)))^"\n"
+        fun visNodeGraph node = "\t"^gtemp node^": "^String.concatWith ", " (Listsort.sort String.compare (map (gtemp) (adj node)))^"\n"
         val succsStr = "adj:\n"^concat(map visNodeGraph (nodes g))
-        val movesStr = "moves:\n\t"^String.concatWith ", " (map (fn (a,b) => "("^nodename a ^", "^nodename b^")") moves)^"\n"
+        val movesStr = "moves:\n\t"^String.concatWith ", " (map (fn (a,b) => "("^gtemp a ^", "^gtemp b^")") moves)^"\n"
     in succsStr^movesStr end
 
 end
