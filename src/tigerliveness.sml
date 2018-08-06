@@ -30,35 +30,54 @@ fun livenessCalc (FGRAPH {control, def, use, ismove}) =
 				  LESS => x::ordListDiff(xs, y::ys)
 				| GREATER => ordListDiff(x::xs, ys)
 				| EQUAL => ordListDiff(xs, ys)
-        fun ordListFind (v, l) =
-			let fun aux (i, []) = raise Fail "No deberia pasar 4234264"
-				  | aux (i, x::xs) = case cmp (v, x) of
-						  LESS => raise Fail "No deberia pasar 234234"
-						| GREATER => aux(i+1, xs)
-						| EQUAL => i
-			in aux (0, l) end
+
+        fun dfs visited node =
+            let val _ = visited := Splayset.add (!visited, node)
+                fun recDfs n = if Splayset.member(!visited, n) then [] else dfs visited n
+            in
+                node :: (flatten (map recDfs (succ node)))
+            end
+        fun dfsAll nodes =
+            let val visited = ref (Splayset.empty cmp)
+                fun runDfs node:(node list) = if Splayset.member(!visited, node) then [] else dfs visited node
+            in
+                flatten (map runDfs nodes)
+            end
+        fun ArrayToList vec = Array.foldl (fn (e, ac) => e::ac) [] vec
 		(* auxiliar values *)
-        val nodes = Listsort.sort cmp (nodes control)
+        val nodes:(node list) = List.rev (dfsAll (nodes control))
+        val (invNodes, _) = List.foldl (fn (n, (dict, i)) => (Splaymap.insert(dict, n, i), i+1)) (Splaymap.mkDict(cmp), 0) nodes
         val list_use:(string list list) = List.map (fn n => Listsort.sort String.compare (Splaymap.find(use, n))) nodes
         val list_def:(string list list) = List.map (fn n => Listsort.sort String.compare (Splaymap.find(def, n))) nodes
-        val list_succ:(int list list) = List.map (fn n => map (fn ss => ordListFind(ss, nodes)) (succ n)) nodes
+        val list_succ:(int list list) = List.map (fn n => map (fn ss => Splaymap.find(invNodes, ss)) (succ n)) nodes
+        val list_zipped = ListPair.zip(List.tabulate (length nodes, fn i => i), ListPair.zip(ListPair.zip(list_use, list_def), list_succ))
         
-        (* initialize *)
-        val live_in = list_use
-        val live_out = list_def
-        val live_in' = List.tabulate (length nodes, fn _ => [])
-        val live_out' = List.tabulate (length nodes, fn _ => [])
-
-        (* repeat until fixed point is reached *)
-        fun repeatIt lIn lIn' lOut lOut' =
-            if lIn=lIn' andalso lOut=lOut'
-            then (lIn, lOut) (* fixed point reached! *)
-            else let val newIn =  List.map (fn ((use, out), def) => ordListUnion(use, ordListDiff(out, def))) (ListPair.zip(ListPair.zip(list_use, lOut), list_def))
-					 val newInArr = Vector.fromList newIn
-					 val newOut = List.map (fn succ => List.foldl (fn (inp,ac) => ordListUnion(ac, Vector.sub (newInArr, inp))) [] succ) list_succ
-                 in repeatIt newIn lIn newOut lOut
-                 end
-       val (lIn, lOut) = repeatIt live_in live_in' live_out live_out'
+    (*
+        in = use
+        repeat for until fixed point is reached:
+            for i = 0 to N
+                n = sorted[i]
+                out = U suc[n] in[s]
+                in[n] = use[n] U (out — def[n])
+    *)
+        fun repeatIt inArr =
+            let
+                fun updIn (i, ((use, def), succ)) =
+                    let
+                        val out = List.foldl (fn (inp, ac) => ordListUnion(ac, Array.sub(inArr, inp))) [] succ
+                        val newIn = ordListUnion(use, ordListDiff(out, def))
+                    in
+                        if Array.sub(inArr, i)=newIn then false
+                        else (Array.update (inArr, i, newIn); true)
+                    end
+                val updates = List.exists (fn x => x) (map updIn list_zipped)
+            in
+                if updates
+                then repeatIt inArr
+                else inArr
+            end
+       val inArr = repeatIt (Array.fromList list_use)
+       val (lIn, lOut) = (ArrayToList inArr, map (fn succ => List.foldl (fn (inp, ac) => ordListUnion(ac, Array.sub(inArr, inp))) [] succ) list_succ)
        val empty: (node, temp Splayset.set) Splaymap.dict = Splaymap.mkDict(cmp)
        fun toMap l = List.foldl (fn ((k, v), ac) => Splaymap.insert(ac, k, fromListtoSet(String.compare, v))) empty (ListPair.zip(nodes, l))
     in  (toMap lIn, toMap lOut)
