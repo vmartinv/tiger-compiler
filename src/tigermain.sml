@@ -15,11 +15,7 @@ fun errParsing(lbuf) = (print("Error en parsing!("
     ^(makestring(!num_linea))^
     ")["^(Lexing.getLexeme lbuf)^"]\n"); raise Fail "fin!")
 
-<<<<<<< HEAD
-fun compile arbol escapes ir canon code flow inter source_filename =
-=======
 fun compile arbol escapes ir canon code flow inter asm source_filename =
->>>>>>> Some renamings
     let fun pass f x = (f x; x)
         infix >>=
         fun m >>= f = f m
@@ -31,7 +27,7 @@ fun compile arbol escapes ir canon code flow inter asm source_filename =
         val prntCode = pass (fn (b, f) => if code then print(";;--FRAME--"^(tigerframe.name f)^":\n"^tigerassem.printCode b^";;-END-FRAME-:\n") else ())
         fun prntFlow fr instr g = if flow then print(";;--FLOW--"^(tigerframe.name fr)^":\n"^(tigerflow.printGraph (instr, g))^";;-END-FLOW-:\n") else ()
         fun prntInter fr g live_out = if inter then print(";;--INTER--"^(tigerframe.name fr)^":\n"^(tigerliveness.printInter (g, live_out))^";;-END-INTER-:\n") else ()
-        val prntAsm = pass (fn x => if asm then print("------Assembler------\n"^x) else ()
+        val prntAsm = pass (fn x => if asm then print("------Assembler------\n"^x) else ())
         fun prntOk _ = print "yes!!\n"
         
         (*Etapas de la compilacion*)
@@ -52,7 +48,7 @@ fun compile arbol escapes ir canon code flow inter asm source_filename =
 			let val (flowgraph, nodes) = tigerflow.instrs2graph instrs
 				val _ = prntFlow frame instrs flowgraph
 				val (igraph, live_out) = tigerliveness.interferenceGraph flowgraph
-				val _ = prntInter frame instrs igraph live_out
+				val _ = prntInter frame igraph live_out
 			in (igraph, instrs, frame) (*REVISAR*)
 			end
 		fun funny _ =
