@@ -1,26 +1,89 @@
 IfExp{test=3,then'=4,else'=2}
 bien!
 ;;-PROC-L0--:
-MOVE(
- TEMP eax,
- ESEQ(
+SEQ(
+ MOVE(
+  TEMP T1,
+  TEMP rdi),
+ SEQ(
+  MOVE(
+   TEMP T2,
+   TEMP rsi),
   SEQ(
-   JUMP(    NAME L1),
+   MOVE(
+    TEMP T3,
+    TEMP rbx),
    SEQ(
-    LABEL L1,
+    MOVE(
+     TEMP T4,
+     TEMP r12),
     SEQ(
      MOVE(
-      TEMP T0,
-      CONST 4),
+      TEMP T5,
+      TEMP r13),
      SEQ(
-      JUMP(       NAME L3),
+      MOVE(
+       TEMP T6,
+       TEMP r14),
       SEQ(
-       LABEL L2,
+       MOVE(
+        TEMP T7,
+        TEMP r15),
        SEQ(
         MOVE(
-         TEMP T0,
-         CONST 2),
-        LABEL L3)))))),
-  TEMP T0))
+         MEM(
+          BINOP(PLUS,
+           TEMP rbp,
+           CONST -8)),
+         TEMP rcx),
+        SEQ(
+         MOVE(
+          TEMP rax,
+          ESEQ(
+           SEQ(
+            JUMP(             NAME L1),
+            SEQ(
+             LABEL L1,
+             SEQ(
+              MOVE(
+               TEMP T0,
+               CONST 4),
+              SEQ(
+               JUMP(                NAME L3),
+               SEQ(
+                LABEL L2,
+                SEQ(
+                 MOVE(
+                  TEMP T0,
+                  CONST 2),
+                 LABEL L3)))))),
+           TEMP T0)),
+         SEQ(
+          MOVE(
+           TEMP rdi,
+           TEMP T1),
+          SEQ(
+           MOVE(
+            TEMP rsi,
+            TEMP T2),
+           SEQ(
+            MOVE(
+             TEMP rbx,
+             TEMP T3),
+            SEQ(
+             MOVE(
+              TEMP r12,
+              TEMP T4),
+             SEQ(
+              MOVE(
+               TEMP r13,
+               TEMP T5),
+              SEQ(
+               MOVE(
+                TEMP r14,
+                TEMP T6),
+               MOVE(
+                TEMP r15,
+                TEMP T7))))))))))))))))
 ;;-END-PROC--:
 yes!!

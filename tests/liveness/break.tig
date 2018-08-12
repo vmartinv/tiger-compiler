@@ -1,0 +1,9 @@
+/*TIGER_ARGS= -code -flow*/
+let
+    var x:= 0
+in
+    for i:=0 to 5
+    do (if x > 5 then break;
+        x := x + i);
+    x
+end

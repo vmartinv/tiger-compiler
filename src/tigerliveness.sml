@@ -7,36 +7,83 @@ open tigertemp
 open tigerutils
 
 datatype igraph =
-	IGRAPH of {graph: tigergraph.graph, (*interference graph*)
-	           tnode: tigertemp.temp -> tigergraph.node, (*mapea temporarios del assembler a nodos*)
-	           gtemp: tigergraph.node -> tigertemp.temp, (*mapea nodos a temporarios del assembler*)
-	           moves: (tigergraph.node * tigergraph.node) list} (*en lo posible asignar el mismo registro a cada par*)
+    IGRAPH of {graph: tigergraph.graph,                         (* interference graph *)
+               tnode: tigertemp.temp -> tigergraph.node,        (* mapea temporarios del assembler a nodos *)
+               gtemp: tigergraph.node -> tigertemp.temp,        (* mapping inverso al anterior *)
+               moves: (tigergraph.node * tigergraph.node) list} (* en lo posible asignar el mismo registro a cada par *)
 
-fun livenessCalc (FGRAPH {control, def, use, ismove}) = (* computation of liveness by iteration *)
-    let (* auxiliar values *)
-        val nodes = nodes control
-        val empty: (node, temp Splayset.set) Splaymap.dict = Splaymap.mkDict(cmp)
-        val set_use = List.foldl (fn (n,map) => Splaymap.insert(map, n, fromListtoSet(String.compare, Splaymap.find(use, n)))) empty nodes
-        val set_def = List.foldl (fn (n,map) => Splaymap.insert(map, n, fromListtoSet(String.compare, Splaymap.find(def, n)))) empty nodes
+(* computation of liveness by iteration *)
+fun livenessCalc (FGRAPH {control, def, use, ismove}) =
+    let
+		(* functions over ordered lists *)
+		fun ordListUnion ([], []) = []
+		  | ordListUnion (xs, []) = xs
+		  | ordListUnion ([], ys) = ys
+		  | ordListUnion (x::xs, y::ys) = case String.compare (x,y) of
+				  LESS => x::ordListUnion(xs, y::ys)
+				| GREATER => y::ordListUnion(x::xs, ys)
+				| EQUAL => x::ordListUnion(xs, ys)
+		fun ordListDiff ([], []) = []
+		  | ordListDiff (xs, []) = xs
+		  | ordListDiff ([], ys) = []
+		  | ordListDiff (x::xs, y::ys) = case String.compare (x,y) of
+				  LESS => x::ordListDiff(xs, y::ys)
+				| GREATER => ordListDiff(x::xs, ys)
+				| EQUAL => ordListDiff(xs, ys)
+
+        fun dfs visited node =
+            let val _ = visited := Splayset.add (!visited, node)
+                fun recDfs n = if Splayset.member(!visited, n) then [] else dfs visited n
+            in
+                node :: (flatten (map recDfs (succ node)))
+            end
+        fun dfsAll nodes =
+            let val visited = ref (Splayset.empty cmp)
+                fun runDfs node:(node list) = if Splayset.member(!visited, node) then [] else dfs visited node
+            in
+                flatten (map runDfs nodes)
+            end
+        fun ArrayToList vec = Array.foldl (fn (e, ac) => e::ac) [] vec
+		(* auxiliar values *)
+        val nodes:(node list) = List.rev (dfsAll (nodes control))
+        val (invNodes, _) = List.foldl (fn (n, (dict, i)) => (Splaymap.insert(dict, n, i), i+1)) (Splaymap.mkDict(cmp), 0) nodes
+        val list_use:(string list list) = List.map (fn n => Listsort.sort String.compare (Splaymap.find(use, n))) nodes
+        val list_def:(string list list) = List.map (fn n => Listsort.sort String.compare (Splaymap.find(def, n))) nodes
+        val list_succ:(int list list) = List.map (fn n => map (fn ss => Splaymap.find(invNodes, ss)) (succ n)) nodes
+        val list_zipped = ListPair.zip(List.tabulate (length nodes, fn i => i), ListPair.zip(ListPair.zip(list_use, list_def), list_succ))
         
-        (* initialize *)
-        val live_in = List.foldl (fn (n,map) => Splaymap.insert(map, n, Splaymap.find(set_use, n))) empty nodes
-        val live_out = List.foldl (fn (n,map) => Splaymap.insert(map, n, Splayset.empty String.compare)) empty nodes
-        val live_in' = List.foldl (fn (n,map) => Splaymap.insert(map, n, Splayset.empty String.compare)) empty nodes
-        val live_out' = List.foldl (fn (n,map) => Splaymap.insert(map, n, Splayset.empty String.compare)) empty nodes
-        
-        (* repeat until fixed point is reached *)
-        fun checkEq(map1, map2) = List.all (fn n => Splayset.equal(Splaymap.find(map1, n), Splaymap.find(map2, n))) nodes
-        fun repeatIt lIn lIn' lOut lOut' =
-            if checkEq(lIn, lIn') andalso checkEq(lOut, lOut')
-            then (lIn, lOut) (* fixed point reached! *)
-            else let val newIn =  List.foldl (fn (n,map) => Splaymap.insert(map, n, Splayset.union(Splaymap.find(set_use, n), (Splayset.difference(Splaymap.find(lOut, n), Splaymap.find(set_def, n)))))) empty nodes
-                     val newOut = List.foldl (fn (n,map) => Splaymap.insert(map, n, (List.foldl (fn (m,s) => Splayset.union(s, Splaymap.find(lIn, m))) (Splayset.empty String.compare) (succ n)))) empty nodes
-                 in repeatIt newIn lIn newOut lOut
-                 end
-    in  repeatIt live_in live_in' live_out live_out'
+    (*
+        in = use
+        repeat for until fixed point is reached:
+            for i = 0 to N
+                n = sorted[i]
+                out = U suc[n] in[s]
+                in[n] = use[n] U (out — def[n])
+    *)
+        fun repeatIt inArr =
+            let
+                fun updIn (i, ((use, def), succ)) =
+                    let
+                        val out = List.foldl (fn (inp, ac) => ordListUnion(ac, Array.sub(inArr, inp))) [] succ
+                        val newIn = ordListUnion(use, ordListDiff(out, def))
+                    in
+                        if Array.sub(inArr, i)=newIn then false
+                        else (Array.update (inArr, i, newIn); true)
+                    end
+                val updates = List.exists (fn x => x) (map updIn list_zipped)
+            in
+                if updates
+                then repeatIt inArr
+                else inArr
+            end
+       val inArr = repeatIt (Array.fromList list_use)
+       val (lIn, lOut) = (ArrayToList inArr, map (fn succ => List.foldl (fn (inp, ac) => ordListUnion(ac, Array.sub(inArr, inp))) [] succ) list_succ)
+       val empty: (node, temp Splayset.set) Splaymap.dict = Splaymap.mkDict(cmp)
+       fun toMap l = List.foldl (fn ((k, v), ac) => Splaymap.insert(ac, k, fromListtoSet(String.compare, v))) empty (ListPair.zip(nodes, l))
+    in  (toMap lIn, toMap lOut)
     end
 
+(* interference graph *)
 fun interferenceGraph(cfg) = 
     let (* 1ro : calculo de liveness *)
         val (l_in, l_out) = livenessCalc cfg
@@ -49,8 +96,8 @@ fun interferenceGraph(cfg) =
         val def_tab = getDef cfg
         val use_tab = getUse cfg
         val temps = (* conjunto de todos los temporarios del programa *)
-					let val def_temps = List.foldl (fn (n, s) => Splayset.union(s, fromListtoSet(String.compare, Splaymap.find(def_tab, n)))) (Splayset.empty String.compare) cfnodes
-                        (* necesario o con los de defs estamos? Usás un temporario que no definís?: *)
+                    let val def_temps = List.foldl (fn (n, s) => Splayset.union(s, fromListtoSet(String.compare, Splaymap.find(def_tab, n)))) (Splayset.empty String.compare) cfnodes
+                        (* necesario o con los de defs estamos? Usás un temporario que no definís?: *) (* En la pág 213 dice que una variable puede venir de antes, ej: formal parameter *)
                         val use_temps = List.foldl (fn (n, s) => Splayset.union(s, fromListtoSet(String.compare, Splaymap.find(use_tab, n)))) (Splayset.empty String.compare) cfnodes
                     in Splayset.union(def_temps, use_temps)
                     end
@@ -67,7 +114,7 @@ fun interferenceGraph(cfg) =
         
         (* creo las aristas del grafo de interferencia, con tratamiento especial para MOVE (ver pags 221,222) y creo moves *)
         val ismove_tab = getMov cfg        
-        fun addEdges t ts = List.app (fn x => mk_edge{from = tnode t, to = tnode x}) ts        
+        fun addEdges t ts = List.app (fn x => mk_edge{from = tnode t, to = tnode x}) (remove t ts)     
         fun addEdgesMov n ms = let val a = List.hd (Splaymap.find(def_tab, n))
                                    val c = List.hd (Splaymap.find(use_tab, n))
                                    val _ = addEdges a (remove c (live_out n))
@@ -86,12 +133,12 @@ fun interferenceGraph(cfg) =
     in (ig, live_out)
     end
 
-fun printInter (instrs, IGRAPH{graph = g, tnode = tnode, gtemp = gtemp, moves = moves}, live_out) =
-	let
-		fun visNodeGraph (instr, node) = "\t"^nodename node^"("^gtemp node^"): "^String.concatWith ", " (map (gtemp) (succ node))^"\n"
-		val succsStr = "succesors:\n"^concat(map visNodeGraph (ListPair.zip (instrs, nodes g)))
-		val movesStr = "moves:\n\t"^String.concatWith ", " (map (fn (a,b) => "("^nodename a ^", "^nodename b^")") moves)^"\n"
-	in succsStr^movesStr end
+fun printInter (IGRAPH{graph = g, tnode = tnode, gtemp = gtemp, moves = moves}, live_out) =
+    let
+        fun visNodeGraph node = "\t"^gtemp node^": "^String.concatWith ", " (Listsort.sort String.compare (map (gtemp) (adj node)))^"\n"
+        val succsStr = "adj:\n"^concat(map visNodeGraph (nodes g))
+        val movesStr = "moves:\n\t"^String.concatWith ", " (map (fn (a,b) => "("^gtemp a ^", "^gtemp b^")") moves)^"\n"
+    in succsStr^movesStr end
 
 end
 

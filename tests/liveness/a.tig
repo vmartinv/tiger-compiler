@@ -1,0 +1,6 @@
+/*TIGER_ARGS=-code -flow -inter*/
+let
+    var x:=1234
+in
+    x
+end

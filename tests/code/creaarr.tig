@@ -1,0 +1,8 @@
+/*TIGER_ARGS=-code*/
+let
+    type A = array of int
+    var a:=A[100] of 51
+in
+    15
+    /*a[20]*/
+end

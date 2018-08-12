@@ -1,18 +1,18 @@
 (*
-	Frames para el 80386 (sin displays ni registers).
+    Frames para el 80386 (sin displays ni registers).
 
-		|    argn    |	fp+4*(n+1)
-		|    ...     |
-		|    arg2    |	fp+16
-		|    arg1    |	fp+12
-		|	fp level |  fp+8
-		|  retorno   |	fp+4
-		|   fp ant   |	fp
-		--------------	fp
-		|   local1   |	fp-4
-		|   local2   |	fp-8
-		|    ...     |
-		|   localn   |	fp-4*n
+        |    argn    |  fp+4*(n+1)
+        |    ...     |
+        |    arg2    |  fp+16
+        |    arg1    |  fp+12
+        |   fp level |  fp+8
+        |  retorno   |  fp+4
+        |   fp ant   |  fp
+        --------------  fp
+        |   local1   |  fp-4
+        |   local2   |  fp-8
+        |    ...     |
+        |   localn   |  fp-4*n
 *)
 
 structure tigerframe :> tigerframe = struct
@@ -21,59 +21,73 @@ open tigertree
 
 type level = int
 
-val fp = "ebp"				(* frame pointer *)
-val sp = "esp"				(* stack pointer *)
-val rv = "eax"				(* return value  *)
-val ov = "edx"				(* overflow value *)
-val wSz = 4					(* word size in bytes *)
-val log2WSz = 2				(* base two logarithm of word size in bytes *)
-val fpPrev = 0				(* offset (bytes) *)
-val fpPrevLev = 8			(* offset (bytes) *)
+val rax = "rax"
+val rdx = "rdx"
+val fp =  "rbp"             (* frame pointer  (ebp en el 386) *)
+val sp =  "rsp"             (* stack pointer  (esp en el 386) *)
+val rv =  "rax"             (* return value   (eax en el 386) *)
+val ov =  "rdx"             (* overflow value (edx en el 386) *)
+
+val wSz = 8                 (* word size in bytes *)
+val log2WSz = 3             (* base two logarithm of word size in bytes *)
+val fpPrev = 0              (* offset (bytes) *)
+val fpPrevLev = ~wSz        (* offset (bytes) *)
 (*
-val argsInicial = 0			(* words *)
-val argsOffInicial = 0		(* words *)
-val argsGap = wSz			(* bytes *)
-val regInicial = 1			(* reg *)
-val localsInicial = 0		(* words *)
+val argsInicial = 0         (* words *)
+val argsOffInicial = 0      (* words *)
+val argsGap = wSz           (* bytes *)
+val regInicial = 1          (* reg *)
+val localsInicial = 0       (* words *)
 *)
-val localsGap = ~wSz 			(* bytes *)
-val calldefs = [rv]
+val localsGap = ~wSz            (* bytes *)
 val specialregs = [fp, sp]
-val argregs = []
-val callersaves = [rv, "ecd", "edx"]
-val calleesaves = ["ebx", "edi", "esi"] (*VER: ESP and EBP will also be preserved by the calling convention*)
-val calldefs = callersaves @ [rv]
-val coloredregisters = [](*COMPLETAR*)
+val argregs = ["rcx","rdx","r8","r9"] 
+(* registros donde van los primeros argumentos segun la convención de llamada *)
+val callersaves = ["rax","r10","r11"] (*REVISAR*) 
+(* registros preservados por el invocador *)
+val calleesaves = ["rdi","rsi","rbx","r12","r13","r14","r15"]
+(* registros preservados por la funcion invocada *)
+
+(*https://msdn.microsoft.com/es-es/library/9z1stfyw.aspx*)
+
+val calldefs = callersaves
+val coloredregisters = callersaves @ calleesaves @ argregs @ specialregs (* temporarios pre coloreados (all machine registers) ¿Están todos? *)
+(*En lo de Mariano
+val coloredregisters = callersaves @ calleesaves
+Ya lo de arriba lo modifique por si necesito algun registro en codegen*)
+val usableregisters = callersaves @ calleesaves @ argregs (* ok? *)
+
+
 
 type register = string
 datatype access = InFrame of int | InReg of tigertemp.label      (* Describe args y vars locales que pueden estar en el marco o en registros *)
                                                                  (* InFrame(n) indica que se corresponde con una locacion de mem con offset n desde el fp *)
                                                                  (* InReg(t) indica que se corresponde con el registro t *)
 type frame = {
-	name: string, (* nombre de la función a la que pertenece - Se necesita para construir un frame *)
-	formals: bool list, (* true si el parametro escapa, falso sino - Se necesita para construir un frame *)
-	argsAcc: access list ref, (*lista de argumentos*)
-	cantLocalsInFrame: int ref (*offset en words del proximo potencial local*)
+    name: string, (* nombre de la función a la que pertenece - Se necesita para construir un frame *)
+    formals: bool list, (* true si el parametro escapa, falso sino - Se necesita para construir un frame *)
+    argsAcc: access list ref, (*lista de argumentos*)
+    cantLocalsInFrame: int ref (*offset en words del proximo potencial local*)
 }
 datatype frag = PROC of {body: tigertree.stm, frame: frame}      (*  *)
-	| STRING of tigertemp.label * string
+    | STRING of tigertemp.label * string
 
 fun allocLocal (f: frame) b = 
-	case b of
-	true =>
-		let	val ret = InFrame( (!(#cantLocalsInFrame f)+1) * localsGap)
-		in	#cantLocalsInFrame f:=(!(#cantLocalsInFrame f)+1); ret end
-	| false => InReg(tigertemp.newtemp())
+    case b of
+    true =>
+        let val ret = InFrame( (!(#cantLocalsInFrame f)+1) * localsGap)
+        in  #cantLocalsInFrame f:=(!(#cantLocalsInFrame f)+1); ret end
+    | false => InReg(tigertemp.newtemp())
 
 fun newFrame{name, formals} =
-	let val f = { 
-					name=name,
-				    formals=formals,
-				    argsAcc = ref ([]:access list),
-				    cantLocalsInFrame=ref 0
-				}
-		 val _ = #argsAcc f := List.map (fn b => allocLocal f b) formals
-	 in f end
+    let val f = { 
+                    name=name,
+                    formals=formals,
+                    argsAcc = ref ([]:access list),
+                    cantLocalsInFrame=ref 0
+                }
+         val _ = #argsAcc f := List.map (fn b => allocLocal f b) formals
+     in f end
 fun name(f: frame) = #name f
 fun string(l, s) = l^tigertemp.makeString(s)^"\n"
 
@@ -88,21 +102,21 @@ fun externalCall(s, l) = let val raux = tigertemp.newtemp() in ESEQ(SEQ(EXP(CALL
 
 
 fun seq [] = EXP (CONST 0)
-	| seq [s] = s
-	| seq (x::xs) = SEQ (x, seq xs)
+    | seq [s] = s
+    | seq (x::xs) = SEQ (x, seq xs)
 
 fun procEntryExit1 ( fr : frame,body) = 
-	body
-(*
    let val argsAcc = #argsAcc fr
        fun aux [] _ = []
-       |   aux (acc::accs) n = MOVE( exp acc (TEMP fp), if n < List.length argregs then TEMP (List.nth(argregs,n)) else MEM(BINOP(PLUS, CONST ((n-List.length argregs)*8+16), TEMP fp)) ) :: aux accs (n+1)
+       |   aux (acc::accs) n = MOVE( exp acc (TEMP fp), 
+       if n < List.length argregs then TEMP (List.nth(argregs,n)) 
+       else MEM(BINOP(PLUS, CONST ((n-List.length argregs)*8+16), TEMP fp)) ) :: aux accs (n+1)
        val moveargs = aux (!argsAcc) 0 (*Instrucciones para mover de los argumentos a los locals donde la función ve internamente las cosas *)
        val freshtmps = List.tabulate (List.length calleesaves , fn _ => TEMP (tigertemp.newtemp()))
        val saveregs = List.map MOVE (ListPair.zip(freshtmps,List.map TEMP calleesaves)) (* Instrucciones para salvar en temporarios los callee saves *)
        val restoreregs = List.map MOVE(ListPair.zip(List.map TEMP calleesaves,freshtmps)) (* Restaurar los callee saves *)
-       in seq( saveregs @ moveargs @ [body] @ restoreregs ) end   
-*)
+       in seq( saveregs @ moveargs @ [body] @ restoreregs ) 
+   end   
+   
 fun procEntryExit2(frame:frame,instrs) = instrs @ [tigerassem.OPER{assem="",src=[rv,sp,fp]@calleesaves, dst=[], jump=NONE}]
-
 end

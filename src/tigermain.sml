@@ -30,8 +30,8 @@ fun compile arbol escapes ir canon code flow inter asm source_filename =
         val prntCanon = pass (fn x => if canon then print("------Canon------\n"^tigercanon.Canon(x)) else ())
         val prntCode = pass (fn (b, f) => if code then print(";;--FRAME--"^(tigerframe.name f)^":\n"^tigerassem.printCode b^";;-END-FRAME-:\n") else ())
         fun prntFlow fr instr g = if flow then print(";;--FLOW--"^(tigerframe.name fr)^":\n"^(tigerflow.printGraph (instr, g))^";;-END-FLOW-:\n") else ()
-        fun prntInter fr instr g live_out = if inter then print(";;--INTER--"^(tigerframe.name fr)^":\n"^(tigerliveness.printInter (instr, g, live_out))^";;-END-INTER-:\n") else ()
-        val prntAsm = pass (fn x => if asm then print("------Assembler------\n"^x) else ())
+        fun prntInter fr g live_out = if inter then print(";;--INTER--"^(tigerframe.name fr)^":\n"^(tigerliveness.printInter (g, live_out))^";;-END-INTER-:\n") else ()
+        val prntAsm = pass (fn x => if asm then print("------Assembler------\n"^x) else ()
         fun prntOk _ = print "yes!!\n"
         
         (*Etapas de la compilacion*)
@@ -81,12 +81,12 @@ fun compile arbol escapes ir canon code flow inter asm source_filename =
 					else raise Fail "Error al ejecutar gcc"
 			in asm end
 
-		(*Pipeline ejecutado por cada fragmento*)
-		fun perFragment fragment = 
-			fragment >>= instructionSel >>= prntCode >>=
-				livenessAnalysis
+        (*Pipeline ejecutado por cada fragmento*)
+        fun perFragment fragment = 
+            fragment >>= instructionSel >>= prntCode >>=
+                livenessAnalysis
     in
-		(*Pipeline del compilador*)
+        (*Pipeline del compilador*)
         source_filename >>= abreArchivo >>=
            lexer >>= parser >>= (*de ASCII al arbol tigerabs.exp*)
            expIncludes >>=  (*etapa agregada para que funcionen los includes*)

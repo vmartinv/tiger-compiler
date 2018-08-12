@@ -1,0 +1,8 @@
+/*TIGER_ARGS= -code -flow*/
+let
+    var i:= 5
+in
+    while i > 0
+    do i := i - 1;
+    i
+end

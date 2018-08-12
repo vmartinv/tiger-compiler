@@ -89,6 +89,12 @@ First we will handle type checking. This phase is characterized by the maintenan
   tigerescap.sml     Cálculo de escapes
                         - Una variable escapa cuando es accedida desde un marco de activación distinto del que la alocó.
                         - escEnv es una tabla que para cada variable nos dice cuál es su profundidad y si escapa o no.
+                        
+  tigertab.sml       Tablas
+  
+  tigertopsort.sml   Sort topológico
+  
+  tigerinclude.sml   Maneja los includes
 
 
 Semantic Analysis - Intermediate Representation  (FRONT-END - ENTREGA 2)
@@ -159,7 +165,16 @@ Rewrite the IR for convenience:
 
 Instruction Selection   (BACK-END - ENTREGA 3)
 ---------------------
+The IR expresses only one operation in each tree node, but a real machine instruction can often perform several.
+The job of the instruction selection phase is to find the appropiate machine instructions for the IR.
+We have chosen the architecture i386.
 
+  tigerassem.sml     Abstract assembly-language instructions
+                        - Each instruction is either an OPER, LABEL or MOVE.
+
+  tigercodegen.sml   Code generation
+                        - The maximal munch algorithm is used to transform an IR into a list of assembler instructions.
+                        
 
 Control Flow & Liveness   (BACK-END - ENTREGA 3)
 -----------------------
@@ -174,9 +189,16 @@ The flow analysis for the Tiger compiler is done in two stages:
   
   tigerflow.sml      Grafos de control de flujo
                         - Transforma una lista de instrucciones assembler en un grafo de flujo.
+                        - En un grafo de flujo (dirigido):
+                            + node x  -> statement x
+                            + edge xy -> statement x can be followed by statement y
                         - Se separa la información de los nodos: se usan tablas (uso Splaymap) para def, use e ismove.
 
   tigerliveness.sml  Cálculo de liveness y grafo de interferencia
+                        - Para el cálculo de liveness, transforma un grafo de flujo en un grafo de interferencia.
+                        - En un grafo de interferencia (no dirigido):
+                            + node a  -> temporary a
+                            + edge ab -> a and b cannot be allocated to the same register (a and b interfere)
                         - Para el cálculo de liveness, implemento el algoritmo de ecuaciones de liveness (iterativo).
                         - Uso el módulo Splayset para representar los conjuntos.
                         - Considero el tratamiento especial para MOVE (páginas 221,222).
@@ -184,16 +206,23 @@ The flow analysis for the Tiger compiler is done in two stages:
 
 Register Allocation   (BACK-END - ENTREGA 3)
 -------------------
+We use the interference graph to assign temporaries to registers (coloring).
+
+  tigerregalloc.sml  Register Allocation
+  
+  tigercolor.sml     Coloring Algorithm
+  
+  tigerset           Abstract Data Type for sets
+
+
+
 
 Other modules:
 
+  tigermain.sml      Main
+
   tigerutils.sml     Utils
   tigerpp.sml        Pretty printer
-  tigerinclude.sml   Maneja los includes
-  tigertab.sml       Tablas
-  tigertopsort.sml   Sort topológico
   tigerpila.sml      Pilas
   tigerit.sml        
-  tigermain.sml
-
 

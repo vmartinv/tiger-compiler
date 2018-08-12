@@ -5,22 +5,85 @@ LetExp{decs=[VarDec{name=s,escape=false,typ=NONE,init=2}
                     right=VarExp(SimpleVar(x))}}],body=VarExp(SimpleVar(y))}
 bien!
 ;;-PROC-L0--:
-MOVE(
- TEMP eax,
- ESEQ(
+SEQ(
+ MOVE(
+  TEMP T3,
+  TEMP rdi),
+ SEQ(
+  MOVE(
+   TEMP T4,
+   TEMP rsi),
   SEQ(
    MOVE(
-    TEMP T0,
-    CONST 2),
+    TEMP T5,
+    TEMP rbx),
    SEQ(
     MOVE(
-     TEMP T1,
-     CONST 34),
-    MOVE(
-     TEMP T2,
-     BINOP(PLUS,
-      TEMP T0,
-      TEMP T1)))),
-  TEMP T2))
+     TEMP T6,
+     TEMP r12),
+    SEQ(
+     MOVE(
+      TEMP T7,
+      TEMP r13),
+     SEQ(
+      MOVE(
+       TEMP T8,
+       TEMP r14),
+      SEQ(
+       MOVE(
+        TEMP T9,
+        TEMP r15),
+       SEQ(
+        MOVE(
+         MEM(
+          BINOP(PLUS,
+           TEMP rbp,
+           CONST -8)),
+         TEMP rcx),
+        SEQ(
+         MOVE(
+          TEMP rax,
+          ESEQ(
+           SEQ(
+            MOVE(
+             TEMP T0,
+             CONST 2),
+            SEQ(
+             MOVE(
+              TEMP T1,
+              CONST 34),
+             MOVE(
+              TEMP T2,
+              BINOP(PLUS,
+               TEMP T0,
+               TEMP T1)))),
+           TEMP T2)),
+         SEQ(
+          MOVE(
+           TEMP rdi,
+           TEMP T3),
+          SEQ(
+           MOVE(
+            TEMP rsi,
+            TEMP T4),
+           SEQ(
+            MOVE(
+             TEMP rbx,
+             TEMP T5),
+            SEQ(
+             MOVE(
+              TEMP r12,
+              TEMP T6),
+             SEQ(
+              MOVE(
+               TEMP r13,
+               TEMP T7),
+              SEQ(
+               MOVE(
+                TEMP r14,
+                TEMP T8),
+               MOVE(
+                TEMP r15,
+                TEMP T9))))))))))))))))
 ;;-END-PROC--:
 yes!!

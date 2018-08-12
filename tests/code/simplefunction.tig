@@ -1,0 +1,6 @@
+/*TIGER_ARGS= -code*/
+let
+    function f(n:int) : int = 78
+in
+    f(5)
+end

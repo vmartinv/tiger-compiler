@@ -1,6 +1,18 @@
-Trabajando en:
-- tigerseman.sml
+Aldana
+=======
+-simpleregalloc
+-testear inter
+-coloreo
 
-Pendientes:
-- Testear trexp caso AssignExp (duda tipo retorno)
-- Completar trexp caso for (duda)
+Lautarwo
+=======
+-procExit1
+-procExit2
+-format
+
+Martin
+=======
+-esperar simpleregalloc y procExits
+-arreglar parser para constantes >2^30-1
+-procExit3
+-coloreo

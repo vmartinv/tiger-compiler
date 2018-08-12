@@ -3,22 +3,85 @@ LetExp{decs=[TypeDec([{name=A,ty=ArrayTy(int)}])
               init=ArrayExp{test=A,size=100,init=51}}],body=15}
 bien!
 ;;-PROC-L0--:
-MOVE(
- TEMP eax,
- ESEQ(
+SEQ(
+ MOVE(
+  TEMP T2,
+  TEMP rdi),
+ SEQ(
   MOVE(
-   TEMP T1,
-   ESEQ(
+   TEMP T3,
+   TEMP rsi),
+  SEQ(
+   MOVE(
+    TEMP T4,
+    TEMP rbx),
+   SEQ(
+    MOVE(
+     TEMP T5,
+     TEMP r12),
     SEQ(
-     EXP(
-      CALL(
-       NAME _initArray,
-        CONST 100,
-        CONST 51)),
      MOVE(
-      TEMP T0,
-      TEMP eax)),
-    TEMP T0)),
-  CONST 15))
+      TEMP T6,
+      TEMP r13),
+     SEQ(
+      MOVE(
+       TEMP T7,
+       TEMP r14),
+      SEQ(
+       MOVE(
+        TEMP T8,
+        TEMP r15),
+       SEQ(
+        MOVE(
+         MEM(
+          BINOP(PLUS,
+           TEMP rbp,
+           CONST -8)),
+         TEMP rcx),
+        SEQ(
+         MOVE(
+          TEMP rax,
+          ESEQ(
+           MOVE(
+            TEMP T1,
+            ESEQ(
+             SEQ(
+              EXP(
+               CALL(
+                NAME _initArray,
+                 CONST 100,
+                 CONST 51)),
+              MOVE(
+               TEMP T0,
+               TEMP rax)),
+             TEMP T0)),
+           CONST 15)),
+         SEQ(
+          MOVE(
+           TEMP rdi,
+           TEMP T2),
+          SEQ(
+           MOVE(
+            TEMP rsi,
+            TEMP T3),
+           SEQ(
+            MOVE(
+             TEMP rbx,
+             TEMP T4),
+            SEQ(
+             MOVE(
+              TEMP r12,
+              TEMP T5),
+             SEQ(
+              MOVE(
+               TEMP r13,
+               TEMP T6),
+              SEQ(
+               MOVE(
+                TEMP r14,
+                TEMP T7),
+               MOVE(
+                TEMP r15,
+                TEMP T8))))))))))))))))
 ;;-END-PROC--:
 yes!!

@@ -7,5 +7,6 @@ val nuevaPila1 : 'a -> 'a Pila
 val pushPila : 'a Pila -> 'a -> unit
 val popPila : 'a Pila -> unit
 val topPila : 'a Pila -> 'a
+val isEmpty : 'a Pila -> bool
 
 end

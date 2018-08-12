@@ -3,6 +3,8 @@ sig
 
 type frame
 type register = string
+val rax : tigertemp.temp
+val rdx : tigertemp.temp
 val rv : tigertemp.temp (* return value *)
 val ov : tigertemp.temp (* overflow value *)
 val fp : tigertemp.temp (* frame pointer *)
@@ -25,6 +27,7 @@ val calldefs : tigertemp.temp list
 val callersaves : tigertemp.temp list
 val specialregs : tigertemp.temp list
 val coloredregisters : tigertemp.temp list
+val usableregisters : register list
 val argregs : register list
 val exp : access -> tigertree.exp -> tigertree.exp
 val offset : access -> int
