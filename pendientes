@@ -1,18 +1,16 @@
 Aldana
 =======
--simpleregalloc
--testear inter
--coloreo
+- simpleregalloc
+- leer y agregar coloreo
 
-Lautarwo
+Lautaro
 =======
--procExit1
--procExit2
--format
+- procExit1
+- procExit2
+- format
 
 Martin
 =======
--esperar simpleregalloc y procExits
--arreglar parser para constantes >2^30-1
--procExit3
--coloreo
+- esperar simpleregalloc y procExits
+- procExit3
+- leer y debuggear coloreo
