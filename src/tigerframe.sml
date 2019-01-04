@@ -105,6 +105,7 @@ fun seq [] = EXP (CONST 0)
     | seq [s] = s
     | seq (x::xs) = SEQ (x, seq xs)
 
+(* Explicado en pag 261 (resumen) y 169 (intro) *)
 fun procEntryExit1 ( fr : frame,body) = 
    let val argsAcc = #argsAcc fr
        fun aux [] _ = []
