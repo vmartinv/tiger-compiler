@@ -15,12 +15,18 @@ fun singleton cmp item =
 fun isEmpty s =
     Splayset.isEmpty(!s)
 
+fun notEmpty s =
+    not (Splayset.isEmpty(!s))
+    
 fun equal s t =
     Splayset.equal(!s, !t)
 
 fun listToSet l cmp =
     ref (Splayset.addList(Splayset.empty cmp, l))
 
+fun setToList s =
+    Splayset.listItems(!s)
+    
 fun member s n =
     Splayset.member(!s, n)
 
