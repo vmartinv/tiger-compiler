@@ -10,7 +10,9 @@ open tigerpila
 open tigerutils
 open tigerframe
 
+(********************************************************************************)
 (************************************ Types *************************************)
+(********************************************************************************)
 
 type allocation = (tigertemp.temp, tigerframe.register) Splaymap.dict
 
@@ -38,11 +40,16 @@ fun moveEq ((t1, t2), (t3, t4)) =
 fun moveCmp ((t1, t2), (t3, t4)) = edgeCmp ((t1, t2), (t3, t4))
 
 
+(********************************************************************************)
 (****************************** Coloring Algorithm ******************************)
+(********************************************************************************)
 
-fun color (body : tigerassem.instr list, fr : tigerframe.frame) = (* COMPLETAR *)
+fun color (instrs : tigerassem.instr list, fr : tigerframe.frame) = (* COMPLETAR *)
 let
-    (**** Data structures ****)
+    
+    (************************************************************)
+    (********************* Data structures **********************)
+    (************************************************************)
     
     (* precolored nodes *)
     val precolored : nodeSet = tigerset.listToSet tigerframe.coloredregisters nodeCmp
@@ -102,17 +109,92 @@ let
     val alias : (node, nodeSet) tigermap.map = tigermap.empty nodeCmp
 
     (* color chosen by the algorithm for each node *)
-    val color : (node, tigerframe.register) tigermap.map = tigermap.empty nodeCmp
+    val color : (node, tigerframe.register) tigermap.map = tigermap.empty nodeCmp 
     
     
-    (**** Auxiliar functions ****)
+    (************************************************************)
+    (******************** Auxiliar functions ********************)
+    (************************************************************)
     
     (* Init insert precolered nodes in color *)
-    fun Init () = ()
+    fun Init () =
+	app (fn n => insert color n n) precolored (* TODO: QUÉ REL HAY ENTRE TEMP Y REGISTER, ACA SE DEBE DEVOLVER REGISTER, NO TEMP *)
     
-    (*  *)
-    fun Build () = ()
+    (* AddEdge *)
+    fun AddEdge (u: node, v: node) =
+	if ((not (tigerset.member adjSet (u, v))) andalso (not (nodeEq(u,v))))
+	then (
+	    tigerset.add adjSet (u, v);
+	    tigerset.add adjSet (v, u);
+	    if (not (tigerset.member precolored u))
+	    then (
+		tigermap.insert adjList u (tigerset.union (tigermap.get adjList u) (tigerset.singleton nodeCmp v));
+		tigermap.insert degree u ((tigermap.get degree u) + 1))
+	    else ();
+	    if (not (tigerset.member precolored v))
+	    then (
+		tigermap.insert adjList v (tigerset.union (tigermap.get adjList v) (tigerset.singleton nodeCmp u));
+		tigermap.insert degree v ((tigermap.get degree v) + 1))
+	    else ())
+	else ()
+	
+    (* Build constructs the interference graph (adjSet, adjList, degree, moveList) and initializes worklistMoves.
+       This is simpler than the book's algorithm because we don't have blocks, just simple instructions *)
+    fun Build () =
+	let
+	    val (fg, fgnodes) = tigerflow.instrs2graph instrs
+	    val (tigerflow.FGRAPH{control, def, use, ismove}) = fg
+	    val (_, liveOut) = tigerliveness.interferenceGraph fg
+	    fun buildNode n =
+		let
+		    val live_n = listToSet (liveOut n) nodeCmp
+		    val use_n  = Splaymap.find(use, n)
+		    val def_n  = Splaymap.find(def, n)
+		in
+		    if (Splaymap.find(ismove, n))
+		    then (
+			List.app (fn n => tigermap.insert moveList n (tigerset.union (tigermap.get moveList n) (tigerset.singleton moveCmp (List.hd def_n, List.hd use_n)))) (def_n @ use_n);
+			tigerset.add worklistMoves (List.hd def_n, List.hd use_n))
+		    else ();
+		    List.app (fn d => tigerset.app (fn l => AddEdge(l,d)) live_n) def_n
+		end
+	in
+	    List.app buildNode fgnodes
+	end
     
+    (* ANTES ESTABA ASÍ, PERO CREO QUE TIENE COSAS QUE CORRESPONDEN A LOS BLOQUES
+    
+    fun Build (instrs : tigerassem.instr list) =
+    let
+        val (fg, fgnodes) = tigerflow.instrs2graph instrs
+        val (tigerflow.FGRAPH{control, def, use, ismove}) = fg
+        val (_, liveOut) = tigerliveness.interferenceGraph fg
+        fun buildNode i =
+            let 
+                val live = listToSet (liveOut i) nodeCmp
+                val def_i = Splaymap.find(def, i)
+                val use_i = Splaymap.find(use, i)
+            in
+                if (Splaymap.find(ismove, i))
+                then (
+                    List.app (fn n => tigerset.delete live n)
+                             use_i; BLOQUE
+                    List.app (fn n => tigermap.insert moveList n (tigerset.union (tigermap.get moveList n) (tigerset.singleton moveCmp (List.hd (def_i), List.hd use_i))))
+                             (def_i @ use_i);
+                    tigerset.add workListMoves (List.hd def_i, List.hd use_i)
+                )
+                else ();
+                List.app (fn t => tigerset.add live t)
+                         def_i; BLOQUE
+                List.app (fn d => (tigerset.app (fn l => AddEdge(l, d))
+                                                live))
+                         def_i
+            end
+    in
+        List.app buildNode fgnodes
+    end
+    *)
+	
     (*  *)
     fun MakeWorklist () = ()
     
@@ -132,7 +214,9 @@ let
     fun AssignColors () = ()
     
 in
-    (**** Algorithm ****)
+    (************************************************************)
+    (************************ Algorithm *************************)
+    (************************************************************)
     
     Init();
     Build();
