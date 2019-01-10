@@ -93,10 +93,10 @@ fun Ir(e) =
 local
     val salidas: label option tigerpila.Pila = tigerpila.nuevaPila1 NONE
 in
-    val pushSalida = tigerpila.pushPila salidas
-    fun popSalida() = tigerpila.popPila salidas
+    val pushSalida = tigerpila.push salidas
+    fun popSalida() = tigerpila.pop salidas
     fun topSalida() =
-        case tigerpila.topPila salidas of
+        case tigerpila.top salidas of
         SOME l => l
         | NONE => raise Fail "break incorrecto!"            
 end

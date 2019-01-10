@@ -51,6 +51,9 @@ let
     (********************* Data structures **********************)
     (************************************************************)
     
+    (* Number of registers *)
+    val K : int = 32
+    
     (* precolored nodes *)
     val precolored : nodeSet = tigerset.listToSet tigerframe.coloredregisters nodeCmp
     
@@ -77,6 +80,9 @@ let
     
     (* stack with temporaries removed from the graph *)
     val selectStack : nodeStack = tigerpila.nuevaPila()
+    
+    (* nodes in the stack *)
+    val selectStackSet : nodeSet = tigerset.empty nodeCmp
     
     (* moves that have been coalesced *)
     val coalescedMoves : moveSet = tigerset.empty moveCmp
@@ -116,7 +122,7 @@ let
     (******************** Auxiliar functions ********************)
     (************************************************************)
     
-    (* Init insert precolered nodes in color *)
+    (* Init initializes color and initial *)
     fun Init () =
 	app (fn n => insert color n n) precolored (* TODO: QUÉ REL HAY ENTRE TEMP Y REGISTER, ACA SE DEBE DEVOLVER REGISTER, NO TEMP *)
     
@@ -138,7 +144,7 @@ let
 	    else ())
 	else ()
 	
-    (* Build constructs the interference graph (adjSet, adjList, degree, moveList) and initializes worklistMoves.
+    (* Build constructs the interference graph (adjSet, adjList, degree, moveList) and initializes initial and worklistMoves.
        This is simpler than the book's algorithm because we don't have blocks, just simple instructions *)
     fun Build () =
 	let
@@ -156,6 +162,7 @@ let
 			List.app (fn n => tigermap.insert moveList n (tigerset.union (tigermap.get moveList n) (tigerset.singleton moveCmp (List.hd def_n, List.hd use_n)))) (def_n @ use_n);
 			tigerset.add worklistMoves (List.hd def_n, List.hd use_n))
 		    else ();
+		    List.app (fn n => tigerset.add initial n) (def_n @ use_n);
 		    List.app (fn d => tigerset.app (fn l => AddEdge(l,d)) live_n) def_n
 		end
 	in
@@ -194,12 +201,66 @@ let
         List.app buildNode fgnodes
     end
     *)
-	
-    (*  *)
-    fun MakeWorklist () = ()
     
-    (*  *)
-    fun Simplify () = ()
+    (* *)
+    fun NodeMoves (n:node) =
+		tigerset.intersection (tigermap.get moveList n) (tigerset.union activeMoves worklistMoves)
+    
+    (* *)
+    fun MoveRelated (n:node) =
+		tigerset.notEmpty (NodeMoves n)
+	
+    (*  MakeWorklist initializes worklists *)
+    fun MakeWorklist () =
+		tigerset.app (fn n => (tigerset.delete initial n;
+		                      if (tigermap.get degree n >= K) then
+								tigerset.add spillWorklist n
+		                      else if (MoveRelated n) then
+								tigerset.add freezeWorklist n
+		                      else
+								tigerset.add simplifyWorklist n))
+		             initial
+    
+    (* *)
+    fun Adjacent (n:node) =
+		tigerset.difference (tigermap.get adjList n)
+		                    (tigerset.union selectStackSet coalescedNodes)
+    
+    (* *)
+    fun EnableMoves (s:nodeSet) =
+		tigerset.app (fn n => tigerset.app (fn m => (if (tigerset.member activeMoves m) then (
+														tigerset.delete activeMoves m;
+														tigerset.add worklistMoves m)
+		                                             else ()))
+		                                   (NodeMoves n))
+		             s
+	
+    (* *)
+    fun DecrementDegree (n:node) =
+		let
+			val d = tigermap.get degree n
+		in
+			tigermap.insert degree n (d-1);
+			if (d = K) then (
+				EnableMoves (tigerset.union (Adjacent n) (tigerset.singleton nodeCmp n));
+				tigerset.delete spillWorklist n;
+				if (MoveRelated n) then
+					tigerset.add freezeWorklist n
+				else
+					tigerset.add simplifyWorklist n)
+			else ()
+		end
+		
+    (* Simplify function *)
+    fun Simplify () =
+		let
+			val n = tigerset.get simplifyWorklist
+		in
+			tigerset.delete simplifyWorklist n;
+			tigerpila.push selectStack n;
+			tigerset.add selectStackSet n;
+			tigerset.app DecrementDegree (Adjacent n)
+		end
     
     (*  *)
     fun Coalesce () = ()
@@ -234,18 +295,21 @@ in
 end
 
 
-(* Register Allocation - Esto iría en regalloc
-fun alloc (body : tigerassem.instr list, fr : tigerframe.frame) = (* COMPLETAR *)
+(* Register Allocation - Esto es de regalloc
+fun alloc (body : tigerassem.instr list, fr : tigerframe.frame) =
     let
-        val (allocation, spilledNodes) = color(body, fr)
+        val (allocation, spilledNodes) = tigercolor.color(body, fr)
     in
-        if (isEmpty spilledNodes)
+        if (null spilledNodes)
         then
             (body, allocation)
         else
             let val newbody =  RewriteProgram(spilledNodes, body, fr)
             in  alloc(newbody, fr)
+            end
     end
+    
+end
 *)
 
 end

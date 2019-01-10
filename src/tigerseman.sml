@@ -17,9 +17,9 @@ val tab_tipos : (string, Tipo) Tabla = tabInserList(
 	[("int", TInt), ("string", TString)])
 
 val levelPila: tigertrans.level tigerpila.Pila = tigerpila.nuevaPila1(tigertrans.outermost) 
-fun pushLevel l = tigerpila.pushPila levelPila l
-fun popLevel() = tigerpila.popPila levelPila 
-fun topLevel() = tigerpila.topPila levelPila
+fun pushLevel l = tigerpila.push levelPila l
+fun popLevel() = tigerpila.pop levelPila 
+fun topLevel() = tigerpila.top levelPila
 
 val tab_vars : (string, EnvEntry) Tabla = tabInserList(
 	tabNueva(),

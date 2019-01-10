@@ -80,7 +80,7 @@ depend: tigerabs.sml tigergrm.sml tigerlex.sml tigermain.sml \
 tigerliveness.uo: tigerliveness.ui tigergraph.ui tigertemp.ui tigerutils.ui \
     tigerflow.ui 
 tigermap.uo: tigermap.ui 
-tigerregalloc.uo: tigerregalloc.ui tigerframe.ui tigertemp.ui tigerutils.ui 
+tigerregalloc.uo: tigerregalloc.ui tigerframe.ui tigertemp.ui tigerutils.ui tigercolor.ui
 tigerutils.uo: tigerutils.ui 
 tigerpp.uo: tigertips.uo tigerframe.ui tigerabs.uo tigerutils.ui 
 tigerinterp.uo: tigertree.uo tigertab.ui tigerframe.ui tigerit.uo \
