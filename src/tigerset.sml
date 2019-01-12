@@ -52,5 +52,8 @@ fun difference s t =
 
 fun app f s =
     Splayset.app f (!s)
+    
+fun fold op n s =
+	Splayset.foldl op n (!s)
 
 end

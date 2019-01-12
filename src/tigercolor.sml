@@ -52,7 +52,7 @@ let
     (************************************************************)
     
     (* Number of registers *)
-    val K : int = 32
+    val K : int = 32 (* COMPLETAR *)
     
     (* precolored nodes *)
     val precolored : nodeSet = tigerset.listToSet tigerframe.coloredregisters nodeCmp
@@ -112,7 +112,7 @@ let
     val moveList : (node, moveSet) tigermap.map = tigermap.empty nodeCmp
 
     (* alias *)
-    val alias : (node, nodeSet) tigermap.map = tigermap.empty nodeCmp
+    val alias : (node, node) tigermap.map = tigermap.empty nodeCmp
 
     (* color chosen by the algorithm for each node *)
     val color : (node, tigerframe.register) tigermap.map = tigermap.empty nodeCmp 
@@ -262,8 +262,91 @@ let
 			tigerset.app DecrementDegree (Adjacent n)
 		end
     
+    (* *)
+    fun GetAlias (n : node) =
+		if (tigerset.member coalescedNodes n) then
+			GetAlias(tigermap.get alias n)
+		else n
+		
+    (* *)
+    fun AddWorkList (n : node) =
+		if (not(member precolored n) andalso not(MoveRelated(n)) andalso tigermap.get degree n < K) then (
+			tigerset.delete freezeWorklist n;
+			tigerset.add simplifyWorklist n)
+		else ()
+    
+    (* *)
+    fun Briggs (n : node, m : node) =
+		let
+			val s = tigerset.union (Adjacent n) (Adjacent m)
+			val k = tigerset.fold (fn (n, i) => if (tigermap.get degree n >= K) then i+1 else i) 0 s
+		in
+			k < K
+		end
+	
+    (* 
+    fun Ok (n: node, m : node) =
+		(tigermap.get degree n < K) orelse (tigerset.member precolored n) orelse (tigerset.member adjSet (n,m))
+	*)
+	
+	(* *)
+    fun George (n : node, m : node) =
+		let
+			val s = Adjacent m
+			fun Ok(n,m) = (tigermap.get degree n < K) orelse (tigerset.member precolored n) orelse (tigerset.member adjSet (n,m))
+		in
+			tigerset.fold (fn (t, p) => p andalso Ok(t, n)) true s
+		end
+    
+    (* Combine two nodes when coalesced *)
+    fun Combine (u : node, v : node) =
+		let
+			val x = 3 (* Arreglar: no compila sin el let *)
+		in
+			if (tigerset.member freezeWorklist v) then
+				tigerset.delete freezeWorklist v
+			else
+				tigerset.delete spillWorklist v;
+			tigerset.add coalescedNodes v;
+			tigermap.insert alias v u;
+			tigermap.insert moveList u (tigerset.union (tigermap.get moveList u) (tigermap.get moveList v)); (* y el move coalescido? *)
+			tigerset.app (fn t => (AddEdge(t,u); DecrementDegree(t))) (Adjacent v);
+			if ((tigermap.get degree u >= K) andalso (tigerset.member freezeWorklist u)) then (
+				tigerset.delete freezeWorklist u;
+				tigerset.add spillWorklist u)
+			else ()
+		end
+		
     (*  *)
-    fun Coalesce () = ()
+    fun Coalesce () =
+		let
+			val m = tigerset.get worklistMoves
+			val (p, q) = m
+			val x = GetAlias p
+			val y = GetAlias q
+			val (u, v) = if (tigerset.member precolored y) then (y, x) else (x, y)
+		in
+			tigerset.delete worklistMoves m;
+			(* Case 1: already coalesced *)
+			if (nodeEq(u, v)) then (
+				tigerset.add coalescedMoves m;
+				AddWorkList(u) )
+			(* Case 2: impossible to be coalesced - both precolored or constrained *)
+			else if (tigerset.member precolored v orelse
+			         tigerset.member adjSet (u, v)) then (
+				tigerset.add constrainedMoves m;
+				AddWorkList(u);
+				AddWorkList(v) )
+			(* Case 3: coalesce! - George test if u is precolored, Briggs otherwise *)
+			else if ((tigerset.member precolored u andalso George(u, v)) orelse
+			         (not(tigerset.member precolored u) andalso Briggs(u, v) )) then (
+				tigerset.add coalescedMoves m;
+				Combine(u,v);
+				AddWorkList(u) )
+			(* Case 4: not coalesceables now *)
+			else
+				tigerset.add activeMoves m
+		end
     
     (*  *)
     fun Freeze () = ()
