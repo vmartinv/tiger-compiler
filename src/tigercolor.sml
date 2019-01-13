@@ -378,8 +378,15 @@ let
 			FreezeMoves(u)
 		end
 		
-    (*  *)
-    fun SelectSpill () = ()
+    (*  *) 
+    fun SelectSpill () =
+		let
+			val n = tigerset.get spillWorklist (* TODO: modificar para agregar una heuristica para elegir el nodo *)
+		in
+			tigerset.delete spillWorklist n;
+			tigerset.add simplifyWorklist n;
+			FreezeMoves n
+		end		
     
     (*  *)
     fun AssignColors () = ()
