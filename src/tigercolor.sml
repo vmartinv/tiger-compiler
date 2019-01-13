@@ -348,9 +348,36 @@ let
 				tigerset.add activeMoves m
 		end
     
-    (*  *)
-    fun Freeze () = ()
+    (* *)
+    fun FreezeMoves (u : node) =
+		let
+			val nodeMoves_u = NodeMoves u
+			fun freezeMove m =
+				let
+					val (x, y) = m
+					val v = if (GetAlias y = GetAlias u) then GetAlias x else GetAlias y
+				in
+					tigerset.delete activeMoves m;
+					tigerset.add frozenMoves m;
+					if (tigerset.isEmpty (NodeMoves v) andalso tigermap.get degree v < K) then (
+						tigerset.delete freezeWorklist v;
+						tigerset.add simplifyWorklist v)
+					else ()
+				end
+		in
+			tigerset.app freezeMove nodeMoves_u
+		end
     
+    (*  *)
+    fun Freeze () =
+		let
+			val u = tigerset.get freezeWorklist
+		in
+			tigerset.delete freezeWorklist u;
+			tigerset.add simplifyWorklist u;
+			FreezeMoves(u)
+		end
+		
     (*  *)
     fun SelectSpill () = ()
     
