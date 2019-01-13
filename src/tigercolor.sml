@@ -389,7 +389,33 @@ let
 		end		
     
     (*  *)
-    fun AssignColors () = ()
+    fun AssignColors () =
+		
+		let
+			val x = 5 (* no compila sin el let! *)
+		in
+		
+		while (not (tigerpila.isEmpty selectStack))
+		do
+			let
+				val n = tigerpila.top selectStack
+				val adj_n = tigermap.get adjList n
+				val okColors = tigerset.listToSet (tigerframe.usableregisters) nodeCmp (* ok usableregisters? *)
+			in
+				tigerpila.pop selectStack;
+				tigerset.app (fn w => if (tigerset.member (tigerset.union coloredNodes precolored) (GetAlias w))
+				                      then tigerset.delete okColors (tigermap.get color (GetAlias w)) else ())
+				             adj_n;
+				if (tigerset.isEmpty okColors) then
+					tigerset.add spilledNodes n
+				else (
+					tigerset.add coloredNodes n;
+					tigermap.insert color n (tigerset.get okColors)
+				)
+			end;
+		tigerset.app (fn n => tigermap.insert color n (tigermap.get color (GetAlias n))) coalescedNodes
+		
+		end
     
 in
     (************************************************************)
@@ -401,11 +427,11 @@ in
     MakeWorklist();
     while( (notEmpty simplifyWorklist) orelse (notEmpty worklistMoves) orelse (notEmpty freezeWorklist) orelse (notEmpty spillWorklist) )
     do (
-    if (notEmpty simplifyWorklist) then Simplify()
-    else if (notEmpty worklistMoves) then Coalesce()
-    else if (notEmpty freezeWorklist) then Freeze()
-    else if (notEmpty spillWorklist) then SelectSpill()
-    else ()
+		if (notEmpty simplifyWorklist) then Simplify()
+		else if (notEmpty worklistMoves) then Coalesce()
+		else if (notEmpty freezeWorklist) then Freeze()
+		else if (notEmpty spillWorklist) then SelectSpill()
+		else ()
     );
     AssignColors();
     (!color, setToList spilledNodes)
