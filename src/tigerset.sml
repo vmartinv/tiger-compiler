@@ -30,10 +30,10 @@ fun setToList s =
 fun member s n =
     Splayset.member(!s, n)
 
-fun get s =
+fun get s notFoundText =
     case Splayset.find (fn _ => true) (!s) of
           SOME i => i
-        | _      => raise NotFound
+        | _      => raise Fail ("tigerset.get not found: "^notFoundText)
         
 fun add s n =
     s := Splayset.add(!s, n)

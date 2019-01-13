@@ -55,10 +55,8 @@ fun compile arbol escapes ir canon code flow inter source_filename =
         (*Pipeline ejecutado por cada fragmento*)
         fun perFragment fragment = 
             fragment >>= instructionSel >>= prntCode >>=
-                debugLivenessAnalysis
-(*
-                >>= tigerregalloc.alloc
-*)
+                debugLivenessAnalysis >>=
+                tigerregalloc.alloc
     in
         (*Pipeline del compilador*)
         source_filename >>= abreArchivo >>=

@@ -122,6 +122,12 @@ let
     (******************** Auxiliar functions ********************)
     (************************************************************)
     
+    fun GetDegree(n: node) =
+        tigermap.getDef degree n 0
+    
+    fun GetAdj(n: node) =
+        tigermap.getDef adjList n (tigerset.empty nodeCmp)
+    
     (* Init initializes color and initial *)
     fun Init () =
 	app (fn n => insert color n n) precolored (* TODO: QUÉ REL HAY ENTRE TEMP Y REGISTER, ACA SE DEBE DEVOLVER REGISTER, NO TEMP *)
@@ -134,13 +140,13 @@ let
 	    tigerset.add adjSet (v, u);
 	    if (not (tigerset.member precolored u))
 	    then (
-		tigermap.insert adjList u (tigerset.union (tigermap.get adjList u) (tigerset.singleton nodeCmp v));
-		tigermap.insert degree u ((tigermap.get degree u) + 1))
+		tigermap.insert adjList u (tigerset.union (GetAdj u) (tigerset.singleton nodeCmp v));
+		tigermap.insert degree u (GetDegree u + 1))
 	    else ();
 	    if (not (tigerset.member precolored v))
 	    then (
-		tigermap.insert adjList v (tigerset.union (tigermap.get adjList v) (tigerset.singleton nodeCmp u));
-		tigermap.insert degree v ((tigermap.get degree v) + 1))
+		tigermap.insert adjList v (tigerset.union (GetAdj v) (tigerset.singleton nodeCmp u));
+		tigermap.insert degree v (GetDegree v + 1))
 	    else ())
 	else ()
 	
@@ -154,12 +160,12 @@ let
 	    fun buildNode n =
 		let
 		    val live_n = listToSet (liveOut n) nodeCmp
-		    val use_n  = Splaymap.find(use, n)
-		    val def_n  = Splaymap.find(def, n)
+		    val use_n  = Splaymap.find(use, n) handle Splaymap.NotFound => raise Fail "345345"
+		    val def_n  = Splaymap.find(def, n) handle Splaymap.NotFound => raise Fail "457243"
 		in
-		    if (Splaymap.find(ismove, n))
+		    if (Splaymap.find(ismove, n) handle Splaymap.NotFound => raise Fail "5675")
 		    then (
-			List.app (fn n => tigermap.insert moveList n (tigerset.union (tigermap.get moveList n) (tigerset.singleton moveCmp (List.hd def_n, List.hd use_n)))) (def_n @ use_n);
+			List.app (fn n => tigermap.insert moveList n (tigerset.union (tigermap.getDef moveList n (tigerset.empty moveCmp)) (tigerset.singleton moveCmp (List.hd def_n, List.hd use_n)))) (def_n @ use_n);
 			tigerset.add worklistMoves (List.hd def_n, List.hd use_n))
 		    else ();
 		    List.app (fn n => tigerset.add initial n) (def_n @ use_n);
@@ -204,7 +210,7 @@ let
     
     (* *)
     fun NodeMoves (n:node) =
-		tigerset.intersection (tigermap.get moveList n) (tigerset.union activeMoves worklistMoves)
+		tigerset.intersection (tigermap.getDef moveList n (tigerset.empty moveCmp)) (tigerset.union activeMoves worklistMoves)
     
     (* *)
     fun MoveRelated (n:node) =
@@ -213,7 +219,7 @@ let
     (*  MakeWorklist initializes worklists *)
     fun MakeWorklist () =
 		tigerset.app (fn n => (tigerset.delete initial n;
-		                      if (tigermap.get degree n >= K) then
+		                      if (GetDegree n >= K) then
 								tigerset.add spillWorklist n
 		                      else if (MoveRelated n) then
 								tigerset.add freezeWorklist n
@@ -223,7 +229,7 @@ let
     
     (* *)
     fun Adjacent (n:node) =
-		tigerset.difference (tigermap.get adjList n)
+		tigerset.difference (GetAdj n)
 		                    (tigerset.union selectStackSet coalescedNodes)
     
     (* *)
@@ -238,7 +244,7 @@ let
     (* *)
     fun DecrementDegree (n:node) =
 		let
-			val d = tigermap.get degree n
+			val d = GetDegree n
 		in
 			tigermap.insert degree n (d-1);
 			if (d = K) then (
@@ -254,7 +260,7 @@ let
     (* Simplify function *)
     fun Simplify () =
 		let
-			val n = tigerset.get simplifyWorklist
+			val n = tigerset.get simplifyWorklist "7327"
 		in
 			tigerset.delete simplifyWorklist n;
 			tigerpila.push selectStack n;
@@ -265,12 +271,12 @@ let
     (* *)
     fun GetAlias (n : node) =
 		if (tigerset.member coalescedNodes n) then
-			GetAlias(tigermap.get alias n)
+			GetAlias(tigermap.get alias n "8493")
 		else n
 		
     (* *)
     fun AddWorkList (n : node) =
-		if (not(member precolored n) andalso not(MoveRelated(n)) andalso tigermap.get degree n < K) then (
+		if (not(member precolored n) andalso not(MoveRelated(n)) andalso GetDegree n < K) then (
 			tigerset.delete freezeWorklist n;
 			tigerset.add simplifyWorklist n)
 		else ()
@@ -279,7 +285,7 @@ let
     fun Briggs (n : node, m : node) =
 		let
 			val s = tigerset.union (Adjacent n) (Adjacent m)
-			val k = tigerset.fold (fn (n, i) => if (tigermap.get degree n >= K) then i+1 else i) 0 s
+			val k = tigerset.fold (fn (n, i) => if (GetDegree n >= K) then i+1 else i) 0 s
 		in
 			k < K
 		end
@@ -293,34 +299,31 @@ let
     fun George (n : node, m : node) =
 		let
 			val s = Adjacent m
-			fun Ok(n,m) = (tigermap.get degree n < K) orelse (tigerset.member precolored n) orelse (tigerset.member adjSet (n,m))
+			fun Ok(n,m) = (GetDegree n < K) orelse (tigerset.member precolored n) orelse (tigerset.member adjSet (n,m))
 		in
 			tigerset.fold (fn (t, p) => p andalso Ok(t, n)) true s
 		end
     
     (* Combine two nodes when coalesced *)
-    fun Combine (u : node, v : node) =
-		let
-			val x = 3 (* Arreglar: no compila sin el let *)
-		in
+    fun Combine (u : node, v : node) = (
 			if (tigerset.member freezeWorklist v) then
 				tigerset.delete freezeWorklist v
 			else
 				tigerset.delete spillWorklist v;
 			tigerset.add coalescedNodes v;
 			tigermap.insert alias v u;
-			tigermap.insert moveList u (tigerset.union (tigermap.get moveList u) (tigermap.get moveList v)); (* y el move coalescido? *)
+			tigermap.insert moveList u (tigerset.union (tigermap.get moveList u "3143") (tigermap.get moveList v "4533")); (* y el move coalescido? *)
 			tigerset.app (fn t => (AddEdge(t,u); DecrementDegree(t))) (Adjacent v);
-			if ((tigermap.get degree u >= K) andalso (tigerset.member freezeWorklist u)) then (
+			if ((GetDegree u >= K) andalso (tigerset.member freezeWorklist u)) then (
 				tigerset.delete freezeWorklist u;
 				tigerset.add spillWorklist u)
 			else ()
-		end
+	)
 		
     (*  *)
     fun Coalesce () =
 		let
-			val m = tigerset.get worklistMoves
+			val m = tigerset.get worklistMoves "53243"
 			val (p, q) = m
 			val x = GetAlias p
 			val y = GetAlias q
@@ -359,7 +362,7 @@ let
 				in
 					tigerset.delete activeMoves m;
 					tigerset.add frozenMoves m;
-					if (tigerset.isEmpty (NodeMoves v) andalso tigermap.get degree v < K) then (
+					if (tigerset.isEmpty (NodeMoves v) andalso GetDegree v < K) then (
 						tigerset.delete freezeWorklist v;
 						tigerset.add simplifyWorklist v)
 					else ()
@@ -371,7 +374,7 @@ let
     (*  *)
     fun Freeze () =
 		let
-			val u = tigerset.get freezeWorklist
+			val u = tigerset.get freezeWorklist "435436"
 		in
 			tigerset.delete freezeWorklist u;
 			tigerset.add simplifyWorklist u;
@@ -381,7 +384,7 @@ let
     (*  *) 
     fun SelectSpill () =
 		let
-			val n = tigerset.get spillWorklist (* TODO: modificar para agregar una heuristica para elegir el nodo *)
+			val n = tigerset.get spillWorklist "5235"(* TODO: modificar para agregar una heuristica para elegir el nodo *)
 		in
 			tigerset.delete spillWorklist n;
 			tigerset.add simplifyWorklist n;
@@ -389,33 +392,27 @@ let
 		end		
     
     (*  *)
-    fun AssignColors () =
-		
-		let
-			val x = 5 (* no compila sin el let! *)
-		in
-		
+    fun AssignColors () = (
 		while (not (tigerpila.isEmpty selectStack))
 		do
 			let
 				val n = tigerpila.top selectStack
-				val adj_n = tigermap.get adjList n
+				val adj_n = GetAdj n
 				val okColors = tigerset.listToSet (tigerframe.usableregisters) nodeCmp (* ok usableregisters? *)
 			in
 				tigerpila.pop selectStack;
 				tigerset.app (fn w => if (tigerset.member (tigerset.union coloredNodes precolored) (GetAlias w))
-				                      then tigerset.delete okColors (tigermap.get color (GetAlias w)) else ())
+				                      then tigerset.delete okColors (tigermap.get color (GetAlias w) "64363") else ())
 				             adj_n;
 				if (tigerset.isEmpty okColors) then
 					tigerset.add spilledNodes n
 				else (
 					tigerset.add coloredNodes n;
-					tigermap.insert color n (tigerset.get okColors)
+					tigermap.insert color n (tigerset.get okColors "3437")
 				)
 			end;
-		tigerset.app (fn n => tigermap.insert color n (tigermap.get color (GetAlias n))) coalescedNodes
-		
-		end
+		tigerset.app (fn n => tigermap.insert color n (tigermap.get color (GetAlias n) "9832")) coalescedNodes
+    )
     
 in
     (************************************************************)
