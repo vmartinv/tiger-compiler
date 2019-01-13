@@ -56,4 +56,7 @@ fun app f s =
 fun fold f n s =
 	Splayset.foldl f n (!s)
 
+fun numItems s =
+    Splayset.numItems (!s)
+
 end

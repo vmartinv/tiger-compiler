@@ -23,5 +23,6 @@ val union : '_item set -> '_item set -> '_item set
 val difference : '_item set -> '_item set -> '_item set
 val app : ('_item -> unit) -> '_item set -> unit
 val fold : ('_item * 'b -> 'b) -> 'b -> '_item set -> 'b
+val numItems  : '_item set -> int
 
 end
