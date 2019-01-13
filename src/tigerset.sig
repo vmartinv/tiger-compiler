@@ -17,7 +17,7 @@ val setToList : '_item set -> '_item list
 val member : '_item set -> '_item -> bool
 val get : '_item set -> '_item
 val add : '_item set -> '_item -> unit
-val delete : '_item set -> 'item -> unit
+val delete : '_item set -> '_item -> unit
 val intersection : '_item set -> '_item set -> '_item set
 val union : '_item set -> '_item set -> '_item set
 val difference : '_item set -> '_item set -> '_item set

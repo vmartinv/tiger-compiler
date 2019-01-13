@@ -10,7 +10,7 @@ fun empty cmp =
     ref (Splayset.empty cmp)
 
 fun singleton cmp item =
-    ref (Splayset.add (Splayset.empty cmp) item)
+    ref (Splayset.add (Splayset.empty cmp, item))
     
 fun isEmpty s =
     Splayset.isEmpty(!s)
@@ -31,7 +31,7 @@ fun member s n =
     Splayset.member(!s, n)
 
 fun get s =
-    case Splayset.find true (!s) of
+    case Splayset.find (fn _ => true) (!s) of
           SOME i => i
         | _      => raise NotFound
         
@@ -53,7 +53,7 @@ fun difference s t =
 fun app f s =
     Splayset.app f (!s)
     
-fun fold op n s =
-	Splayset.foldl op n (!s)
+fun fold f n s =
+	Splayset.foldl f n (!s)
 
 end

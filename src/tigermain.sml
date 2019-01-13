@@ -43,18 +43,20 @@ fun compile arbol escapes ir canon code flow inter source_filename =
                 val insEE2 = tigerframe.procEntryExit2(frame,instrs)
             in (insEE2, frame)
             end
-        fun livenessAnalysis (instrs, frame) =
+        val debugLivenessAnalysis = pass (fn (instrs, frame) =>
             let val (flowgraph, nodes) = tigerflow.instrs2graph instrs
                 val _ = prntFlow frame instrs flowgraph
                 val (igraph, live_out) = tigerliveness.interferenceGraph flowgraph
                 val _ = prntInter frame igraph live_out
-            in (igraph, instrs, frame) (*REVISAR*)
+            in ()
             end
+        )
 
         (*Pipeline ejecutado por cada fragmento*)
         fun perFragment fragment = 
             fragment >>= instructionSel >>= prntCode >>=
-                livenessAnalysis
+                debugLivenessAnalysis >>=
+                tigerregalloc.alloc
     in
         (*Pipeline del compilador*)
         source_filename >>= abreArchivo >>=
