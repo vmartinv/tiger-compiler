@@ -43,7 +43,7 @@ val localsGap = ~wSz            (* bytes *)
 val specialregs = [fp, sp]
 val argregs = ["rcx","rdx","r8","r9"] 
 (* registros donde van los primeros argumentos segun la convención de llamada *)
-val callersaves = ["rax","r10","r11"] @ argregs (*REVISAR*) 
+val callersaves = ["rax","r10","r11"] (*REVISAR*) 
 (* registros preservados por el invocador *)
 val calleesaves = ["rdi","rsi","rbx","r12","r13","r14","r15"]
 (* registros preservados por la funcion invocada *)
@@ -51,7 +51,7 @@ val calleesaves = ["rdi","rsi","rbx","r12","r13","r14","r15"]
 (*https://msdn.microsoft.com/es-es/library/9z1stfyw.aspx*)
 
 val calldefs = callersaves
-val coloredregisters = callersaves @ calleesaves (* temporarios pre coloreados (all machine registers) ¿Están todos? *)
+val coloredregisters = callersaves @ calleesaves @ specialregs @ argregs (* temporarios pre coloreados (all machine registers) ¿Están todos? *)
 (*
 Ya lo de arriba lo modifique por si necesito algun registro en codegen*)
 val usableregisters = callersaves @ calleesaves @ argregs (* ok? *)

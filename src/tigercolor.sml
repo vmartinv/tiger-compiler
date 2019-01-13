@@ -52,7 +52,6 @@ let
     (************************************************************)
     
     (* register sets *)
-    val notcolored : nodeSet = tigerset.listToSet tigerframe.specialregs nodeCmp
     val precolored : nodeSet = tigerset.listToSet tigerframe.coloredregisters nodeCmp
     
     (* number of registers *)
@@ -131,8 +130,7 @@ let
     
     (* Init initializes color and initial *)
     fun Init () = (
-        app (fn n => insert color n n) precolored; (* TODO: QUÉ REL HAY ENTRE TEMP Y REGISTER, ACA SE DEBE DEVOLVER REGISTER, NO TEMP *)
-        app (fn n => insert color n n) notcolored (* TODO: QUÉ REL HAY ENTRE TEMP Y REGISTER, ACA SE DEBE DEVOLVER REGISTER, NO TEMP *)
+        app (fn n => insert color n n) precolored (* TODO: QUÉ REL HAY ENTRE TEMP Y REGISTER, ACA SE DEBE DEVOLVER REGISTER, NO TEMP *)
     )
 
     (* AddEdge *)
@@ -395,13 +393,20 @@ let
 		end		
     
     (*  *)
-    fun AssignColors () = (
+    fun AssignColors () =
+    let
+        (* only color when the other node is not being spilled! *)
+        fun colorCoalesced n =
+            if not (tigerset.member spilledNodes (GetAlias n))
+            then tigermap.insert color n (tigermap.get color (GetAlias n) "9832")
+            else ()
+    in
 		while (not (tigerpila.isEmpty selectStack))
 		do
 			let
 				val n = tigerpila.top selectStack
 				val adj_n = GetAdj n
-				val okColors = tigerset.listToSet (tigerframe.coloredregisters) nodeCmp (* ok usableregisters? *)
+				val okColors = tigerset.listToSet (tigerframe.usableregisters) nodeCmp
 			in
 				tigerpila.pop selectStack;
 				tigerset.app (fn w => if (tigerset.member (tigerset.union coloredNodes precolored) (GetAlias w))
@@ -414,13 +419,16 @@ let
 					tigermap.insert color n (tigerset.get okColors "3437")
 				)
 			end;
-		tigerset.app (fn n => tigermap.insert color n (tigermap.get color (GetAlias n) "9832")) coalescedNodes
-    )
+		tigerset.app colorCoalesced coalescedNodes
+    end
     
 in
     (************************************************************)
     (************************ Algorithm *************************)
     (************************************************************)
+(*
+    print "Coloreando...\n";
+*)
     Init();
     Build();
     MakeWorklist();
