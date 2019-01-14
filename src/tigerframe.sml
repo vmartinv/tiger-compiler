@@ -18,6 +18,7 @@
 structure tigerframe :> tigerframe = struct
 
 open tigertree
+open tigerutils
 
 type level = int
 
@@ -119,4 +120,18 @@ fun procEntryExit1 ( fr : frame,body) =
    end   
    
 fun procEntryExit2(frame:frame,instrs) = instrs @ [tigerassem.OPER{assem="",src=[rv,sp,fp]@calleesaves, dst=[], jump=NONE}]
+fun procEntryExit3(frame:frame,instrs) = 
+	let val stackLocalsSz = (((!(#cantLocalsInFrame frame) * wSz)+15) div 16) * 16
+	in {prolog = ".global " ^ #name frame ^ "\n" ^
+                                                   "\t" ^ #name frame ^ ":\n" ^  
+                                                   "\t#prologo:\n"^
+                                                   "\tpushq %rbp\n"^
+                                                   "\tmovq %rsp, %rbp\n"^
+                                                   "\taddq $"^toString (stackLocalsSz * (~1)) ^", %rsp\n\n",
+                                    body = instrs,
+                                    epilog = "\t#END "^(#name frame)^"\n"^
+                                             "\tmovq %rbp,%rsp\n"^
+                                             "\tpopq %rbp\n"^
+                                             "\tret\n\n" } end
+
 end

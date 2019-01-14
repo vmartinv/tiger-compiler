@@ -96,7 +96,7 @@ fun codegen frame stm =
 		| munchStm stm = raise Fail "Casos no cubiertos en tigercodegen.munchStm"
 	and munchArgs([]) = []
         | munchArgs(x::xs) =
-			(munchArgs(xs); emit(OPER{assem = "pushq 's0", src=[munchExp x] , dst=[], jump=NONE}); [])
+			(munchArgs(xs); emit(OPER{assem = "pushq %'s0", src=[munchExp x] , dst=[], jump=NONE}); [])
     in
 		munchStm stm;
 		rev(!ilist)

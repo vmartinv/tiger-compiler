@@ -52,11 +52,14 @@ fun compile arbol escapes ir canon code flow inter asm source_filename =
             in ()
             end
         )
+        fun formatter ({prolog=prolog, body=b, epilog=epilog}, alloc) = 
+			let fun saytemp t = Option.getOpt(Splaymap.peek(alloc,t), t)
+                val strListBody = List.map (tigerassem.format saytemp) b
+                val strBody = List.foldr (fn(x,e)=>x^"\n"^e) "" strListBody
+            in prolog ^"\n"^ strBody ^"\n"^ epilog^"\n" end
 		fun serializer (strs, funcs) =
 			let val strsStr = ".data\n"^concat (map tigerassem.formatString strs)
-				fun serializeFunc {prolog=p, body=b, epilog=e} =
-					p^concat b^e
-				val insStr = ".text\n"^concat (map serializeFunc funcs)
+				val insStr = ".text\n"^concat funcs
 			in strsStr^insStr end
 		fun compileAsm asm_code =
 			let val base_file = String.substring (source_filename, 0, size source_filename - size ".tig")
@@ -66,16 +69,22 @@ fun compile arbol escapes ir canon code flow inter asm source_filename =
 							handle _ => raise Fail ("Fallo al escribir el archivo "^asm_file)
 				val _ = TextIO.output (outAssem, asm_code)
 				val _ = TextIO.closeOut (outAssem)
-				val _ = if OS.Process.isSuccess (OS.Process.system ("gcc -m32 -O3 -o "^exe_file^" "^asm_file)) 
+				val _ = if OS.Process.isSuccess (OS.Process.system ("gcc -fno-pie -no-pie -g runtime.c -O3 -o "^exe_file^" "^asm_file)) (* revisar -fno-pie*)
 					then ()
 					else raise Fail "Error al ejecutar gcc"
 			in asm end
-
+        fun coloreo (instrs, frame) =
+            let val (instrsColored, alloc) = tigerregalloc.alloc (instrs, frame)
+            in (instrsColored, alloc, frame) end
+        fun procExit3 (instrs, alloc, frame) =
+            (tigerframe.procEntryExit3(frame,instrs), alloc)
         (*Pipeline ejecutado por cada fragmento*)
         fun perFragment fragment = 
             fragment >>= instructionSel >>= prntCode >>=
                 debugLivenessAnalysis
-                >>= tigerregalloc.alloc
+                >>= coloreo
+                >>= procExit3
+                >>= formatter
     in
         (*Pipeline del compilador*)
         source_filename >>= abreArchivo >>=

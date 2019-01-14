@@ -216,6 +216,8 @@ string *getstr()
     else
 		return (string*)(consts + i);
 }
+
+int L0__tigermain_0(int);
 int main()
 {
     int i;
@@ -225,5 +227,5 @@ int main()
 		consts[i].chars[0] = i;
     }
 	*/
-    return _tigermain(0 /* static link!? */ );
+    return L0__tigermain_0(0 /* static link!? */ );
 }
