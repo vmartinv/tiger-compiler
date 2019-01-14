@@ -124,7 +124,7 @@ fun stringExp(s: string) =
     let 
         val l = newlabel()
         val _ = datosGlobs:=(!datosGlobs @ [STRING(l, s)])
-    in
+    in  
         Ex(NAME l) 
     end
 fun preFunctionDec() =

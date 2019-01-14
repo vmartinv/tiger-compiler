@@ -100,7 +100,7 @@ fun main(args) =
         val (code, l5)      = arg(l4, "-code") 
         val (flow, l6)      = arg(l5, "-flow") 
         val (inter, l7)     = arg(l6, "-inter") 
-        val (asm, l8)     = arg(l7, "-asm") 
+        val (asm, l8)     = arg(l7, "-asm")
         
         val file = case List.filter (endswith ".tig") l7 of
                 [file] => file
