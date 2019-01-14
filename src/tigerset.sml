@@ -10,24 +10,30 @@ fun empty cmp =
     ref (Splayset.empty cmp)
 
 fun singleton cmp item =
-    ref (Splayset.add (Splayset.empty cmp) item)
+    ref (Splayset.add (Splayset.empty cmp, item))
     
 fun isEmpty s =
     Splayset.isEmpty(!s)
 
+fun notEmpty s =
+    not (Splayset.isEmpty(!s))
+    
 fun equal s t =
     Splayset.equal(!s, !t)
 
 fun listToSet l cmp =
     ref (Splayset.addList(Splayset.empty cmp, l))
 
+fun setToList s =
+    Splayset.listItems(!s)
+    
 fun member s n =
     Splayset.member(!s, n)
 
-fun get s =
-    case Splayset.find true (!s) of
+fun get s notFoundText =
+    case Splayset.find (fn _ => true) (!s) of
           SOME i => i
-        | _      => raise NotFound
+        | _      => raise Fail ("tigerset.get not found: "^notFoundText)
         
 fun add s n =
     s := Splayset.add(!s, n)
@@ -46,5 +52,11 @@ fun difference s t =
 
 fun app f s =
     Splayset.app f (!s)
+    
+fun fold f n s =
+	Splayset.foldl f n (!s)
+
+fun numItems s =
+    Splayset.numItems (!s)
 
 end

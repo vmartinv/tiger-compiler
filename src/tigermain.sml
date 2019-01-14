@@ -40,24 +40,18 @@ fun compile arbol escapes ir canon code flow inter asm source_filename =
         fun seman x = (transProg x; tigertrans.getResult())
  
         fun instructionSel (body, frame) = 
-			let val instrs = tigercodegen.codegens frame body
-				val insEE2 = tigerframe.procEntryExit2(frame,instrs)
-			in (insEE2, frame)
-			end
-		fun livenessAnalysis (instrs, frame) =
-			let val (flowgraph, nodes) = tigerflow.instrs2graph instrs
-				val _ = prntFlow frame instrs flowgraph
-				val (igraph, live_out) = tigerliveness.interferenceGraph flowgraph
-				val _ = prntInter frame igraph live_out
-			in (igraph, instrs, frame) (*REVISAR*)
-			end
-		fun funny _ =
-			let val strs = [("msg", ".string \"Hello, world!\\n\""), ("", ".long 15")]
-				val prolog = ".global main\n"^"main:\n\tpush %ebp\n"^"\tmov %esp, %ebp\n"
-				val body = ["\tpush $msg\n","\tcall printf\n", "\tadd $4, %esp\n", "\tmov $0, %eax\n"]
-				val epilog = "\tmov %ebp, %esp\n"^"\tpop %ebp\n"^"\tret\n"
-				val funcs = [{prolog = prolog, body = body, epilog = epilog}]
-			in (strs, funcs) end
+            let val instrs = tigercodegen.codegens frame body
+                val insEE2 = tigerframe.procEntryExit2(frame,instrs)
+            in (insEE2, frame)
+            end
+        val debugLivenessAnalysis = pass (fn (instrs, frame) =>
+            let val (flowgraph, nodes) = tigerflow.instrs2graph instrs
+                val _ = prntFlow frame instrs flowgraph
+                val (igraph, live_out) = tigerliveness.interferenceGraph flowgraph
+                val _ = prntInter frame igraph live_out
+            in ()
+            end
+        )
 		fun serializer (strs, funcs) =
 			let val strsStr = ".data\n"^concat (map tigerassem.formatString strs)
 				fun serializeFunc {prolog=p, body=b, epilog=e} =
@@ -80,7 +74,8 @@ fun compile arbol escapes ir canon code flow inter asm source_filename =
         (*Pipeline ejecutado por cada fragmento*)
         fun perFragment fragment = 
             fragment >>= instructionSel >>= prntCode >>=
-                livenessAnalysis
+                debugLivenessAnalysis
+                >>= tigerregalloc.alloc
     in
         (*Pipeline del compilador*)
         source_filename >>= abreArchivo >>=
@@ -90,10 +85,7 @@ fun compile arbol escapes ir canon code flow inter asm source_filename =
            seman >>= prntIr >>= (*chequeo de tipos y generacion de fragmentos*)
            canonize >>= prntCanon >>=
            (fn (stringList, frags) => (stringList, map perFragment frags)) >>=
-(*
-           funny >>=
            serializer >>= prntAsm >>= compileAsm >>=
-*)
            prntOk (*si llega hasta aca esta todo ok*)
     end
 

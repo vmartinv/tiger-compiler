@@ -7,6 +7,13 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
+if [ -z ${DIFFTOOL+x} ]; then
+    if hash meld 2>/dev/null; then
+        DIFFTOOL="diff"
+    else
+        DIFFTOOL="diff"
+    fi
+fi
 
 function OK(){
 	echo -e "${GREEN}OK${NC}"
@@ -71,7 +78,7 @@ function print_case(){
 			#~ echo -e "${PURPLE}Expected Output:${NC}"
 			#~ cat "$correct"
 			#~ echo -e "${PURPLE}Diff <expected >actual:${NC}"
-			meld "$correct" <(echo "$output")
+			$DIFFTOOL "$correct" <(echo "$output")
 		fi
     fi
     echo

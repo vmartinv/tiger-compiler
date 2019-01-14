@@ -51,9 +51,8 @@ val calleesaves = ["rdi","rsi","rbx","r12","r13","r14","r15"]
 (*https://msdn.microsoft.com/es-es/library/9z1stfyw.aspx*)
 
 val calldefs = callersaves
-val coloredregisters = callersaves @ calleesaves @ argregs @ specialregs (* temporarios pre coloreados (all machine registers) ¿Están todos? *)
-(*En lo de Mariano
-val coloredregisters = callersaves @ calleesaves
+val coloredregisters = callersaves @ calleesaves @ specialregs @ argregs (* temporarios pre coloreados (all machine registers) ¿Están todos? *)
+(*
 Ya lo de arriba lo modifique por si necesito algun registro en codegen*)
 val usableregisters = callersaves @ calleesaves @ argregs (* ok? *)
 
@@ -105,6 +104,7 @@ fun seq [] = EXP (CONST 0)
     | seq [s] = s
     | seq (x::xs) = SEQ (x, seq xs)
 
+(* Explicado en pag 261 (resumen) y 169 (intro) *)
 fun procEntryExit1 ( fr : frame,body) = 
    let val argsAcc = #argsAcc fr
        fun aux [] _ = []
