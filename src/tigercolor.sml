@@ -51,8 +51,8 @@ let
     (********************* Data structures **********************)
     (************************************************************)
     
-    (* register sets *)
-    val precolored : nodeSet = tigerset.listToSet tigerframe.coloredregisters nodeCmp
+    (* precolored temporaries - actual registers *)
+    val precolored : nodeSet = tigerset.listToSet tigerframe.coloredregisters nodeCmp (* DUDA: son todos los registros, ¿ok? - revisar tigerframe - tiene más sentido all o usableregisters que coloredregisters *)
     
     (* number of registers *)
     val K = tigerset.numItems precolored
@@ -93,7 +93,7 @@ let
     (* moves that will no longer be considered for coalescing *)
     val frozenMoves : moveSet = tigerset.empty moveCmp
     
-    (* moves enables for possible coalescing *)
+    (* moves enable for possible coalescing *)
     val worklistMoves : moveSet = tigerset.empty moveCmp
     
     (* moves not yet ready for coalescing *)
@@ -111,7 +111,7 @@ let
     (* mapping from a node to the moves it is associated with *)
     val moveList : (node, moveSet) tigermap.map = tigermap.empty nodeCmp
 
-    (* alias *)
+    (* mapping from a coalesced node to the node it has been coalesced to (its alias) *)
     val alias : (node, node) tigermap.map = tigermap.empty nodeCmp
 
     (* color chosen by the algorithm for each node *)
@@ -128,7 +128,7 @@ let
     fun GetAdj(n: node) =
         tigermap.getDef adjList n (tigerset.empty nodeCmp)
     
-    (* Init initializes color and initial *)
+    (* Init initializes color *)
     fun Init () = (
         app (fn n => insert color n n) precolored (* TODO: QUÉ REL HAY ENTRE TEMP Y REGISTER, ACA SE DEBE DEVOLVER REGISTER, NO TEMP *)
     )
@@ -139,7 +139,7 @@ let
 	then (
 	    tigerset.add adjSet (u, v);
 	    tigerset.add adjSet (v, u);
-	    if (not (tigerset.member precolored u))
+	    if (not (tigerset.member precolored u)) (* DUDA: anda bien coalesce considerando que los precolored tienen grado 0? en caso Briggs *)
 	    then (
 		tigermap.insert adjList u (tigerset.union (GetAdj u) (tigerset.singleton nodeCmp v));
 		tigermap.insert degree u (GetDegree u + 1))
@@ -166,48 +166,15 @@ let
 		in
 		    if (Splaymap.find(ismove, n) handle Splaymap.NotFound => raise Fail "5675")
 		    then (
-			List.app (fn n => tigermap.insert moveList n (tigerset.union (tigermap.getDef moveList n (tigerset.empty moveCmp)) (tigerset.singleton moveCmp (List.hd def_n, List.hd use_n)))) (def_n @ use_n);
+			List.app (fn t => tigermap.insert moveList t (tigerset.union (tigermap.getDef moveList t (tigerset.empty moveCmp)) (tigerset.singleton moveCmp (List.hd def_n, List.hd use_n)))) (def_n @ use_n);
 			tigerset.add worklistMoves (List.hd def_n, List.hd use_n))
 		    else ();
-		    List.app (fn n => tigerset.add initial n) (def_n @ use_n);
+		    List.app (fn t => tigerset.add initial t) (def_n @ use_n);
 		    List.app (fn d => tigerset.app (fn l => AddEdge(l,d)) live_n) def_n
 		end
 	in
 	    List.app buildNode fgnodes
 	end
-    
-    (* ANTES ESTABA ASÍ, PERO CREO QUE TIENE COSAS QUE CORRESPONDEN A LOS BLOQUES
-    
-    fun Build (instrs : tigerassem.instr list) =
-    let
-        val (fg, fgnodes) = tigerflow.instrs2graph instrs
-        val (tigerflow.FGRAPH{control, def, use, ismove}) = fg
-        val (_, liveOut) = tigerliveness.interferenceGraph fg
-        fun buildNode i =
-            let 
-                val live = listToSet (liveOut i) nodeCmp
-                val def_i = Splaymap.find(def, i)
-                val use_i = Splaymap.find(use, i)
-            in
-                if (Splaymap.find(ismove, i))
-                then (
-                    List.app (fn n => tigerset.delete live n)
-                             use_i; BLOQUE
-                    List.app (fn n => tigermap.insert moveList n (tigerset.union (tigermap.get moveList n) (tigerset.singleton moveCmp (List.hd (def_i), List.hd use_i))))
-                             (def_i @ use_i);
-                    tigerset.add workListMoves (List.hd def_i, List.hd use_i)
-                )
-                else ();
-                List.app (fn t => tigerset.add live t)
-                         def_i; BLOQUE
-                List.app (fn d => (tigerset.app (fn l => AddEdge(l, d))
-                                                live))
-                         def_i
-            end
-    in
-        List.app buildNode fgnodes
-    end
-    *)
     
     (* *)
     fun NodeMoves (n:node) =
@@ -277,24 +244,19 @@ let
 		
     (* *)
     fun AddWorkList (n : node) =
-		if (not(member precolored n) andalso not(MoveRelated(n)) andalso GetDegree n < K) then (
+		if (not(member precolored n) andalso not(MoveRelated(n)) andalso GetDegree n < K) then ( (* DUDA: cómo sé que no estaba en spillWorklist? *)
 			tigerset.delete freezeWorklist n;
 			tigerset.add simplifyWorklist n)
 		else ()
     
     (* *)
-    fun Briggs (n : node, m : node) =
+    fun Briggs (n : node, m : node) = (* DUDA: Adjacent() - funciona bien con coalescidos? *)
 		let
 			val s = tigerset.union (Adjacent n) (Adjacent m)
 			val k = tigerset.fold (fn (n, i) => if (GetDegree n >= K) then i+1 else i) 0 s
 		in
 			k < K
 		end
-	
-    (* 
-    fun Ok (n: node, m : node) =
-		(tigermap.get degree n < K) orelse (tigerset.member precolored n) orelse (tigerset.member adjSet (n,m))
-	*)
 	
 	(* *)
     fun George (n : node, m : node) =
@@ -313,14 +275,15 @@ let
 				tigerset.delete spillWorklist v;
 			tigerset.add coalescedNodes v;
 			tigermap.insert alias v u;
-			tigermap.insert moveList u (tigerset.union (tigermap.get moveList u "3143") (tigermap.get moveList v "4533")); (* y el move coalescido? *)
+			tigermap.insert moveList u (tigerset.union (tigermap.get moveList u "3143") (tigermap.get moveList v "4533"));
+			EnableMoves (tigerset.singleton nodeCmp v); (* ok? *)
 			tigerset.app (fn t => (AddEdge(t,u); DecrementDegree(t))) (Adjacent v);
 			if ((GetDegree u >= K) andalso (tigerset.member freezeWorklist u)) then (
 				tigerset.delete freezeWorklist u;
 				tigerset.add spillWorklist u)
 			else ()
 	)
-		
+
     (*  *)
     fun Coalesce () =
 		let
@@ -395,10 +358,10 @@ let
     (*  *)
     fun AssignColors () =
     let
-        (* only color when the other node is not being spilled! *)
+        (* only color when the other node is not being spilled! *) (* DUDA: es necesario? *)
         fun colorCoalesced n =
             if not (tigerset.member spilledNodes (GetAlias n))
-            then tigermap.insert color n (tigermap.get color (GetAlias n) "9832")
+            then tigermap.insert color n (tigermap.get color (GetAlias n) "9832") (* DUDA: pregunta 2 *)
             else ()
     in
 		while (not (tigerpila.isEmpty selectStack))
@@ -406,7 +369,7 @@ let
 			let
 				val n = tigerpila.top selectStack
 				val adj_n = GetAdj n
-				val okColors = tigerset.listToSet (tigerframe.usableregisters) nodeCmp
+				val okColors = tigerset.listToSet (tigerframe.usableregisters) nodeCmp (* DUDA: ¿usableregisters is ok? *)
 			in
 				tigerpila.pop selectStack;
 				tigerset.app (fn w => if (tigerset.member (tigerset.union coloredNodes precolored) (GetAlias w))
@@ -443,23 +406,5 @@ in
     AssignColors();
     (!color, setToList spilledNodes)
 end
-
-
-(* Register Allocation - Esto es de regalloc
-fun alloc (body : tigerassem.instr list, fr : tigerframe.frame) =
-    let
-        val (allocation, spilledNodes) = tigercolor.color(body, fr)
-    in
-        if (null spilledNodes)
-        then
-            (body, allocation)
-        else
-            let val newbody =  RewriteProgram(spilledNodes, body, fr)
-            in  alloc(newbody, fr)
-            end
-    end
-    
-end
-*)
 
 end
