@@ -15,9 +15,8 @@ datatype instr = OPER of {assem: string,
                           dst: temp,
                           src: temp}
 
-  fun toString x = if (x < 0) then ("-"^Int.toString(Int.abs(x))) else Int.toString(x)
   
-    fun format saytemp =
+fun format saytemp =
     let 
 	    fun speak assem dst src jmp =
 	        let fun iL l x = List.nth(l,ord x - ord #"0")

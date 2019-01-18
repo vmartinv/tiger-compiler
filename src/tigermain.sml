@@ -15,7 +15,7 @@ fun errParsing(lbuf) = (print("Error en parsing!("
     ^(makestring(!num_linea))^
     ")["^(Lexing.getLexeme lbuf)^"]\n"); raise Fail "fin!")
 
-fun compile arbol escapes ir canon code flow inter source_filename =
+fun compile arbol escapes ir canon code flow inter color source_filename =
     let fun pass f x = (f x; x)
         infix >>=
         fun m >>= f = f m
@@ -25,6 +25,14 @@ fun compile arbol escapes ir canon code flow inter source_filename =
         val prntIr = pass (fn x => if ir then print(tigertrans.Ir(x)) else ())
         val prntCanon = pass (fn x => if canon then print("------Canon------\n"^tigercanon.Canon(x)) else ())
         val prntCode = pass (fn (b, f) => if code then print(";;--FRAME--"^(tigerframe.name f)^":\n"^tigerassem.printCode b^";;-END-FRAME-:\n") else ())
+        val prntColor = pass (fn (b, alloc, f) =>
+            if color then
+                let fun saytemp t = Option.getOpt(Splaymap.peek(alloc,t), t)
+                    fun newLine s = if size s>1 then s^"\n" else ""
+                    val dict = Splaymap.foldl (fn (k, v, ac) => ac^(k^"->"^v^"\n")) "" alloc
+                    val code = concat (List.map (newLine o (tigerassem.format saytemp)) b)
+                in print(";;--COLOR--"^(tigerframe.name f)^":\n;;CODE:\n"^code^"\n;;ALLOC:\n"^dict^";;-END-COLOR-:\n") end
+            else ())
         fun prntFlow fr instr g = if flow then print(";;--FLOW--"^(tigerframe.name fr)^":\n"^(tigerflow.printGraph (instr, g))^";;-END-FLOW-:\n") else ()
         fun prntInter fr g live_out = if inter then print(";;--INTER--"^(tigerframe.name fr)^":\n"^(tigerliveness.printInter (g, live_out))^";;-END-INTER-:\n") else ()
         fun prntOk _ = print "yes!!\n"
@@ -51,12 +59,16 @@ fun compile arbol escapes ir canon code flow inter source_filename =
             in ()
             end
         )
+        fun coloreo (instrs, frame) =
+            let val (instrsColored, alloc) = tigerregalloc.alloc (instrs, frame)
+            in (instrsColored, alloc, frame) end
 
         (*Pipeline ejecutado por cada fragmento*)
         fun perFragment fragment = 
             fragment >>= instructionSel >>= prntCode >>=
                 debugLivenessAnalysis
-                >>= tigerregalloc.alloc
+                >>= coloreo
+                >>= prntColor
     in
         (*Pipeline del compilador*)
         source_filename >>= abreArchivo >>=
@@ -80,12 +92,13 @@ fun main(args) =
         val (code, l5)      = arg(l4, "-code") 
         val (flow, l6)      = arg(l5, "-flow") 
         val (inter, l7)     = arg(l6, "-inter") 
+        val (color, l8)     = arg(l6, "-color")
         
         val file = case List.filter (endswith ".tig") l7 of
                 [file] => file
                 | _ => (print usage; raise Fail "No hay archivos de entrada!")
     in
-         compile arbol escapes ir canon code flow inter file
+         compile arbol escapes ir canon code flow inter color file
     end handle Fail s => print("Fail: "^s^"\n")
 
 val _ = main(CommandLine.arguments())
