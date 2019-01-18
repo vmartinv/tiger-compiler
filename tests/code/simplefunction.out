@@ -14,9 +14,9 @@ OPER: movq %'s0, (%'s1) D:[] S:[rcx,T18]
 MOVE: movq %'s0, %'d0 D:T8 S:rbp
 OPER: movq $5, %'d0 D:[T19] S:[]
 MOVE: movq %'s0, %'d0 D:T9 S:T19
-OPER: pushq 's0 D:[] S:[T9]
-OPER: pushq 's0 D:[] S:[T8]
-OPER: call L1 D:[rax,r10,r11] S:[]
+MOVE: movq %'s0, %'d0 D:rcx S:T8
+MOVE: movq %'s0, %'d0 D:rdx S:T9
+OPER: call L1 D:[rax,r10,r11] S:[rcx,rdx]
 OPER: addq $16, %'d0 D:[rsp] S:[rsp]
 MOVE: movq %'s0, %'d0 D:T10 S:rax
 MOVE: movq %'s0, %'d0 D:rax S:T10

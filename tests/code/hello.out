@@ -13,8 +13,8 @@ OPER: addq $-8, %'d0 D:[T9] S:[T9]
 OPER: movq %'s0, (%'s1) D:[] S:[rcx,T9]
 OPER: movq $L1, %'d0 D:[T10] S:[]
 MOVE: movq %'s0, %'d0 D:T0 S:T10
-OPER: pushq 's0 D:[] S:[T0]
-OPER: call print D:[rax,r10,r11] S:[]
+MOVE: movq %'s0, %'d0 D:rcx S:T0
+OPER: call print D:[rax,r10,r11] S:[rcx]
 OPER: addq $8, %'d0 D:[rsp] S:[rsp]
 OPER: movq $0, %'d0 D:[T11] S:[]
 MOVE: movq %'s0, %'d0 D:rax S:T11

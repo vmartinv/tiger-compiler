@@ -94,9 +94,14 @@ fun codegen frame stm =
 				end
 		| munchStm (EXP e) = (munchExp e ; ())
 		| munchStm stm = raise Fail "Casos no cubiertos en tigercodegen.munchStm"
-	and munchArgs([]) = []
-        | munchArgs(x::xs) =
-			(munchArgs(xs); emit(OPER{assem = "pushq 's0", src=[munchExp x] , dst=[], jump=NONE}); [])
+        and munchArgs zs =
+            let
+                fun aux(_,[]) = []
+                | aux(r::rs,x::xs) =
+                    ( emit(MOV{assem = "movq %'s0, %'d0", src=munchExp x, dst=r}) ; r :: aux(rs,xs) )
+                | aux([], x::xs) =
+                    ( emit(OPER{assem = "pushq %'s0", src=[ munchExp x] , dst=[], jump=NONE}) ; aux([],xs) )
+            in aux (tigerframe.argregs, zs) end
     in
 		munchStm stm;
 		rev(!ilist)

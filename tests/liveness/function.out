@@ -14,9 +14,9 @@ OPER: movq %'s0, (%'s1) D:[] S:[rcx,T23]
 MOVE: movq %'s0, %'d0 D:T12 S:rbp
 OPER: movq $5, %'d0 D:[T24] S:[]
 MOVE: movq %'s0, %'d0 D:T13 S:T24
-OPER: pushq 's0 D:[] S:[T13]
-OPER: pushq 's0 D:[] S:[T12]
-OPER: call L1 D:[rax,r10,r11] S:[]
+MOVE: movq %'s0, %'d0 D:rcx S:T12
+MOVE: movq %'s0, %'d0 D:rdx S:T13
+OPER: call L1 D:[rax,r10,r11] S:[rcx,rdx]
 OPER: addq $16, %'d0 D:[rsp] S:[rsp]
 MOVE: movq %'s0, %'d0 D:T14 S:rax
 MOVE: movq %'s0, %'d0 D:rax S:T14
@@ -47,9 +47,9 @@ def:
 	n11(MOVE: movq %'s0, %'d0 D:T12 S:rbp): T12
 	n12(OPER: movq $5, %'d0 D:[T24] S:[]): T24
 	n13(MOVE: movq %'s0, %'d0 D:T13 S:T24): T13
-	n14(OPER: pushq 's0 D:[] S:[T13]): 
-	n15(OPER: pushq 's0 D:[] S:[T12]): 
-	n16(OPER: call L1 D:[rax,r10,r11] S:[]): r10, r11, rax
+	n14(MOVE: movq %'s0, %'d0 D:rcx S:T12): rcx
+	n15(MOVE: movq %'s0, %'d0 D:rdx S:T13): rdx
+	n16(OPER: call L1 D:[rax,r10,r11] S:[rcx,rdx]): r10, r11, rax
 	n17(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): rsp
 	n18(MOVE: movq %'s0, %'d0 D:T14 S:rax): T14
 	n19(MOVE: movq %'s0, %'d0 D:rax S:T14): rax
@@ -78,9 +78,9 @@ use:
 	n11(MOVE: movq %'s0, %'d0 D:T12 S:rbp): rbp
 	n12(OPER: movq $5, %'d0 D:[T24] S:[]): 
 	n13(MOVE: movq %'s0, %'d0 D:T13 S:T24): T24
-	n14(OPER: pushq 's0 D:[] S:[T13]): T13
-	n15(OPER: pushq 's0 D:[] S:[T12]): T12
-	n16(OPER: call L1 D:[rax,r10,r11] S:[]): 
+	n14(MOVE: movq %'s0, %'d0 D:rcx S:T12): T12
+	n15(MOVE: movq %'s0, %'d0 D:rdx S:T13): T13
+	n16(OPER: call L1 D:[rax,r10,r11] S:[rcx,rdx]): rcx, rdx
 	n17(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): rsp
 	n18(MOVE: movq %'s0, %'d0 D:T14 S:rax): rax
 	n19(MOVE: movq %'s0, %'d0 D:rax S:T14): T14
@@ -109,9 +109,9 @@ ismove:
 	n11(MOVE: movq %'s0, %'d0 D:T12 S:rbp): true
 	n12(OPER: movq $5, %'d0 D:[T24] S:[]): false
 	n13(MOVE: movq %'s0, %'d0 D:T13 S:T24): true
-	n14(OPER: pushq 's0 D:[] S:[T13]): false
-	n15(OPER: pushq 's0 D:[] S:[T12]): false
-	n16(OPER: call L1 D:[rax,r10,r11] S:[]): false
+	n14(MOVE: movq %'s0, %'d0 D:rcx S:T12): true
+	n15(MOVE: movq %'s0, %'d0 D:rdx S:T13): true
+	n16(OPER: call L1 D:[rax,r10,r11] S:[rcx,rdx]): false
 	n17(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): false
 	n18(MOVE: movq %'s0, %'d0 D:T14 S:rax): true
 	n19(MOVE: movq %'s0, %'d0 D:rax S:T14): true
@@ -140,9 +140,9 @@ succesors:
 	n11(MOVE: movq %'s0, %'d0 D:T12 S:rbp): n12
 	n12(OPER: movq $5, %'d0 D:[T24] S:[]): n13
 	n13(MOVE: movq %'s0, %'d0 D:T13 S:T24): n14
-	n14(OPER: pushq 's0 D:[] S:[T13]): n15
-	n15(OPER: pushq 's0 D:[] S:[T12]): n16
-	n16(OPER: call L1 D:[rax,r10,r11] S:[]): n17
+	n14(MOVE: movq %'s0, %'d0 D:rcx S:T12): n15
+	n15(MOVE: movq %'s0, %'d0 D:rdx S:T13): n16
+	n16(OPER: call L1 D:[rax,r10,r11] S:[rcx,rdx]): n17
 	n17(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): n18
 	n18(MOVE: movq %'s0, %'d0 D:T14 S:rax): n19
 	n19(MOVE: movq %'s0, %'d0 D:rax S:T14): n20
@@ -182,9 +182,9 @@ MOVE: movq %'s0, %'d0 D:T1 S:T27
 MOVE: movq %'s0, %'d0 D:T29 S:T0
 OPER: subq $1, %'d0 D:[T29] S:[T29]
 MOVE: movq %'s0, %'d0 D:T2 S:T29
-OPER: pushq 's0 D:[] S:[T2]
-OPER: pushq 's0 D:[] S:[T1]
-OPER: call L1 D:[rax,r10,r11] S:[]
+MOVE: movq %'s0, %'d0 D:rcx S:T1
+MOVE: movq %'s0, %'d0 D:rdx S:T2
+OPER: call L1 D:[rax,r10,r11] S:[rcx,rdx]
 OPER: addq $16, %'d0 D:[rsp] S:[rsp]
 MOVE: movq %'s0, %'d0 D:T3 S:rax
 MOVE: movq %'s0, %'d0 D:T30 S:T22
@@ -233,9 +233,9 @@ def:
 	n21(MOVE: movq %'s0, %'d0 D:T29 S:T0): T29
 	n22(OPER: subq $1, %'d0 D:[T29] S:[T29]): T29
 	n23(MOVE: movq %'s0, %'d0 D:T2 S:T29): T2
-	n24(OPER: pushq 's0 D:[] S:[T2]): 
-	n25(OPER: pushq 's0 D:[] S:[T1]): 
-	n26(OPER: call L1 D:[rax,r10,r11] S:[]): r10, r11, rax
+	n24(MOVE: movq %'s0, %'d0 D:rcx S:T1): rcx
+	n25(MOVE: movq %'s0, %'d0 D:rdx S:T2): rdx
+	n26(OPER: call L1 D:[rax,r10,r11] S:[rcx,rdx]): r10, r11, rax
 	n27(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): rsp
 	n28(MOVE: movq %'s0, %'d0 D:T3 S:rax): T3
 	n29(MOVE: movq %'s0, %'d0 D:T30 S:T22): T30
@@ -282,9 +282,9 @@ use:
 	n21(MOVE: movq %'s0, %'d0 D:T29 S:T0): T0
 	n22(OPER: subq $1, %'d0 D:[T29] S:[T29]): T29
 	n23(MOVE: movq %'s0, %'d0 D:T2 S:T29): T29
-	n24(OPER: pushq 's0 D:[] S:[T2]): T2
-	n25(OPER: pushq 's0 D:[] S:[T1]): T1
-	n26(OPER: call L1 D:[rax,r10,r11] S:[]): 
+	n24(MOVE: movq %'s0, %'d0 D:rcx S:T1): T1
+	n25(MOVE: movq %'s0, %'d0 D:rdx S:T2): T2
+	n26(OPER: call L1 D:[rax,r10,r11] S:[rcx,rdx]): rcx, rdx
 	n27(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): rsp
 	n28(MOVE: movq %'s0, %'d0 D:T3 S:rax): rax
 	n29(MOVE: movq %'s0, %'d0 D:T30 S:T22): T22
@@ -331,9 +331,9 @@ ismove:
 	n21(MOVE: movq %'s0, %'d0 D:T29 S:T0): true
 	n22(OPER: subq $1, %'d0 D:[T29] S:[T29]): false
 	n23(MOVE: movq %'s0, %'d0 D:T2 S:T29): true
-	n24(OPER: pushq 's0 D:[] S:[T2]): false
-	n25(OPER: pushq 's0 D:[] S:[T1]): false
-	n26(OPER: call L1 D:[rax,r10,r11] S:[]): false
+	n24(MOVE: movq %'s0, %'d0 D:rcx S:T1): true
+	n25(MOVE: movq %'s0, %'d0 D:rdx S:T2): true
+	n26(OPER: call L1 D:[rax,r10,r11] S:[rcx,rdx]): false
 	n27(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): false
 	n28(MOVE: movq %'s0, %'d0 D:T3 S:rax): true
 	n29(MOVE: movq %'s0, %'d0 D:T30 S:T22): true
@@ -380,9 +380,9 @@ succesors:
 	n21(MOVE: movq %'s0, %'d0 D:T29 S:T0): n22
 	n22(OPER: subq $1, %'d0 D:[T29] S:[T29]): n23
 	n23(MOVE: movq %'s0, %'d0 D:T2 S:T29): n24
-	n24(OPER: pushq 's0 D:[] S:[T2]): n25
-	n25(OPER: pushq 's0 D:[] S:[T1]): n26
-	n26(OPER: call L1 D:[rax,r10,r11] S:[]): n27
+	n24(MOVE: movq %'s0, %'d0 D:rcx S:T1): n25
+	n25(MOVE: movq %'s0, %'d0 D:rdx S:T2): n26
+	n26(OPER: call L1 D:[rax,r10,r11] S:[rcx,rdx]): n27
 	n27(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): n28
 	n28(MOVE: movq %'s0, %'d0 D:T3 S:rax): n29
 	n29(MOVE: movq %'s0, %'d0 D:T30 S:T22): n30

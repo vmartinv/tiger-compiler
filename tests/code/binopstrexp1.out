@@ -105,9 +105,9 @@ OPER: movq $L2, %'d0 D:[T13] S:[]
 MOVE: movq %'s0, %'d0 D:T1 S:T13
 OPER: movq $1, %'d0 D:[T14] S:[]
 MOVE: movq %'s0, %'d0 D:T3 S:T14
-OPER: pushq 's0 D:[] S:[T0]
-OPER: pushq 's0 D:[] S:[T1]
-OPER: call _stringCompare D:[rax,r10,r11] S:[]
+MOVE: movq %'s0, %'d0 D:rcx S:T1
+MOVE: movq %'s0, %'d0 D:rdx S:T0
+OPER: call _stringCompare D:[rax,r10,r11] S:[rcx,rdx]
 OPER: addq $16, %'d0 D:[rsp] S:[rsp]
 MOVE: movq %'s0, %'d0 D:T2 S:rax
 OPER: movq $0, %'d0 D:[T15] S:[]

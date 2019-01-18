@@ -17,9 +17,9 @@ OPER: movq $L2, %'d0 D:[T13] S:[]
 MOVE: movq %'s0, %'d0 D:T1 S:T13
 OPER: movq $1, %'d0 D:[T14] S:[]
 MOVE: movq %'s0, %'d0 D:T3 S:T14
-OPER: pushq 's0 D:[] S:[T0]
-OPER: pushq 's0 D:[] S:[T1]
-OPER: call _stringCompare D:[rax,r10,r11] S:[]
+MOVE: movq %'s0, %'d0 D:rcx S:T1
+MOVE: movq %'s0, %'d0 D:rdx S:T0
+OPER: call _stringCompare D:[rax,r10,r11] S:[rcx,rdx]
 OPER: addq $16, %'d0 D:[rsp] S:[rsp]
 MOVE: movq %'s0, %'d0 D:T2 S:rax
 OPER: movq $0, %'d0 D:[T15] S:[]
@@ -60,9 +60,9 @@ def:
 	n14(MOVE: movq %'s0, %'d0 D:T1 S:T13): T1
 	n15(OPER: movq $1, %'d0 D:[T14] S:[]): T14
 	n16(MOVE: movq %'s0, %'d0 D:T3 S:T14): T3
-	n17(OPER: pushq 's0 D:[] S:[T0]): 
-	n18(OPER: pushq 's0 D:[] S:[T1]): 
-	n19(OPER: call _stringCompare D:[rax,r10,r11] S:[]): r10, r11, rax
+	n17(MOVE: movq %'s0, %'d0 D:rcx S:T1): rcx
+	n18(MOVE: movq %'s0, %'d0 D:rdx S:T0): rdx
+	n19(OPER: call _stringCompare D:[rax,r10,r11] S:[rcx,rdx]): r10, r11, rax
 	n20(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): rsp
 	n21(MOVE: movq %'s0, %'d0 D:T2 S:rax): T2
 	n22(OPER: movq $0, %'d0 D:[T15] S:[]): T15
@@ -101,9 +101,9 @@ use:
 	n14(MOVE: movq %'s0, %'d0 D:T1 S:T13): T13
 	n15(OPER: movq $1, %'d0 D:[T14] S:[]): 
 	n16(MOVE: movq %'s0, %'d0 D:T3 S:T14): T14
-	n17(OPER: pushq 's0 D:[] S:[T0]): T0
-	n18(OPER: pushq 's0 D:[] S:[T1]): T1
-	n19(OPER: call _stringCompare D:[rax,r10,r11] S:[]): 
+	n17(MOVE: movq %'s0, %'d0 D:rcx S:T1): T1
+	n18(MOVE: movq %'s0, %'d0 D:rdx S:T0): T0
+	n19(OPER: call _stringCompare D:[rax,r10,r11] S:[rcx,rdx]): rcx, rdx
 	n20(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): rsp
 	n21(MOVE: movq %'s0, %'d0 D:T2 S:rax): rax
 	n22(OPER: movq $0, %'d0 D:[T15] S:[]): 
@@ -142,9 +142,9 @@ ismove:
 	n14(MOVE: movq %'s0, %'d0 D:T1 S:T13): true
 	n15(OPER: movq $1, %'d0 D:[T14] S:[]): false
 	n16(MOVE: movq %'s0, %'d0 D:T3 S:T14): true
-	n17(OPER: pushq 's0 D:[] S:[T0]): false
-	n18(OPER: pushq 's0 D:[] S:[T1]): false
-	n19(OPER: call _stringCompare D:[rax,r10,r11] S:[]): false
+	n17(MOVE: movq %'s0, %'d0 D:rcx S:T1): true
+	n18(MOVE: movq %'s0, %'d0 D:rdx S:T0): true
+	n19(OPER: call _stringCompare D:[rax,r10,r11] S:[rcx,rdx]): false
 	n20(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): false
 	n21(MOVE: movq %'s0, %'d0 D:T2 S:rax): true
 	n22(OPER: movq $0, %'d0 D:[T15] S:[]): false
@@ -183,9 +183,9 @@ succesors:
 	n14(MOVE: movq %'s0, %'d0 D:T1 S:T13): n15
 	n15(OPER: movq $1, %'d0 D:[T14] S:[]): n16
 	n16(MOVE: movq %'s0, %'d0 D:T3 S:T14): n17
-	n17(OPER: pushq 's0 D:[] S:[T0]): n18
-	n18(OPER: pushq 's0 D:[] S:[T1]): n19
-	n19(OPER: call _stringCompare D:[rax,r10,r11] S:[]): n20
+	n17(MOVE: movq %'s0, %'d0 D:rcx S:T1): n18
+	n18(MOVE: movq %'s0, %'d0 D:rdx S:T0): n19
+	n19(OPER: call _stringCompare D:[rax,r10,r11] S:[rcx,rdx]): n20
 	n20(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): n21
 	n21(MOVE: movq %'s0, %'d0 D:T2 S:rax): n22
 	n22(OPER: movq $0, %'d0 D:[T15] S:[]): n23

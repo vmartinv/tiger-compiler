@@ -11,11 +11,11 @@ MOVE: movq %'s0, %'d0 D:T8 S:r15
 MOVE: movq %'s0, %'d0 D:T9 S:rbp
 OPER: addq $-8, %'d0 D:[T9] S:[T9]
 OPER: movq %'s0, (%'s1) D:[] S:[rcx,T9]
-OPER: movq $51, %'d0 D:[T10] S:[]
-OPER: pushq 's0 D:[] S:[T10]
-OPER: movq $100, %'d0 D:[T11] S:[]
-OPER: pushq 's0 D:[] S:[T11]
-OPER: call _initArray D:[rax,r10,r11] S:[]
+OPER: movq $100, %'d0 D:[T10] S:[]
+MOVE: movq %'s0, %'d0 D:rcx S:T10
+OPER: movq $51, %'d0 D:[T11] S:[]
+MOVE: movq %'s0, %'d0 D:rdx S:T11
+OPER: call _initArray D:[rax,r10,r11] S:[rcx,rdx]
 OPER: addq $16, %'d0 D:[rsp] S:[rsp]
 MOVE: movq %'s0, %'d0 D:T0 S:rax
 MOVE: movq %'s0, %'d0 D:T1 S:T0

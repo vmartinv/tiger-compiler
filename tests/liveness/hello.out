@@ -13,8 +13,8 @@ OPER: addq $-8, %'d0 D:[T9] S:[T9]
 OPER: movq %'s0, (%'s1) D:[] S:[rcx,T9]
 OPER: movq $L1, %'d0 D:[T10] S:[]
 MOVE: movq %'s0, %'d0 D:T0 S:T10
-OPER: pushq 's0 D:[] S:[T0]
-OPER: call print D:[rax,r10,r11] S:[]
+MOVE: movq %'s0, %'d0 D:rcx S:T0
+OPER: call print D:[rax,r10,r11] S:[rcx]
 OPER: addq $8, %'d0 D:[rsp] S:[rsp]
 OPER: movq $0, %'d0 D:[T11] S:[]
 MOVE: movq %'s0, %'d0 D:rax S:T11
@@ -44,8 +44,8 @@ def:
 	n10(OPER: movq %'s0, (%'s1) D:[] S:[rcx,T9]): 
 	n11(OPER: movq $L1, %'d0 D:[T10] S:[]): T10
 	n12(MOVE: movq %'s0, %'d0 D:T0 S:T10): T0
-	n13(OPER: pushq 's0 D:[] S:[T0]): 
-	n14(OPER: call print D:[rax,r10,r11] S:[]): r10, r11, rax
+	n13(MOVE: movq %'s0, %'d0 D:rcx S:T0): rcx
+	n14(OPER: call print D:[rax,r10,r11] S:[rcx]): r10, r11, rax
 	n15(OPER: addq $8, %'d0 D:[rsp] S:[rsp]): rsp
 	n16(OPER: movq $0, %'d0 D:[T11] S:[]): T11
 	n17(MOVE: movq %'s0, %'d0 D:rax S:T11): rax
@@ -73,8 +73,8 @@ use:
 	n10(OPER: movq %'s0, (%'s1) D:[] S:[rcx,T9]): T9, rcx
 	n11(OPER: movq $L1, %'d0 D:[T10] S:[]): 
 	n12(MOVE: movq %'s0, %'d0 D:T0 S:T10): T10
-	n13(OPER: pushq 's0 D:[] S:[T0]): T0
-	n14(OPER: call print D:[rax,r10,r11] S:[]): 
+	n13(MOVE: movq %'s0, %'d0 D:rcx S:T0): T0
+	n14(OPER: call print D:[rax,r10,r11] S:[rcx]): rcx
 	n15(OPER: addq $8, %'d0 D:[rsp] S:[rsp]): rsp
 	n16(OPER: movq $0, %'d0 D:[T11] S:[]): 
 	n17(MOVE: movq %'s0, %'d0 D:rax S:T11): T11
@@ -102,8 +102,8 @@ ismove:
 	n10(OPER: movq %'s0, (%'s1) D:[] S:[rcx,T9]): false
 	n11(OPER: movq $L1, %'d0 D:[T10] S:[]): false
 	n12(MOVE: movq %'s0, %'d0 D:T0 S:T10): true
-	n13(OPER: pushq 's0 D:[] S:[T0]): false
-	n14(OPER: call print D:[rax,r10,r11] S:[]): false
+	n13(MOVE: movq %'s0, %'d0 D:rcx S:T0): true
+	n14(OPER: call print D:[rax,r10,r11] S:[rcx]): false
 	n15(OPER: addq $8, %'d0 D:[rsp] S:[rsp]): false
 	n16(OPER: movq $0, %'d0 D:[T11] S:[]): false
 	n17(MOVE: movq %'s0, %'d0 D:rax S:T11): true
@@ -131,8 +131,8 @@ succesors:
 	n10(OPER: movq %'s0, (%'s1) D:[] S:[rcx,T9]): n11
 	n11(OPER: movq $L1, %'d0 D:[T10] S:[]): n12
 	n12(MOVE: movq %'s0, %'d0 D:T0 S:T10): n13
-	n13(OPER: pushq 's0 D:[] S:[T0]): n14
-	n14(OPER: call print D:[rax,r10,r11] S:[]): n15
+	n13(MOVE: movq %'s0, %'d0 D:rcx S:T0): n14
+	n14(OPER: call print D:[rax,r10,r11] S:[rcx]): n15
 	n15(OPER: addq $8, %'d0 D:[rsp] S:[rsp]): n16
 	n16(OPER: movq $0, %'d0 D:[T11] S:[]): n17
 	n17(MOVE: movq %'s0, %'d0 D:rax S:T11): n18
