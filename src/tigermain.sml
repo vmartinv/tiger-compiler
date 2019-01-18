@@ -84,7 +84,7 @@ fun compile arbol escapes ir canon code flow inter color source_filename =
 fun main(args) =
     let fun arg(l, s) =
             (List.exists (fn x => x=s) l, List.filter (fn x => x<>s) l)
-        val usage = "Usage:\n\ttiger [-arbol] [-escapes] [-ir] [-canon] [-code] [-flow] [-inter] FILE.tig\n"
+        val usage = "Usage:\n\ttiger [-arbol] [-escapes] [-ir] [-canon] [-code] [-flow] [-inter] [-color] FILE.tig\n"
         val (arbol, l1)     = arg(args, "-arbol")
         val (escapes, l2)   = arg(l1, "-escapes") 
         val (ir, l3)        = arg(l2, "-ir") 
