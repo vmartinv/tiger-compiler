@@ -92,7 +92,7 @@ fun main(args) =
         val (code, l5)      = arg(l4, "-code") 
         val (flow, l6)      = arg(l5, "-flow") 
         val (inter, l7)     = arg(l6, "-inter") 
-        val (color, l8)     = arg(l6, "-color")
+        val (color, l8)     = arg(l7, "-color")
         
         val file = case List.filter (endswith ".tig") l7 of
                 [file] => file
