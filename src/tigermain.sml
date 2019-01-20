@@ -107,9 +107,7 @@ fun compile arbol escapes ir canon code flow inter color asm rest source_filenam
            canonize >>= prntCanon >>=
            (fn (stringList, frags) => (stringList, map perFragment frags)) >>=
            serializer >>= prntAsm >>=
-(*
            compileAsm >>=
-*)
            prntOk (*si llega hasta aca esta todo ok*)
     end
 
