@@ -5,7 +5,7 @@ fun join [] sep = ""
 |   join (x::[]) sep = x
 |   join (x::y::xs) sep = x^sep^join (y::xs) sep
 
-fun endswith ext s = (ext = String.extract (s, size(s)-size(ext), NONE))
+fun endswith ext s = size(s)>=size(ext) andalso (ext = String.extract (s, size(s)-size(ext), NONE))
 
 fun zip3R [] ys zs = []
 |   zip3R xs [] zs = []

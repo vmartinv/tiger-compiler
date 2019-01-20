@@ -1,104 +1,88 @@
 SeqExp([ForExp{var=i,escape=false,lo=0,hi=2,body=UnitExp}0])
 bien!
-;;-PROC-L0--:
+;;-PROC-L0__tigermain_0--:
 SEQ(
  MOVE(
   TEMP T1,
-  TEMP rdi),
+  TEMP rbx),
  SEQ(
   MOVE(
    TEMP T2,
-   TEMP rsi),
+   TEMP r12),
   SEQ(
    MOVE(
     TEMP T3,
-    TEMP rbx),
+    TEMP r13),
    SEQ(
     MOVE(
      TEMP T4,
-     TEMP r12),
+     TEMP r14),
     SEQ(
      MOVE(
       TEMP T5,
-      TEMP r13),
+      TEMP r15),
      SEQ(
       MOVE(
-       TEMP T6,
-       TEMP r14),
+       MEM(
+        BINOP(PLUS,
+         TEMP rbp,
+         CONST -8)),
+       TEMP rdi),
       SEQ(
        MOVE(
-        TEMP T7,
-        TEMP r15),
-       SEQ(
-        MOVE(
-         MEM(
-          BINOP(PLUS,
-           TEMP rbp,
-           CONST -8)),
-         TEMP rcx),
-        SEQ(
-         MOVE(
-          TEMP rax,
-          ESEQ(
-           SEQ(
-            CJUMP(LE,
-             CONST 0,
-             CONST 2,
-             L2,L1),
-            SEQ(
-             LABEL L2,
-             SEQ(
-              MOVE(
-               TEMP T0,
-               CONST 0),
-              SEQ(
-               LABEL L3,
-               SEQ(
-                EXP(
-                 CONST 0),
-                SEQ(
-                 CJUMP(EQ,
-                  TEMP T0,
-                  CONST 2,
-                  L1,L4),
-                 SEQ(
-                  LABEL L4,
-                  SEQ(
-                   MOVE(
-                    TEMP T0,
-                    BINOP(PLUS,
-                     TEMP T0,
-                     CONST 1)),
-                   SEQ(
-                    JUMP(                     NAME L3),
-                    LABEL L1))))))))),
-           CONST 0)),
+        TEMP rax,
+        ESEQ(
          SEQ(
-          MOVE(
-           TEMP rdi,
-           TEMP T1),
+          CJUMP(LE,
+           CONST 0,
+           CONST 2,
+           L2,L1),
           SEQ(
-           MOVE(
-            TEMP rsi,
-            TEMP T2),
+           LABEL L2,
            SEQ(
             MOVE(
-             TEMP rbx,
-             TEMP T3),
+             TEMP T0,
+             CONST 0),
             SEQ(
-             MOVE(
-              TEMP r12,
-              TEMP T4),
+             LABEL L3,
              SEQ(
-              MOVE(
-               TEMP r13,
-               TEMP T5),
+              EXP(
+               CONST 0),
               SEQ(
-               MOVE(
-                TEMP r14,
-                TEMP T6),
-               MOVE(
-                TEMP r15,
-                TEMP T7))))))))))))))))
+               CJUMP(EQ,
+                TEMP T0,
+                CONST 2,
+                L1,L4),
+               SEQ(
+                LABEL L4,
+                SEQ(
+                 MOVE(
+                  TEMP T0,
+                  BINOP(PLUS,
+                   TEMP T0,
+                   CONST 1)),
+                 SEQ(
+                  JUMP(                   NAME L3),
+                  LABEL L1))))))))),
+         CONST 0)),
+       SEQ(
+        MOVE(
+         TEMP rbx,
+         TEMP T1),
+        SEQ(
+         MOVE(
+          TEMP r12,
+          TEMP T2),
+         SEQ(
+          MOVE(
+           TEMP r13,
+           TEMP T3),
+          SEQ(
+           MOVE(
+            TEMP r14,
+            TEMP T4),
+           MOVE(
+            TEMP r15,
+            TEMP T5))))))))))))
 ;;-END-PROC--:
 yes!!

@@ -27,7 +27,7 @@ fun codegen frame stm =
         fun emit x = ilist := x::(!ilist) (*!ilist es equivalente a *ilist en C y ilist := a es equivalente a *ilist = a en C*)
         fun result gen = let val t = tigertemp.newtemp() in (gen t; t) end
         fun munchExp (CONST i) = result (fn r => emit(OPER{assem = "movq $"^(toString i)^", %'d0", src = [], dst = [r], jump = NONE}))
-        | munchExp (NAME lab) = result (fn r => emit(OPER{assem = "movq $"^(makeString lab)^", %'d0", src = [], dst = [r], jump = NONE})) (*se podria retornar lab directo pero por las dudas*)
+        | munchExp (NAME lab) = result (fn r => emit(OPER{assem = "leaq "^(makeString lab)^"(%rip), %'d0", src = [], dst = [r], jump = NONE})) (*se podria retornar lab directo pero por las dudas*)
         | munchExp (MEM m) = result (fn r => emit(OPER{assem = "movq %'s0, %'d0", src =[munchExp m] , dst=[r], jump=NONE}))
         | munchExp (TEMP t) = t
         | munchExp (CALL _) = raise Fail "CALL no debería aparecer luego de canonizar 234235"
@@ -44,7 +44,7 @@ fun codegen frame stm =
         | munchExp (BINOP (DIV, CONST i, e1)) = result ( fn r => (
 			let val m1 = munchExp e1
 				val _ = emit(OPER{assem = "movq $"^(toString i)^", %'d0", src=[], dst=[tigerframe.rax], jump = NONE}) 
-				val _ = emit(OPER{assem = "cqto", src=[tigerframe.rax], dst=[tigerframe.rdx], jump = NONE})
+				val _ = emit(OPER{assem = "cqto", src=[tigerframe.rax], dst=[tigerframe.rdx, tigerframe.rax], jump = NONE})
 				val _ = emit(OPER{assem = "idivq %'s2", src = [tigerframe.rax, tigerframe.rdx, m1], dst = [tigerframe.rax, tigerframe.rdx], jump = NONE})
 				val _ = emit(MOV{assem = "movq %'s0, %'d0", src=tigerframe.rax, dst=r} ) 
 			in
@@ -52,9 +52,10 @@ fun codegen frame stm =
 			end))
         | munchExp (BINOP (DIV, e1, CONST i)) = result ( fn r => (
 			let val m1 = munchExp e1
+				val _ = emit(OPER{assem = "movq $"^(toString i)^", %'d0", src=[], dst=[r], jump = NONE})
 				val _ = emit(MOV{assem = "movq %'s0, %'d0", src=m1, dst=tigerframe.rax} )
-				val _ = emit(OPER{assem = "cqto", src=[tigerframe.rax], dst=[tigerframe.rdx], jump = NONE})
-				val _ = emit(OPER{assem = "idivq $"^(toString i), src = [tigerframe.rax, tigerframe.rdx], dst = [tigerframe.rax, tigerframe.rdx], jump = NONE})
+				val _ = emit(OPER{assem = "cqto", src=[tigerframe.rax], dst=[tigerframe.rdx, tigerframe.rax], jump = NONE})
+				val _ = emit(OPER{assem = "idivq %'s1", src = [tigerframe.rax, tigerframe.rdx, r], dst = [tigerframe.rax, tigerframe.rdx], jump = NONE})
 				val _ = emit(MOV{assem = "movq %'s0, %'d0", src=tigerframe.rax, dst=r} )
 			in
 				()
@@ -79,7 +80,7 @@ fun codegen frame stm =
         | munchStm (JUMP _) = raise Fail "jump invalido 98798\n"
         | munchStm (CJUMP (rop, e1, e2, l1, l2)) =
 (*ojo que tal vez el cmp tiene los argumentos al reves*)
-			(emit(OPER{assem = "cmpq 's0, 's1", src=[munchExp e1, munchExp e2], dst=[], jump=NONE});
+			(emit(OPER{assem = "cmpq %'s0, %'s1", src=[munchExp e1, munchExp e2], dst=[], jump=NONE});
             emit(OPER{assem = (salto rop) ^ " 'j0", src = [], dst = [], jump = SOME [l1,l2]}))
         | munchStm (EXP (CALL (NAME lab,args))) = 
 			let (* val _ = emit(OPER{assem="xorq %'d0, %'d0", src=[], dst=[tigerframe.rax], jump=NONE}) (*Hace falta?? d0 no debia tener sempre 0?*)

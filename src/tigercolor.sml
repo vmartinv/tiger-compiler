@@ -173,7 +173,8 @@ let
 		    List.app (fn d => tigerset.app (fn l => AddEdge(l,d)) live_n) def_n
 		end
 	in
-	    List.app buildNode fgnodes
+	    List.app buildNode fgnodes;
+        tigerset.app (fn r => tigerset.delete initial r) precolored
 	end
     
     (* *)

@@ -3,116 +3,100 @@ LetExp{decs=[TypeDec([{name=A,ty=ArrayTy(int)}])
               init=ArrayExp{test=A,size=100,init=51}}],
  body=SeqExp([AssignExp{var=SubscriptVar(SimpleVar(a),23),exp=3}15])}
 bien!
-;;-PROC-L0--:
+;;-PROC-L0__tigermain_0--:
 SEQ(
  MOVE(
   TEMP T5,
-  TEMP rdi),
+  TEMP rbx),
  SEQ(
   MOVE(
    TEMP T6,
-   TEMP rsi),
+   TEMP r12),
   SEQ(
    MOVE(
     TEMP T7,
-    TEMP rbx),
+    TEMP r13),
    SEQ(
     MOVE(
      TEMP T8,
-     TEMP r12),
+     TEMP r14),
     SEQ(
      MOVE(
       TEMP T9,
-      TEMP r13),
+      TEMP r15),
      SEQ(
       MOVE(
-       TEMP T10,
-       TEMP r14),
+       MEM(
+        BINOP(PLUS,
+         TEMP rbp,
+         CONST -8)),
+       TEMP rdi),
       SEQ(
        MOVE(
-        TEMP T11,
-        TEMP r15),
-       SEQ(
-        MOVE(
-         MEM(
-          BINOP(PLUS,
-           TEMP rbp,
-           CONST -8)),
-         TEMP rcx),
-        SEQ(
+        TEMP rax,
+        ESEQ(
          MOVE(
-          TEMP rax,
+          TEMP T1,
           ESEQ(
-           MOVE(
-            TEMP T1,
-            ESEQ(
-             SEQ(
-              EXP(
-               CALL(
-                NAME _initArray,
-                 CONST 100,
-                 CONST 51)),
-              MOVE(
-               TEMP T0,
-               TEMP rax)),
-             TEMP T0)),
-           ESEQ(
-            MOVE(
-             ESEQ(
-              SEQ(
-               MOVE(
-                TEMP T2,
-                TEMP T1),
-               SEQ(
-                MOVE(
-                 TEMP T3,
-                 CONST 23),
-                EXP(
-                 ESEQ(
-                  SEQ(
-                   EXP(
-                    CALL(
-                     NAME _checkIndexArray,
-                      TEMP T2,
-                      TEMP T3)),
-                   MOVE(
-                    TEMP T4,
-                    TEMP rax)),
-                  TEMP T4)))),
-              MEM(
-               BINOP(PLUS,
-                TEMP T2,
-                BINOP(MUL,
-                 TEMP T3,
-                 CONST 8)))),
-             CONST 3),
-            CONST 15))),
-         SEQ(
-          MOVE(
-           TEMP rdi,
-           TEMP T5),
-          SEQ(
-           MOVE(
-            TEMP rsi,
-            TEMP T6),
            SEQ(
+            EXP(
+             CALL(
+              NAME _initArray,
+               CONST 100,
+               CONST 51)),
             MOVE(
-             TEMP rbx,
-             TEMP T7),
+             TEMP T0,
+             TEMP rax)),
+           TEMP T0)),
+         ESEQ(
+          MOVE(
+           ESEQ(
             SEQ(
              MOVE(
-              TEMP r12,
-              TEMP T8),
+              TEMP T2,
+              TEMP T1),
              SEQ(
               MOVE(
-               TEMP r13,
-               TEMP T9),
-              SEQ(
-               MOVE(
-                TEMP r14,
-                TEMP T10),
-               MOVE(
-                TEMP r15,
-                TEMP T11))))))))))))))))
+               TEMP T3,
+               CONST 23),
+              EXP(
+               ESEQ(
+                SEQ(
+                 EXP(
+                  CALL(
+                   NAME _checkIndexArray,
+                    TEMP T2,
+                    TEMP T3)),
+                 MOVE(
+                  TEMP T4,
+                  TEMP rax)),
+                TEMP T4)))),
+            MEM(
+             BINOP(PLUS,
+              TEMP T2,
+              BINOP(MUL,
+               TEMP T3,
+               CONST 8)))),
+           CONST 3),
+          CONST 15))),
+       SEQ(
+        MOVE(
+         TEMP rbx,
+         TEMP T5),
+        SEQ(
+         MOVE(
+          TEMP r12,
+          TEMP T6),
+         SEQ(
+          MOVE(
+           TEMP r13,
+           TEMP T7),
+          SEQ(
+           MOVE(
+            TEMP r14,
+            TEMP T8),
+           MOVE(
+            TEMP r15,
+            TEMP T9))))))))))))
 ;;-END-PROC--:
 yes!!

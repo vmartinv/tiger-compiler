@@ -34,9 +34,7 @@ val offset : access -> int
 val externalCall : string * tigertree.exp list -> tigertree.exp
 val procEntryExit1 : frame * tigertree.stm -> tigertree.stm
 val procEntryExit2 : frame * tigerassem.instr list -> tigerassem.instr list
-(*
 val procEntryExit3 : frame * tigerassem.instr list -> {prolog:string, body: tigerassem.instr list, epilog: string}
-*)
 datatype frag = PROC of {body: tigertree.stm, frame: frame}
     | STRING of tigertemp.label * string
 

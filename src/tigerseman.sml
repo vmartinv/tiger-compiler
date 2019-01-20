@@ -367,7 +367,7 @@ fun transExp(venv, tenv) =
                 fun toTipoArgs nl xs  = map (toTipoArg nl) xs
                 fun haceHeader ({name = n, params = p, result = r,...},nl) =
                     let
-                        val label = tigertemp.newlabel()
+                        val label = tigertemp.newlabel()^"_"^n^"_"^nl
                         val formals = toTipoArgs nl p
                         val escapes = map (fn f => (! o #escape) f) p
                         val level = newLevel({parent=topLevel(), name=label, formals=escapes})
@@ -402,7 +402,6 @@ fun transExp(venv, tenv) =
 							val _ = if tiposIguales tipoB tipoR
 									then ()
 									else error("El tipo de retorno de la funcion y el de su definición no coinciden", nl)
-							
 						   val _ = functionDec(eB, level, tipoR=TUnit)
 					       val _ = popLevel()
 						   val _ = postFunctionDec()

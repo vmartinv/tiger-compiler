@@ -18,6 +18,7 @@
 structure tigerframe :> tigerframe = struct
 
 open tigertree
+open tigerutils
 
 type level = int
 
@@ -41,11 +42,11 @@ val localsInicial = 0       (* words *)
 *)
 val localsGap = ~wSz            (* bytes *)
 val specialregs = [fp, sp]
-val argregs = ["rcx","rdx","r8","r9"] 
+val argregs = ["rdi","rsi","rdx","rcx", "r8", "r9"]
 (* registros donde van los primeros argumentos segun la convención de llamada *)
 val callersaves = ["rax","r10","r11"] (*REVISAR*) 
 (* registros preservados por el invocador *)
-val calleesaves = ["rdi","rsi","rbx","r12","r13","r14","r15"]
+val calleesaves = ["rbx","r12","r13","r14","r15"]
 (* registros preservados por la funcion invocada *)
 
 (*https://msdn.microsoft.com/es-es/library/9z1stfyw.aspx*)
@@ -119,4 +120,18 @@ fun procEntryExit1 ( fr : frame,body) =
    end   
    
 fun procEntryExit2(frame:frame,instrs) = instrs @ [tigerassem.OPER{assem="",src=[rv,sp,fp]@calleesaves, dst=[], jump=NONE}]
+fun procEntryExit3(frame:frame,instrs) =
+	let val stackLocalsSz = (((!(#cantLocalsInFrame frame) * wSz)+15) div 16) * 16
+	in {prolog = ".global " ^ #name frame ^ "\n" ^
+                                                   "\t" ^ #name frame ^ ":\n" ^
+                                                   "\t#prologo:\n"^
+                                                   "\tpushq %rbp\n"^
+                                                   "\tmovq %rsp, %rbp\n"^
+                                                   "\taddq $"^toString (stackLocalsSz * (~1)) ^", %rsp\n\n",
+                                    body = instrs,
+                                    epilog = "\t#END "^(#name frame)^"\n"^
+                                             "\tmovq %rbp,%rsp\n"^
+                                             "\tpopq %rbp\n"^
+                                             "\tret\n\n" } end
+
 end

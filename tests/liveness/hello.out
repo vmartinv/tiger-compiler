@@ -1,150 +1,130 @@
 bien!
-;;--FRAME--L0:
+;;--FRAME--L0__tigermain_0:
 LABEL: L3
-MOVE: movq %'s0, %'d0 D:T2 S:rdi
-MOVE: movq %'s0, %'d0 D:T3 S:rsi
-MOVE: movq %'s0, %'d0 D:T4 S:rbx
-MOVE: movq %'s0, %'d0 D:T5 S:r12
-MOVE: movq %'s0, %'d0 D:T6 S:r13
-MOVE: movq %'s0, %'d0 D:T7 S:r14
-MOVE: movq %'s0, %'d0 D:T8 S:r15
-MOVE: movq %'s0, %'d0 D:T9 S:rbp
-OPER: addq $-8, %'d0 D:[T9] S:[T9]
-OPER: movq %'s0, (%'s1) D:[] S:[rcx,T9]
-OPER: movq $L1, %'d0 D:[T10] S:[]
-MOVE: movq %'s0, %'d0 D:T0 S:T10
-MOVE: movq %'s0, %'d0 D:rcx S:T0
-OPER: call print D:[rax,r10,r11] S:[rcx]
+MOVE: movq %'s0, %'d0 D:T2 S:rbx
+MOVE: movq %'s0, %'d0 D:T3 S:r12
+MOVE: movq %'s0, %'d0 D:T4 S:r13
+MOVE: movq %'s0, %'d0 D:T5 S:r14
+MOVE: movq %'s0, %'d0 D:T6 S:r15
+MOVE: movq %'s0, %'d0 D:T7 S:rbp
+OPER: addq $-8, %'d0 D:[T7] S:[T7]
+OPER: movq %'s0, (%'s1) D:[] S:[rdi,T7]
+OPER: leaq L1(%rip), %'d0 D:[T8] S:[]
+MOVE: movq %'s0, %'d0 D:T0 S:T8
+MOVE: movq %'s0, %'d0 D:rdi S:T0
+OPER: call print D:[rax,r10,r11] S:[rdi]
 OPER: addq $8, %'d0 D:[rsp] S:[rsp]
-OPER: movq $0, %'d0 D:[T11] S:[]
-MOVE: movq %'s0, %'d0 D:rax S:T11
-MOVE: movq %'s0, %'d0 D:rdi S:T2
-MOVE: movq %'s0, %'d0 D:rsi S:T3
-MOVE: movq %'s0, %'d0 D:rbx S:T4
-MOVE: movq %'s0, %'d0 D:r12 S:T5
-MOVE: movq %'s0, %'d0 D:r13 S:T6
-MOVE: movq %'s0, %'d0 D:r14 S:T7
-MOVE: movq %'s0, %'d0 D:r15 S:T8
+OPER: movq $0, %'d0 D:[T9] S:[]
+MOVE: movq %'s0, %'d0 D:rax S:T9
+MOVE: movq %'s0, %'d0 D:rbx S:T2
+MOVE: movq %'s0, %'d0 D:r12 S:T3
+MOVE: movq %'s0, %'d0 D:r13 S:T4
+MOVE: movq %'s0, %'d0 D:r14 S:T5
+MOVE: movq %'s0, %'d0 D:r15 S:T6
 OPER: jmp 'j0 D:[] S:[] J:[L2]
 LABEL: L2
-OPER:  D:[] S:[rax,rsp,rbp,rdi,rsi,rbx,r12,r13,r14,r15]
+OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
 ;;-END-FRAME-:
-;;--FLOW--L0:
+;;--FLOW--L0__tigermain_0:
 def:
 	n0(LABEL: L3): 
-	n1(MOVE: movq %'s0, %'d0 D:T2 S:rdi): T2
-	n2(MOVE: movq %'s0, %'d0 D:T3 S:rsi): T3
-	n3(MOVE: movq %'s0, %'d0 D:T4 S:rbx): T4
-	n4(MOVE: movq %'s0, %'d0 D:T5 S:r12): T5
-	n5(MOVE: movq %'s0, %'d0 D:T6 S:r13): T6
-	n6(MOVE: movq %'s0, %'d0 D:T7 S:r14): T7
-	n7(MOVE: movq %'s0, %'d0 D:T8 S:r15): T8
-	n8(MOVE: movq %'s0, %'d0 D:T9 S:rbp): T9
-	n9(OPER: addq $-8, %'d0 D:[T9] S:[T9]): T9
-	n10(OPER: movq %'s0, (%'s1) D:[] S:[rcx,T9]): 
-	n11(OPER: movq $L1, %'d0 D:[T10] S:[]): T10
-	n12(MOVE: movq %'s0, %'d0 D:T0 S:T10): T0
-	n13(MOVE: movq %'s0, %'d0 D:rcx S:T0): rcx
-	n14(OPER: call print D:[rax,r10,r11] S:[rcx]): r10, r11, rax
-	n15(OPER: addq $8, %'d0 D:[rsp] S:[rsp]): rsp
-	n16(OPER: movq $0, %'d0 D:[T11] S:[]): T11
-	n17(MOVE: movq %'s0, %'d0 D:rax S:T11): rax
-	n18(MOVE: movq %'s0, %'d0 D:rdi S:T2): rdi
-	n19(MOVE: movq %'s0, %'d0 D:rsi S:T3): rsi
-	n20(MOVE: movq %'s0, %'d0 D:rbx S:T4): rbx
-	n21(MOVE: movq %'s0, %'d0 D:r12 S:T5): r12
-	n22(MOVE: movq %'s0, %'d0 D:r13 S:T6): r13
-	n23(MOVE: movq %'s0, %'d0 D:r14 S:T7): r14
-	n24(MOVE: movq %'s0, %'d0 D:r15 S:T8): r15
-	n25(OPER: jmp 'j0 D:[] S:[] J:[L2]): 
-	n26(LABEL: L2): 
-	n27(OPER:  D:[] S:[rax,rsp,rbp,rdi,rsi,rbx,r12,r13,r14,r15]): 
+	n1(MOVE: movq %'s0, %'d0 D:T2 S:rbx): T2
+	n2(MOVE: movq %'s0, %'d0 D:T3 S:r12): T3
+	n3(MOVE: movq %'s0, %'d0 D:T4 S:r13): T4
+	n4(MOVE: movq %'s0, %'d0 D:T5 S:r14): T5
+	n5(MOVE: movq %'s0, %'d0 D:T6 S:r15): T6
+	n6(MOVE: movq %'s0, %'d0 D:T7 S:rbp): T7
+	n7(OPER: addq $-8, %'d0 D:[T7] S:[T7]): T7
+	n8(OPER: movq %'s0, (%'s1) D:[] S:[rdi,T7]): 
+	n9(OPER: leaq L1(%rip), %'d0 D:[T8] S:[]): T8
+	n10(MOVE: movq %'s0, %'d0 D:T0 S:T8): T0
+	n11(MOVE: movq %'s0, %'d0 D:rdi S:T0): rdi
+	n12(OPER: call print D:[rax,r10,r11] S:[rdi]): r10, r11, rax
+	n13(OPER: addq $8, %'d0 D:[rsp] S:[rsp]): rsp
+	n14(OPER: movq $0, %'d0 D:[T9] S:[]): T9
+	n15(MOVE: movq %'s0, %'d0 D:rax S:T9): rax
+	n16(MOVE: movq %'s0, %'d0 D:rbx S:T2): rbx
+	n17(MOVE: movq %'s0, %'d0 D:r12 S:T3): r12
+	n18(MOVE: movq %'s0, %'d0 D:r13 S:T4): r13
+	n19(MOVE: movq %'s0, %'d0 D:r14 S:T5): r14
+	n20(MOVE: movq %'s0, %'d0 D:r15 S:T6): r15
+	n21(OPER: jmp 'j0 D:[] S:[] J:[L2]): 
+	n22(LABEL: L2): 
+	n23(OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]): 
 use:
 	n0(LABEL: L3): 
-	n1(MOVE: movq %'s0, %'d0 D:T2 S:rdi): rdi
-	n2(MOVE: movq %'s0, %'d0 D:T3 S:rsi): rsi
-	n3(MOVE: movq %'s0, %'d0 D:T4 S:rbx): rbx
-	n4(MOVE: movq %'s0, %'d0 D:T5 S:r12): r12
-	n5(MOVE: movq %'s0, %'d0 D:T6 S:r13): r13
-	n6(MOVE: movq %'s0, %'d0 D:T7 S:r14): r14
-	n7(MOVE: movq %'s0, %'d0 D:T8 S:r15): r15
-	n8(MOVE: movq %'s0, %'d0 D:T9 S:rbp): rbp
-	n9(OPER: addq $-8, %'d0 D:[T9] S:[T9]): T9
-	n10(OPER: movq %'s0, (%'s1) D:[] S:[rcx,T9]): T9, rcx
-	n11(OPER: movq $L1, %'d0 D:[T10] S:[]): 
-	n12(MOVE: movq %'s0, %'d0 D:T0 S:T10): T10
-	n13(MOVE: movq %'s0, %'d0 D:rcx S:T0): T0
-	n14(OPER: call print D:[rax,r10,r11] S:[rcx]): rcx
-	n15(OPER: addq $8, %'d0 D:[rsp] S:[rsp]): rsp
-	n16(OPER: movq $0, %'d0 D:[T11] S:[]): 
-	n17(MOVE: movq %'s0, %'d0 D:rax S:T11): T11
-	n18(MOVE: movq %'s0, %'d0 D:rdi S:T2): T2
-	n19(MOVE: movq %'s0, %'d0 D:rsi S:T3): T3
-	n20(MOVE: movq %'s0, %'d0 D:rbx S:T4): T4
-	n21(MOVE: movq %'s0, %'d0 D:r12 S:T5): T5
-	n22(MOVE: movq %'s0, %'d0 D:r13 S:T6): T6
-	n23(MOVE: movq %'s0, %'d0 D:r14 S:T7): T7
-	n24(MOVE: movq %'s0, %'d0 D:r15 S:T8): T8
-	n25(OPER: jmp 'j0 D:[] S:[] J:[L2]): 
-	n26(LABEL: L2): 
-	n27(OPER:  D:[] S:[rax,rsp,rbp,rdi,rsi,rbx,r12,r13,r14,r15]): r12, r13, r14, r15, rax, rbp, rbx, rdi, rsi, rsp
+	n1(MOVE: movq %'s0, %'d0 D:T2 S:rbx): rbx
+	n2(MOVE: movq %'s0, %'d0 D:T3 S:r12): r12
+	n3(MOVE: movq %'s0, %'d0 D:T4 S:r13): r13
+	n4(MOVE: movq %'s0, %'d0 D:T5 S:r14): r14
+	n5(MOVE: movq %'s0, %'d0 D:T6 S:r15): r15
+	n6(MOVE: movq %'s0, %'d0 D:T7 S:rbp): rbp
+	n7(OPER: addq $-8, %'d0 D:[T7] S:[T7]): T7
+	n8(OPER: movq %'s0, (%'s1) D:[] S:[rdi,T7]): T7, rdi
+	n9(OPER: leaq L1(%rip), %'d0 D:[T8] S:[]): 
+	n10(MOVE: movq %'s0, %'d0 D:T0 S:T8): T8
+	n11(MOVE: movq %'s0, %'d0 D:rdi S:T0): T0
+	n12(OPER: call print D:[rax,r10,r11] S:[rdi]): rdi
+	n13(OPER: addq $8, %'d0 D:[rsp] S:[rsp]): rsp
+	n14(OPER: movq $0, %'d0 D:[T9] S:[]): 
+	n15(MOVE: movq %'s0, %'d0 D:rax S:T9): T9
+	n16(MOVE: movq %'s0, %'d0 D:rbx S:T2): T2
+	n17(MOVE: movq %'s0, %'d0 D:r12 S:T3): T3
+	n18(MOVE: movq %'s0, %'d0 D:r13 S:T4): T4
+	n19(MOVE: movq %'s0, %'d0 D:r14 S:T5): T5
+	n20(MOVE: movq %'s0, %'d0 D:r15 S:T6): T6
+	n21(OPER: jmp 'j0 D:[] S:[] J:[L2]): 
+	n22(LABEL: L2): 
+	n23(OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]): r12, r13, r14, r15, rax, rbp, rbx, rsp
 ismove:
 	n0(LABEL: L3): false
-	n1(MOVE: movq %'s0, %'d0 D:T2 S:rdi): true
-	n2(MOVE: movq %'s0, %'d0 D:T3 S:rsi): true
-	n3(MOVE: movq %'s0, %'d0 D:T4 S:rbx): true
-	n4(MOVE: movq %'s0, %'d0 D:T5 S:r12): true
-	n5(MOVE: movq %'s0, %'d0 D:T6 S:r13): true
-	n6(MOVE: movq %'s0, %'d0 D:T7 S:r14): true
-	n7(MOVE: movq %'s0, %'d0 D:T8 S:r15): true
-	n8(MOVE: movq %'s0, %'d0 D:T9 S:rbp): true
-	n9(OPER: addq $-8, %'d0 D:[T9] S:[T9]): false
-	n10(OPER: movq %'s0, (%'s1) D:[] S:[rcx,T9]): false
-	n11(OPER: movq $L1, %'d0 D:[T10] S:[]): false
-	n12(MOVE: movq %'s0, %'d0 D:T0 S:T10): true
-	n13(MOVE: movq %'s0, %'d0 D:rcx S:T0): true
-	n14(OPER: call print D:[rax,r10,r11] S:[rcx]): false
-	n15(OPER: addq $8, %'d0 D:[rsp] S:[rsp]): false
-	n16(OPER: movq $0, %'d0 D:[T11] S:[]): false
-	n17(MOVE: movq %'s0, %'d0 D:rax S:T11): true
-	n18(MOVE: movq %'s0, %'d0 D:rdi S:T2): true
-	n19(MOVE: movq %'s0, %'d0 D:rsi S:T3): true
-	n20(MOVE: movq %'s0, %'d0 D:rbx S:T4): true
-	n21(MOVE: movq %'s0, %'d0 D:r12 S:T5): true
-	n22(MOVE: movq %'s0, %'d0 D:r13 S:T6): true
-	n23(MOVE: movq %'s0, %'d0 D:r14 S:T7): true
-	n24(MOVE: movq %'s0, %'d0 D:r15 S:T8): true
-	n25(OPER: jmp 'j0 D:[] S:[] J:[L2]): false
-	n26(LABEL: L2): false
-	n27(OPER:  D:[] S:[rax,rsp,rbp,rdi,rsi,rbx,r12,r13,r14,r15]): false
+	n1(MOVE: movq %'s0, %'d0 D:T2 S:rbx): true
+	n2(MOVE: movq %'s0, %'d0 D:T3 S:r12): true
+	n3(MOVE: movq %'s0, %'d0 D:T4 S:r13): true
+	n4(MOVE: movq %'s0, %'d0 D:T5 S:r14): true
+	n5(MOVE: movq %'s0, %'d0 D:T6 S:r15): true
+	n6(MOVE: movq %'s0, %'d0 D:T7 S:rbp): true
+	n7(OPER: addq $-8, %'d0 D:[T7] S:[T7]): false
+	n8(OPER: movq %'s0, (%'s1) D:[] S:[rdi,T7]): false
+	n9(OPER: leaq L1(%rip), %'d0 D:[T8] S:[]): false
+	n10(MOVE: movq %'s0, %'d0 D:T0 S:T8): true
+	n11(MOVE: movq %'s0, %'d0 D:rdi S:T0): true
+	n12(OPER: call print D:[rax,r10,r11] S:[rdi]): false
+	n13(OPER: addq $8, %'d0 D:[rsp] S:[rsp]): false
+	n14(OPER: movq $0, %'d0 D:[T9] S:[]): false
+	n15(MOVE: movq %'s0, %'d0 D:rax S:T9): true
+	n16(MOVE: movq %'s0, %'d0 D:rbx S:T2): true
+	n17(MOVE: movq %'s0, %'d0 D:r12 S:T3): true
+	n18(MOVE: movq %'s0, %'d0 D:r13 S:T4): true
+	n19(MOVE: movq %'s0, %'d0 D:r14 S:T5): true
+	n20(MOVE: movq %'s0, %'d0 D:r15 S:T6): true
+	n21(OPER: jmp 'j0 D:[] S:[] J:[L2]): false
+	n22(LABEL: L2): false
+	n23(OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]): false
 succesors:
 	n0(LABEL: L3): n1
-	n1(MOVE: movq %'s0, %'d0 D:T2 S:rdi): n2
-	n2(MOVE: movq %'s0, %'d0 D:T3 S:rsi): n3
-	n3(MOVE: movq %'s0, %'d0 D:T4 S:rbx): n4
-	n4(MOVE: movq %'s0, %'d0 D:T5 S:r12): n5
-	n5(MOVE: movq %'s0, %'d0 D:T6 S:r13): n6
-	n6(MOVE: movq %'s0, %'d0 D:T7 S:r14): n7
-	n7(MOVE: movq %'s0, %'d0 D:T8 S:r15): n8
-	n8(MOVE: movq %'s0, %'d0 D:T9 S:rbp): n9
-	n9(OPER: addq $-8, %'d0 D:[T9] S:[T9]): n10
-	n10(OPER: movq %'s0, (%'s1) D:[] S:[rcx,T9]): n11
-	n11(OPER: movq $L1, %'d0 D:[T10] S:[]): n12
-	n12(MOVE: movq %'s0, %'d0 D:T0 S:T10): n13
-	n13(MOVE: movq %'s0, %'d0 D:rcx S:T0): n14
-	n14(OPER: call print D:[rax,r10,r11] S:[rcx]): n15
-	n15(OPER: addq $8, %'d0 D:[rsp] S:[rsp]): n16
-	n16(OPER: movq $0, %'d0 D:[T11] S:[]): n17
-	n17(MOVE: movq %'s0, %'d0 D:rax S:T11): n18
-	n18(MOVE: movq %'s0, %'d0 D:rdi S:T2): n19
-	n19(MOVE: movq %'s0, %'d0 D:rsi S:T3): n20
-	n20(MOVE: movq %'s0, %'d0 D:rbx S:T4): n21
-	n21(MOVE: movq %'s0, %'d0 D:r12 S:T5): n22
-	n22(MOVE: movq %'s0, %'d0 D:r13 S:T6): n23
-	n23(MOVE: movq %'s0, %'d0 D:r14 S:T7): n24
-	n24(MOVE: movq %'s0, %'d0 D:r15 S:T8): n25
-	n25(OPER: jmp 'j0 D:[] S:[] J:[L2]): n26
-	n26(LABEL: L2): n27
-	n27(OPER:  D:[] S:[rax,rsp,rbp,rdi,rsi,rbx,r12,r13,r14,r15]): 
+	n1(MOVE: movq %'s0, %'d0 D:T2 S:rbx): n2
+	n2(MOVE: movq %'s0, %'d0 D:T3 S:r12): n3
+	n3(MOVE: movq %'s0, %'d0 D:T4 S:r13): n4
+	n4(MOVE: movq %'s0, %'d0 D:T5 S:r14): n5
+	n5(MOVE: movq %'s0, %'d0 D:T6 S:r15): n6
+	n6(MOVE: movq %'s0, %'d0 D:T7 S:rbp): n7
+	n7(OPER: addq $-8, %'d0 D:[T7] S:[T7]): n8
+	n8(OPER: movq %'s0, (%'s1) D:[] S:[rdi,T7]): n9
+	n9(OPER: leaq L1(%rip), %'d0 D:[T8] S:[]): n10
+	n10(MOVE: movq %'s0, %'d0 D:T0 S:T8): n11
+	n11(MOVE: movq %'s0, %'d0 D:rdi S:T0): n12
+	n12(OPER: call print D:[rax,r10,r11] S:[rdi]): n13
+	n13(OPER: addq $8, %'d0 D:[rsp] S:[rsp]): n14
+	n14(OPER: movq $0, %'d0 D:[T9] S:[]): n15
+	n15(MOVE: movq %'s0, %'d0 D:rax S:T9): n16
+	n16(MOVE: movq %'s0, %'d0 D:rbx S:T2): n17
+	n17(MOVE: movq %'s0, %'d0 D:r12 S:T3): n18
+	n18(MOVE: movq %'s0, %'d0 D:r13 S:T4): n19
+	n19(MOVE: movq %'s0, %'d0 D:r14 S:T5): n20
+	n20(MOVE: movq %'s0, %'d0 D:r15 S:T6): n21
+	n21(OPER: jmp 'j0 D:[] S:[] J:[L2]): n22
+	n22(LABEL: L2): n23
+	n23(OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]): 
 ;;-END-FLOW-:
 yes!!

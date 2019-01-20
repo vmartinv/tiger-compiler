@@ -2,111 +2,95 @@ LetExp{decs=[VarDec{name=s,escape=false,typ=NONE,init="asd"}
              VarDec{name=x,escape=false,typ=NONE,init="asd"}],
  body=OpExp{left=VarExp(SimpleVar(x)),oper=EqOp,right=VarExp(SimpleVar(s))}}
 bien!
-L1:	.long 3
-	.ascii "asd"
-L2:	.long 3
-	.ascii "asd"
-;;-PROC-L0--:
+L1:	.quad 3
+	.string "asd"
+L2:	.quad 3
+	.string "asd"
+;;-PROC-L0__tigermain_0--:
 SEQ(
  MOVE(
   TEMP T4,
-  TEMP rdi),
+  TEMP rbx),
  SEQ(
   MOVE(
    TEMP T5,
-   TEMP rsi),
+   TEMP r12),
   SEQ(
    MOVE(
     TEMP T6,
-    TEMP rbx),
+    TEMP r13),
    SEQ(
     MOVE(
      TEMP T7,
-     TEMP r12),
+     TEMP r14),
     SEQ(
      MOVE(
       TEMP T8,
-      TEMP r13),
+      TEMP r15),
      SEQ(
       MOVE(
-       TEMP T9,
-       TEMP r14),
+       MEM(
+        BINOP(PLUS,
+         TEMP rbp,
+         CONST -8)),
+       TEMP rdi),
       SEQ(
        MOVE(
-        TEMP T10,
-        TEMP r15),
-       SEQ(
-        MOVE(
-         MEM(
-          BINOP(PLUS,
-           TEMP rbp,
-           CONST -8)),
-         TEMP rcx),
-        SEQ(
-         MOVE(
-          TEMP rax,
-          ESEQ(
-           SEQ(
-            MOVE(
-             TEMP T0,
-             NAME L1),
-            MOVE(
-             TEMP T1,
-             NAME L2)),
-           ESEQ(
-            SEQ(
-             MOVE(
-              TEMP T3,
-              CONST 1),
-             SEQ(
-              CJUMP(EQ,
-               ESEQ(
-                SEQ(
-                 EXP(
-                  CALL(
-                   NAME _stringCompare,
-                    TEMP T1,
-                    TEMP T0)),
-                 MOVE(
-                  TEMP T2,
-                  TEMP rax)),
-                TEMP T2),
-               CONST 0,
-               L3,L4),
-              SEQ(
-               LABEL L4,
-               SEQ(
-                MOVE(
-                 TEMP T3,
-                 CONST 0),
-                LABEL L3)))),
-            TEMP T3))),
+        TEMP rax,
+        ESEQ(
          SEQ(
           MOVE(
-           TEMP rdi,
-           TEMP T4),
+           TEMP T0,
+           NAME L1),
+          MOVE(
+           TEMP T1,
+           NAME L2)),
+         ESEQ(
           SEQ(
            MOVE(
-            TEMP rsi,
-            TEMP T5),
+            TEMP T3,
+            CONST 1),
            SEQ(
-            MOVE(
-             TEMP rbx,
-             TEMP T6),
+            CJUMP(EQ,
+             ESEQ(
+              SEQ(
+               EXP(
+                CALL(
+                 NAME _stringCompare,
+                  TEMP T1,
+                  TEMP T0)),
+               MOVE(
+                TEMP T2,
+                TEMP rax)),
+              TEMP T2),
+             CONST 0,
+             L3,L4),
             SEQ(
-             MOVE(
-              TEMP r12,
-              TEMP T7),
+             LABEL L4,
              SEQ(
               MOVE(
-               TEMP r13,
-               TEMP T8),
-              SEQ(
-               MOVE(
-                TEMP r14,
-                TEMP T9),
-               MOVE(
-                TEMP r15,
-                TEMP T10))))))))))))))))
+               TEMP T3,
+               CONST 0),
+              LABEL L3)))),
+          TEMP T3))),
+       SEQ(
+        MOVE(
+         TEMP rbx,
+         TEMP T4),
+        SEQ(
+         MOVE(
+          TEMP r12,
+          TEMP T5),
+         SEQ(
+          MOVE(
+           TEMP r13,
+           TEMP T6),
+          SEQ(
+           MOVE(
+            TEMP r14,
+            TEMP T7),
+           MOVE(
+            TEMP r15,
+            TEMP T8))))))))))))
 ;;-END-PROC--:
 yes!!

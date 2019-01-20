@@ -1,38 +1,35 @@
 bien!
-;;--FRAME--L0:
+;;--FRAME--L0__tigermain_0:
 LABEL: L2
-MOVE: movq %'s0, %'d0 D:T0 S:rdi
-MOVE: movq %'s0, %'d0 D:T1 S:rsi
-MOVE: movq %'s0, %'d0 D:T2 S:rbx
-MOVE: movq %'s0, %'d0 D:T3 S:r12
-MOVE: movq %'s0, %'d0 D:T4 S:r13
-MOVE: movq %'s0, %'d0 D:T5 S:r14
-MOVE: movq %'s0, %'d0 D:T6 S:r15
-MOVE: movq %'s0, %'d0 D:T7 S:rbp
-OPER: addq $-8, %'d0 D:[T7] S:[T7]
-OPER: movq %'s0, (%'s1) D:[] S:[rcx,T7]
-OPER: movq $3, %'d0 D:[T10] S:[]
-OPER: movq $5, %'d0 D:[T11] S:[]
-OPER: subq %'s1, %'d0 D:[T10] S:[T10,T11]
-MOVE: movq %'s0, %'d0 D:T9 S:T10
-OPER: movq $2, %'d0 D:[T13] S:[]
-MOVE: movq %'s0, %'d0 D:T12 S:T13
-OPER: addq $8, %'d0 D:[T12] S:[T12]
-OPER: imulq %'s1, %'d0 D:[T9] S:[T9,T12]
-MOVE: movq %'s0, %'d0 D:rax S:T9
-OPER: cqto D:[rdx] S:[rax]
-OPER: idivq $10 D:[rax,rdx] S:[rax,rdx]
-MOVE: movq %'s0, %'d0 D:T8 S:rax
-MOVE: movq %'s0, %'d0 D:rax S:T8
-MOVE: movq %'s0, %'d0 D:rdi S:T0
-MOVE: movq %'s0, %'d0 D:rsi S:T1
-MOVE: movq %'s0, %'d0 D:rbx S:T2
-MOVE: movq %'s0, %'d0 D:r12 S:T3
-MOVE: movq %'s0, %'d0 D:r13 S:T4
-MOVE: movq %'s0, %'d0 D:r14 S:T5
-MOVE: movq %'s0, %'d0 D:r15 S:T6
+MOVE: movq %'s0, %'d0 D:T0 S:rbx
+MOVE: movq %'s0, %'d0 D:T1 S:r12
+MOVE: movq %'s0, %'d0 D:T2 S:r13
+MOVE: movq %'s0, %'d0 D:T3 S:r14
+MOVE: movq %'s0, %'d0 D:T4 S:r15
+MOVE: movq %'s0, %'d0 D:T5 S:rbp
+OPER: addq $-8, %'d0 D:[T5] S:[T5]
+OPER: movq %'s0, (%'s1) D:[] S:[rdi,T5]
+OPER: movq $3, %'d0 D:[T8] S:[]
+OPER: movq $5, %'d0 D:[T9] S:[]
+OPER: subq %'s1, %'d0 D:[T8] S:[T8,T9]
+MOVE: movq %'s0, %'d0 D:T7 S:T8
+OPER: movq $2, %'d0 D:[T11] S:[]
+MOVE: movq %'s0, %'d0 D:T10 S:T11
+OPER: addq $8, %'d0 D:[T10] S:[T10]
+OPER: imulq %'s1, %'d0 D:[T7] S:[T7,T10]
+OPER: movq $10, %'d0 D:[T6] S:[]
+MOVE: movq %'s0, %'d0 D:rax S:T7
+OPER: cqto D:[rdx,rax] S:[rax]
+OPER: idivq %'s1 D:[rax,rdx] S:[rax,rdx,T6]
+MOVE: movq %'s0, %'d0 D:T6 S:rax
+MOVE: movq %'s0, %'d0 D:rax S:T6
+MOVE: movq %'s0, %'d0 D:rbx S:T0
+MOVE: movq %'s0, %'d0 D:r12 S:T1
+MOVE: movq %'s0, %'d0 D:r13 S:T2
+MOVE: movq %'s0, %'d0 D:r14 S:T3
+MOVE: movq %'s0, %'d0 D:r15 S:T4
 OPER: jmp 'j0 D:[] S:[] J:[L1]
 LABEL: L1
-OPER:  D:[] S:[rax,rsp,rbp,rdi,rsi,rbx,r12,r13,r14,r15]
+OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
 ;;-END-FRAME-:
 yes!!
