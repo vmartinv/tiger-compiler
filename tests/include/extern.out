@@ -1,2 +1,5 @@
 bien!
-yes!!
+/usr/bin/ld: /tmp/cchbFuiu.o: in function `L2':
+(.text+0x1a): undefined reference to `afora'
+collect2: error: ld returned 1 exit status
+Fail: Error al ejecutar gcc

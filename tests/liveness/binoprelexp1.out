@@ -223,3 +223,4 @@ succesors:
 	n42(OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]): 
 ;;-END-FLOW-:
 yes!!
+Return code: 2

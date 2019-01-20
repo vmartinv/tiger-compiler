@@ -29,3 +29,4 @@ LABEL: L1
 OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
 ;;-END-FRAME-:
 yes!!
+Return code: 15
