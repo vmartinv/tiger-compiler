@@ -28,7 +28,7 @@ fun codegen frame stm =
         fun result gen = let val t = tigertemp.newtemp() in (gen t; t) end
         fun munchExp (CONST i) = result (fn r => emit(OPER{assem = "movq $"^(toString i)^", %'d0", src = [], dst = [r], jump = NONE}))
         | munchExp (NAME lab) = result (fn r => emit(OPER{assem = "leaq "^(makeString lab)^"(%rip), %'d0", src = [], dst = [r], jump = NONE})) (*se podria retornar lab directo pero por las dudas*)
-        | munchExp (MEM m) = result (fn r => emit(OPER{assem = "movq %'s0, %'d0", src =[munchExp m] , dst=[r], jump=NONE}))
+        | munchExp (MEM m) = result (fn r => emit(OPER{assem = "movq (%'s0), %'d0", src =[munchExp m] , dst=[r], jump=NONE}))
         | munchExp (TEMP t) = t
         | munchExp (CALL _) = raise Fail "CALL no debería aparecer luego de canonizar 234235"
         | munchExp (ESEQ _) = raise Fail "ESEQ no debería aparecer luego de canonizar 3453453"
