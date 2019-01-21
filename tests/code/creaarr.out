@@ -13,7 +13,7 @@ OPER: movq $100, %'d0 D:[T8] S:[]
 MOVE: movq %'s0, %'d0 D:rdi S:T8
 OPER: movq $51, %'d0 D:[T9] S:[]
 MOVE: movq %'s0, %'d0 D:rsi S:T9
-OPER: call _initArray D:[rax,r10,r11] S:[rdi,rsi]
+OPER: call _initArray D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]
 OPER: addq $16, %'d0 D:[rsp] S:[rsp]
 MOVE: movq %'s0, %'d0 D:T0 S:rax
 MOVE: movq %'s0, %'d0 D:T1 S:T0

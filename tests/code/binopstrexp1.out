@@ -93,7 +93,7 @@ OPER: movq $1, %'d0 D:[T12] S:[]
 MOVE: movq %'s0, %'d0 D:T3 S:T12
 MOVE: movq %'s0, %'d0 D:rdi S:T1
 MOVE: movq %'s0, %'d0 D:rsi S:T0
-OPER: call _stringCompare D:[rax,r10,r11] S:[rdi,rsi]
+OPER: call _stringCompare D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]
 OPER: addq $16, %'d0 D:[rsp] S:[rsp]
 MOVE: movq %'s0, %'d0 D:T2 S:rax
 OPER: movq $0, %'d0 D:[T13] S:[]
@@ -114,4 +114,4 @@ LABEL: L5
 OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
 ;;-END-FRAME-:
 yes!!
-Return code: 0
+Return code: 1

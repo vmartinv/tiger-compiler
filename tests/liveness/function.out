@@ -14,7 +14,7 @@ OPER: movq $5, %'d0 D:[T20] S:[]
 MOVE: movq %'s0, %'d0 D:T11 S:T20
 MOVE: movq %'s0, %'d0 D:rdi S:T10
 MOVE: movq %'s0, %'d0 D:rsi S:T11
-OPER: call L1_f_7 D:[rax,r10,r11] S:[rdi,rsi]
+OPER: call L1_f_7 D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]
 OPER: addq $16, %'d0 D:[rsp] S:[rsp]
 MOVE: movq %'s0, %'d0 D:T12 S:rax
 MOVE: movq %'s0, %'d0 D:rax S:T12
@@ -43,7 +43,7 @@ def:
 	n11(MOVE: movq %'s0, %'d0 D:T11 S:T20): T11
 	n12(MOVE: movq %'s0, %'d0 D:rdi S:T10): rdi
 	n13(MOVE: movq %'s0, %'d0 D:rsi S:T11): rsi
-	n14(OPER: call L1_f_7 D:[rax,r10,r11] S:[rdi,rsi]): r10, r11, rax
+	n14(OPER: call L1_f_7 D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]): r10, r11, r8, r9, rax, rcx, rdi, rdx, rsi
 	n15(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): rsp
 	n16(MOVE: movq %'s0, %'d0 D:T12 S:rax): T12
 	n17(MOVE: movq %'s0, %'d0 D:rax S:T12): rax
@@ -70,7 +70,7 @@ use:
 	n11(MOVE: movq %'s0, %'d0 D:T11 S:T20): T20
 	n12(MOVE: movq %'s0, %'d0 D:rdi S:T10): T10
 	n13(MOVE: movq %'s0, %'d0 D:rsi S:T11): T11
-	n14(OPER: call L1_f_7 D:[rax,r10,r11] S:[rdi,rsi]): rdi, rsi
+	n14(OPER: call L1_f_7 D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]): rdi, rsi
 	n15(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): rsp
 	n16(MOVE: movq %'s0, %'d0 D:T12 S:rax): rax
 	n17(MOVE: movq %'s0, %'d0 D:rax S:T12): T12
@@ -97,7 +97,7 @@ ismove:
 	n11(MOVE: movq %'s0, %'d0 D:T11 S:T20): true
 	n12(MOVE: movq %'s0, %'d0 D:rdi S:T10): true
 	n13(MOVE: movq %'s0, %'d0 D:rsi S:T11): true
-	n14(OPER: call L1_f_7 D:[rax,r10,r11] S:[rdi,rsi]): false
+	n14(OPER: call L1_f_7 D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]): false
 	n15(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): false
 	n16(MOVE: movq %'s0, %'d0 D:T12 S:rax): true
 	n17(MOVE: movq %'s0, %'d0 D:rax S:T12): true
@@ -124,7 +124,7 @@ succesors:
 	n11(MOVE: movq %'s0, %'d0 D:T11 S:T20): n12
 	n12(MOVE: movq %'s0, %'d0 D:rdi S:T10): n13
 	n13(MOVE: movq %'s0, %'d0 D:rsi S:T11): n14
-	n14(OPER: call L1_f_7 D:[rax,r10,r11] S:[rdi,rsi]): n15
+	n14(OPER: call L1_f_7 D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]): n15
 	n15(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): n16
 	n16(MOVE: movq %'s0, %'d0 D:T12 S:rax): n17
 	n17(MOVE: movq %'s0, %'d0 D:rax S:T12): n18
@@ -162,7 +162,7 @@ OPER: subq $1, %'d0 D:[T25] S:[T25]
 MOVE: movq %'s0, %'d0 D:T2 S:T25
 MOVE: movq %'s0, %'d0 D:rdi S:T1
 MOVE: movq %'s0, %'d0 D:rsi S:T2
-OPER: call L1_f_7 D:[rax,r10,r11] S:[rdi,rsi]
+OPER: call L1_f_7 D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]
 OPER: addq $16, %'d0 D:[rsp] S:[rsp]
 MOVE: movq %'s0, %'d0 D:T3 S:rax
 MOVE: movq %'s0, %'d0 D:T26 S:T18
@@ -209,7 +209,7 @@ def:
 	n21(MOVE: movq %'s0, %'d0 D:T2 S:T25): T2
 	n22(MOVE: movq %'s0, %'d0 D:rdi S:T1): rdi
 	n23(MOVE: movq %'s0, %'d0 D:rsi S:T2): rsi
-	n24(OPER: call L1_f_7 D:[rax,r10,r11] S:[rdi,rsi]): r10, r11, rax
+	n24(OPER: call L1_f_7 D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]): r10, r11, r8, r9, rax, rcx, rdi, rdx, rsi
 	n25(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): rsp
 	n26(MOVE: movq %'s0, %'d0 D:T3 S:rax): T3
 	n27(MOVE: movq %'s0, %'d0 D:T26 S:T18): T26
@@ -254,7 +254,7 @@ use:
 	n21(MOVE: movq %'s0, %'d0 D:T2 S:T25): T25
 	n22(MOVE: movq %'s0, %'d0 D:rdi S:T1): T1
 	n23(MOVE: movq %'s0, %'d0 D:rsi S:T2): T2
-	n24(OPER: call L1_f_7 D:[rax,r10,r11] S:[rdi,rsi]): rdi, rsi
+	n24(OPER: call L1_f_7 D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]): rdi, rsi
 	n25(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): rsp
 	n26(MOVE: movq %'s0, %'d0 D:T3 S:rax): rax
 	n27(MOVE: movq %'s0, %'d0 D:T26 S:T18): T18
@@ -299,7 +299,7 @@ ismove:
 	n21(MOVE: movq %'s0, %'d0 D:T2 S:T25): true
 	n22(MOVE: movq %'s0, %'d0 D:rdi S:T1): true
 	n23(MOVE: movq %'s0, %'d0 D:rsi S:T2): true
-	n24(OPER: call L1_f_7 D:[rax,r10,r11] S:[rdi,rsi]): false
+	n24(OPER: call L1_f_7 D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]): false
 	n25(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): false
 	n26(MOVE: movq %'s0, %'d0 D:T3 S:rax): true
 	n27(MOVE: movq %'s0, %'d0 D:T26 S:T18): true
@@ -344,7 +344,7 @@ succesors:
 	n21(MOVE: movq %'s0, %'d0 D:T2 S:T25): n22
 	n22(MOVE: movq %'s0, %'d0 D:rdi S:T1): n23
 	n23(MOVE: movq %'s0, %'d0 D:rsi S:T2): n24
-	n24(OPER: call L1_f_7 D:[rax,r10,r11] S:[rdi,rsi]): n25
+	n24(OPER: call L1_f_7 D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]): n25
 	n25(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): n26
 	n26(MOVE: movq %'s0, %'d0 D:T3 S:rax): n27
 	n27(MOVE: movq %'s0, %'d0 D:T26 S:T18): n28
@@ -366,4 +366,4 @@ succesors:
 	n43(OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]): 
 ;;-END-FLOW-:
 yes!!
-Return code: 120
+Return code: 15

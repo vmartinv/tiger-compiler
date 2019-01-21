@@ -44,7 +44,7 @@ val localsGap = ~wSz            (* bytes *)
 val specialregs = [fp, sp]
 val argregs = ["rdi","rsi","rdx","rcx", "r8", "r9"]
 (* registros donde van los primeros argumentos segun la convención de llamada *)
-val callersaves = ["rax","r10","r11"] (*REVISAR*) 
+val callersaves = ["rax","r10","r11"] @ argregs (*REVISAR*) 
 (* registros preservados por el invocador *)
 val calleesaves = ["rbx","r12","r13","r14","r15"]
 (* registros preservados por la funcion invocada *)
