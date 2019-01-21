@@ -11,8 +11,8 @@ OPER: addq $-8, %'d0 D:[T7] S:[T7]
 OPER: movq %'s0, (%'s1) D:[] S:[rdi,T7]
 OPER: movq $0, %'d0 D:[T8] S:[]
 MOVE: movq %'s0, %'d0 D:T0 S:T8
-OPER: movq $0, %'d0 D:[T9] S:[]
-OPER: movq $5, %'d0 D:[T10] S:[]
+OPER: movq $5, %'d0 D:[T9] S:[]
+OPER: movq $0, %'d0 D:[T10] S:[]
 OPER: cmpq %'s0, %'s1 D:[] S:[T9,T10]
 OPER: jle 'j0 D:[] S:[] J:[L2,L1]
 LABEL: L1
@@ -31,7 +31,7 @@ MOVE: movq %'s0, %'d0 D:T12 S:T0
 OPER: addq %'s1, %'d0 D:[T12] S:[T12,T1]
 MOVE: movq %'s0, %'d0 D:T0 S:T12
 OPER: movq $5, %'d0 D:[T13] S:[]
-OPER: cmpq %'s0, %'s1 D:[] S:[T1,T13]
+OPER: cmpq %'s0, %'s1 D:[] S:[T13,T1]
 OPER: je 'j0 D:[] S:[] J:[L1,L4]
 LABEL: L4
 MOVE: movq %'s0, %'d0 D:T14 S:T1
@@ -42,3 +42,4 @@ LABEL: L5
 OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
 ;;-END-FRAME-:
 yes!!
+Return code: 15

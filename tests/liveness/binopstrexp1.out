@@ -21,7 +21,7 @@ OPER: call _stringCompare D:[rax,r10,r11] S:[rdi,rsi]
 OPER: addq $16, %'d0 D:[rsp] S:[rsp]
 MOVE: movq %'s0, %'d0 D:T2 S:rax
 OPER: movq $0, %'d0 D:[T13] S:[]
-OPER: cmpq %'s0, %'s1 D:[] S:[T2,T13]
+OPER: cmpq %'s0, %'s1 D:[] S:[T13,T2]
 OPER: je 'j0 D:[] S:[] J:[L3,L4]
 LABEL: L4
 OPER: movq $0, %'d0 D:[T14] S:[]
@@ -60,7 +60,7 @@ def:
 	n18(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): rsp
 	n19(MOVE: movq %'s0, %'d0 D:T2 S:rax): T2
 	n20(OPER: movq $0, %'d0 D:[T13] S:[]): T13
-	n21(OPER: cmpq %'s0, %'s1 D:[] S:[T2,T13]): 
+	n21(OPER: cmpq %'s0, %'s1 D:[] S:[T13,T2]): 
 	n22(OPER: je 'j0 D:[] S:[] J:[L3,L4]): 
 	n23(LABEL: L4): 
 	n24(OPER: movq $0, %'d0 D:[T14] S:[]): T14
@@ -97,7 +97,7 @@ use:
 	n18(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): rsp
 	n19(MOVE: movq %'s0, %'d0 D:T2 S:rax): rax
 	n20(OPER: movq $0, %'d0 D:[T13] S:[]): 
-	n21(OPER: cmpq %'s0, %'s1 D:[] S:[T2,T13]): T13, T2
+	n21(OPER: cmpq %'s0, %'s1 D:[] S:[T13,T2]): T13, T2
 	n22(OPER: je 'j0 D:[] S:[] J:[L3,L4]): 
 	n23(LABEL: L4): 
 	n24(OPER: movq $0, %'d0 D:[T14] S:[]): 
@@ -134,7 +134,7 @@ ismove:
 	n18(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): false
 	n19(MOVE: movq %'s0, %'d0 D:T2 S:rax): true
 	n20(OPER: movq $0, %'d0 D:[T13] S:[]): false
-	n21(OPER: cmpq %'s0, %'s1 D:[] S:[T2,T13]): false
+	n21(OPER: cmpq %'s0, %'s1 D:[] S:[T13,T2]): false
 	n22(OPER: je 'j0 D:[] S:[] J:[L3,L4]): false
 	n23(LABEL: L4): false
 	n24(OPER: movq $0, %'d0 D:[T14] S:[]): false
@@ -171,7 +171,7 @@ succesors:
 	n18(OPER: addq $16, %'d0 D:[rsp] S:[rsp]): n19
 	n19(MOVE: movq %'s0, %'d0 D:T2 S:rax): n20
 	n20(OPER: movq $0, %'d0 D:[T13] S:[]): n21
-	n21(OPER: cmpq %'s0, %'s1 D:[] S:[T2,T13]): n22
+	n21(OPER: cmpq %'s0, %'s1 D:[] S:[T13,T2]): n22
 	n22(OPER: je 'j0 D:[] S:[] J:[L3,L4]): n23, n26
 	n23(LABEL: L4): n24
 	n24(OPER: movq $0, %'d0 D:[T14] S:[]): n25
@@ -188,3 +188,4 @@ succesors:
 	n35(OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]): 
 ;;-END-FLOW-:
 yes!!
+Return code: 1

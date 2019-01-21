@@ -15,7 +15,7 @@ OPER: movq $34, %'d0 D:[T12] S:[]
 MOVE: movq %'s0, %'d0 D:T1 S:T12
 OPER: movq $1, %'d0 D:[T13] S:[]
 MOVE: movq %'s0, %'d0 D:T3 S:T13
-OPER: cmpq %'s0, %'s1 D:[] S:[T0,T1]
+OPER: cmpq %'s0, %'s1 D:[] S:[T1,T0]
 OPER: je 'j0 D:[] S:[] J:[L1,L2]
 LABEL: L2
 OPER: movq $0, %'d0 D:[T14] S:[]
@@ -23,7 +23,7 @@ MOVE: movq %'s0, %'d0 D:T3 S:T14
 LABEL: L1
 MOVE: movq %'s0, %'d0 D:T2 S:T3
 OPER: movq $0, %'d0 D:[T15] S:[]
-OPER: cmpq %'s0, %'s1 D:[] S:[T2,T15]
+OPER: cmpq %'s0, %'s1 D:[] S:[T15,T2]
 OPER: jne 'j0 D:[] S:[] J:[L3,L4]
 LABEL: L4
 OPER: movq $2, %'d0 D:[T16] S:[]
@@ -61,7 +61,7 @@ def:
 	n12(MOVE: movq %'s0, %'d0 D:T1 S:T12): T1
 	n13(OPER: movq $1, %'d0 D:[T13] S:[]): T13
 	n14(MOVE: movq %'s0, %'d0 D:T3 S:T13): T3
-	n15(OPER: cmpq %'s0, %'s1 D:[] S:[T0,T1]): 
+	n15(OPER: cmpq %'s0, %'s1 D:[] S:[T1,T0]): 
 	n16(OPER: je 'j0 D:[] S:[] J:[L1,L2]): 
 	n17(LABEL: L2): 
 	n18(OPER: movq $0, %'d0 D:[T14] S:[]): T14
@@ -69,7 +69,7 @@ def:
 	n20(LABEL: L1): 
 	n21(MOVE: movq %'s0, %'d0 D:T2 S:T3): T2
 	n22(OPER: movq $0, %'d0 D:[T15] S:[]): T15
-	n23(OPER: cmpq %'s0, %'s1 D:[] S:[T2,T15]): 
+	n23(OPER: cmpq %'s0, %'s1 D:[] S:[T15,T2]): 
 	n24(OPER: jne 'j0 D:[] S:[] J:[L3,L4]): 
 	n25(LABEL: L4): 
 	n26(OPER: movq $2, %'d0 D:[T16] S:[]): T16
@@ -105,7 +105,7 @@ use:
 	n12(MOVE: movq %'s0, %'d0 D:T1 S:T12): T12
 	n13(OPER: movq $1, %'d0 D:[T13] S:[]): 
 	n14(MOVE: movq %'s0, %'d0 D:T3 S:T13): T13
-	n15(OPER: cmpq %'s0, %'s1 D:[] S:[T0,T1]): T0, T1
+	n15(OPER: cmpq %'s0, %'s1 D:[] S:[T1,T0]): T0, T1
 	n16(OPER: je 'j0 D:[] S:[] J:[L1,L2]): 
 	n17(LABEL: L2): 
 	n18(OPER: movq $0, %'d0 D:[T14] S:[]): 
@@ -113,7 +113,7 @@ use:
 	n20(LABEL: L1): 
 	n21(MOVE: movq %'s0, %'d0 D:T2 S:T3): T3
 	n22(OPER: movq $0, %'d0 D:[T15] S:[]): 
-	n23(OPER: cmpq %'s0, %'s1 D:[] S:[T2,T15]): T15, T2
+	n23(OPER: cmpq %'s0, %'s1 D:[] S:[T15,T2]): T15, T2
 	n24(OPER: jne 'j0 D:[] S:[] J:[L3,L4]): 
 	n25(LABEL: L4): 
 	n26(OPER: movq $2, %'d0 D:[T16] S:[]): 
@@ -149,7 +149,7 @@ ismove:
 	n12(MOVE: movq %'s0, %'d0 D:T1 S:T12): true
 	n13(OPER: movq $1, %'d0 D:[T13] S:[]): false
 	n14(MOVE: movq %'s0, %'d0 D:T3 S:T13): true
-	n15(OPER: cmpq %'s0, %'s1 D:[] S:[T0,T1]): false
+	n15(OPER: cmpq %'s0, %'s1 D:[] S:[T1,T0]): false
 	n16(OPER: je 'j0 D:[] S:[] J:[L1,L2]): false
 	n17(LABEL: L2): false
 	n18(OPER: movq $0, %'d0 D:[T14] S:[]): false
@@ -157,7 +157,7 @@ ismove:
 	n20(LABEL: L1): false
 	n21(MOVE: movq %'s0, %'d0 D:T2 S:T3): true
 	n22(OPER: movq $0, %'d0 D:[T15] S:[]): false
-	n23(OPER: cmpq %'s0, %'s1 D:[] S:[T2,T15]): false
+	n23(OPER: cmpq %'s0, %'s1 D:[] S:[T15,T2]): false
 	n24(OPER: jne 'j0 D:[] S:[] J:[L3,L4]): false
 	n25(LABEL: L4): false
 	n26(OPER: movq $2, %'d0 D:[T16] S:[]): false
@@ -193,7 +193,7 @@ succesors:
 	n12(MOVE: movq %'s0, %'d0 D:T1 S:T12): n13
 	n13(OPER: movq $1, %'d0 D:[T13] S:[]): n14
 	n14(MOVE: movq %'s0, %'d0 D:T3 S:T13): n15
-	n15(OPER: cmpq %'s0, %'s1 D:[] S:[T0,T1]): n16
+	n15(OPER: cmpq %'s0, %'s1 D:[] S:[T1,T0]): n16
 	n16(OPER: je 'j0 D:[] S:[] J:[L1,L2]): n17, n20
 	n17(LABEL: L2): n18
 	n18(OPER: movq $0, %'d0 D:[T14] S:[]): n19
@@ -201,7 +201,7 @@ succesors:
 	n20(LABEL: L1): n21
 	n21(MOVE: movq %'s0, %'d0 D:T2 S:T3): n22
 	n22(OPER: movq $0, %'d0 D:[T15] S:[]): n23
-	n23(OPER: cmpq %'s0, %'s1 D:[] S:[T2,T15]): n24
+	n23(OPER: cmpq %'s0, %'s1 D:[] S:[T15,T2]): n24
 	n24(OPER: jne 'j0 D:[] S:[] J:[L3,L4]): n25, n37
 	n25(LABEL: L4): n26
 	n26(OPER: movq $2, %'d0 D:[T16] S:[]): n27

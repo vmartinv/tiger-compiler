@@ -82,7 +82,9 @@ fun compile arbol escapes ir canon code flow inter color asm rest source_filenam
 				val _ = if OS.Process.isSuccess (OS.Process.system (run_args))
 					then ()
 					else raise Fail "Error al ejecutar gcc"
+(*
                 val _ = FileSys.remove asm_file
+*)
 			in asm end
         fun coloreo (instrs, frame) =
             let val (instrsColored, alloc) = tigerregalloc.alloc (instrs, frame)

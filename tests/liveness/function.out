@@ -149,7 +149,7 @@ OPER: addq $-8, %'d0 D:[T21] S:[T21]
 OPER: movq %'s0, (%'s1) D:[] S:[rdi,T21]
 MOVE: movq %'s0, %'d0 D:T0 S:rsi
 OPER: movq $0, %'d0 D:[T22] S:[]
-OPER: cmpq %'s0, %'s1 D:[] S:[T0,T22]
+OPER: cmpq %'s0, %'s1 D:[] S:[T22,T0]
 OPER: je 'j0 D:[] S:[] J:[L2,L3]
 LABEL: L3
 MOVE: movq %'s0, %'d0 D:T18 S:T0
@@ -196,7 +196,7 @@ def:
 	n8(OPER: movq %'s0, (%'s1) D:[] S:[rdi,T21]): 
 	n9(MOVE: movq %'s0, %'d0 D:T0 S:rsi): T0
 	n10(OPER: movq $0, %'d0 D:[T22] S:[]): T22
-	n11(OPER: cmpq %'s0, %'s1 D:[] S:[T0,T22]): 
+	n11(OPER: cmpq %'s0, %'s1 D:[] S:[T22,T0]): 
 	n12(OPER: je 'j0 D:[] S:[] J:[L2,L3]): 
 	n13(LABEL: L3): 
 	n14(MOVE: movq %'s0, %'d0 D:T18 S:T0): T18
@@ -241,7 +241,7 @@ use:
 	n8(OPER: movq %'s0, (%'s1) D:[] S:[rdi,T21]): T21, rdi
 	n9(MOVE: movq %'s0, %'d0 D:T0 S:rsi): rsi
 	n10(OPER: movq $0, %'d0 D:[T22] S:[]): 
-	n11(OPER: cmpq %'s0, %'s1 D:[] S:[T0,T22]): T0, T22
+	n11(OPER: cmpq %'s0, %'s1 D:[] S:[T22,T0]): T0, T22
 	n12(OPER: je 'j0 D:[] S:[] J:[L2,L3]): 
 	n13(LABEL: L3): 
 	n14(MOVE: movq %'s0, %'d0 D:T18 S:T0): T0
@@ -286,7 +286,7 @@ ismove:
 	n8(OPER: movq %'s0, (%'s1) D:[] S:[rdi,T21]): false
 	n9(MOVE: movq %'s0, %'d0 D:T0 S:rsi): true
 	n10(OPER: movq $0, %'d0 D:[T22] S:[]): false
-	n11(OPER: cmpq %'s0, %'s1 D:[] S:[T0,T22]): false
+	n11(OPER: cmpq %'s0, %'s1 D:[] S:[T22,T0]): false
 	n12(OPER: je 'j0 D:[] S:[] J:[L2,L3]): false
 	n13(LABEL: L3): false
 	n14(MOVE: movq %'s0, %'d0 D:T18 S:T0): true
@@ -331,7 +331,7 @@ succesors:
 	n8(OPER: movq %'s0, (%'s1) D:[] S:[rdi,T21]): n9
 	n9(MOVE: movq %'s0, %'d0 D:T0 S:rsi): n10
 	n10(OPER: movq $0, %'d0 D:[T22] S:[]): n11
-	n11(OPER: cmpq %'s0, %'s1 D:[] S:[T0,T22]): n12
+	n11(OPER: cmpq %'s0, %'s1 D:[] S:[T22,T0]): n12
 	n12(OPER: je 'j0 D:[] S:[] J:[L2,L3]): n13, n38
 	n13(LABEL: L3): n14
 	n14(MOVE: movq %'s0, %'d0 D:T18 S:T0): n15
@@ -366,3 +366,4 @@ succesors:
 	n43(OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]): 
 ;;-END-FLOW-:
 yes!!
+Return code: 120

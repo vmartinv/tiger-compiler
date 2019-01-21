@@ -1,5 +1,5 @@
 LetExp{decs=[VarDec{name=a,escape=false,typ=NONE,init=5}],
- body=SeqExp([AssignExp{var=SimpleVar(a),exp=3}0])}
+ body=SeqExp([AssignExp{var=SimpleVar(a),exp=3}VarExp(SimpleVar(a))])}
 bien!
 ;;-PROC-L0__tigermain_0--:
 SEQ(
@@ -40,7 +40,7 @@ SEQ(
           MOVE(
            TEMP T0,
            CONST 3),
-          CONST 0))),
+          TEMP T0))),
        SEQ(
         MOVE(
          TEMP rbx,
@@ -62,3 +62,4 @@ SEQ(
             TEMP T5))))))))))))
 ;;-END-PROC--:
 yes!!
+Return code: 3
