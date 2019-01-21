@@ -20,7 +20,7 @@ OPER: imulq %'s1, %'d0 D:[T7] S:[T7,T10]
 OPER: movq $10, %'d0 D:[T6] S:[]
 MOVE: movq %'s0, %'d0 D:rax S:T7
 OPER: cqto D:[rdx,rax] S:[rax]
-OPER: idivq %'s1 D:[rax,rdx] S:[rax,rdx,T6]
+OPER: idivq %'s2 D:[rax,rdx] S:[rax,rdx,T6]
 MOVE: movq %'s0, %'d0 D:T6 S:rax
 MOVE: movq %'s0, %'d0 D:rax S:T6
 MOVE: movq %'s0, %'d0 D:rbx S:T0
@@ -33,3 +33,4 @@ LABEL: L1
 OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
 ;;-END-FRAME-:
 yes!!
+Return code: 254

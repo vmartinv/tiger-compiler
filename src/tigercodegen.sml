@@ -55,7 +55,7 @@ fun codegen frame stm =
 				val _ = emit(OPER{assem = "movq $"^(toString i)^", %'d0", src=[], dst=[r], jump = NONE})
 				val _ = emit(MOV{assem = "movq %'s0, %'d0", src=m1, dst=tigerframe.rax} )
 				val _ = emit(OPER{assem = "cqto", src=[tigerframe.rax], dst=[tigerframe.rdx, tigerframe.rax], jump = NONE})
-				val _ = emit(OPER{assem = "idivq %'s1", src = [tigerframe.rax, tigerframe.rdx, r], dst = [tigerframe.rax, tigerframe.rdx], jump = NONE})
+				val _ = emit(OPER{assem = "idivq %'s2", src = [tigerframe.rax, tigerframe.rdx, r], dst = [tigerframe.rax, tigerframe.rdx], jump = NONE})
 				val _ = emit(MOV{assem = "movq %'s0, %'d0", src=tigerframe.rax, dst=r} )
 			in
 				()
