@@ -2,5 +2,5 @@ let
     include "dec_test.tigd"
     var a := asdf(5)
 in
-    0
+    a
 end

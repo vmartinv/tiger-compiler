@@ -1,6 +1,7 @@
+/*TIGER_ARGS=../tests/include/afora.o*/
 let
     extern function afora(x:int):int
     var x:=afora(5)
 in
-    0
+    x
 end

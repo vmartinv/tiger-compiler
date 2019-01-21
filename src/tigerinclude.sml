@@ -21,7 +21,7 @@ fun expandIncludes dir prog =
                 val s' = Binaryset.add(s, fname)
                 val entrada = open_in fname handle _ => error(fname^" no existe!", nl)
                 val lexbuf = lexstream entrada
-                val decs = (num_linea := 1; file_name := name^":"; modu Tok lexbuf handle _ => errParsing fname lexbuf)
+                val decs = (num_linea := 1; file_name := name^"_"; modu Tok lexbuf handle _ => errParsing fname lexbuf)
             in
                 trdecs s' decs
             end
