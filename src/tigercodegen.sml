@@ -80,7 +80,7 @@ fun codegen frame stm =
         | munchStm (JUMP _) = raise Fail "jump invalido 98798\n"
         | munchStm (CJUMP (rop, e1, e2, l1, l2)) =
 (*ojo que tal vez el cmp tiene los argumentos al reves*)
-			(emit(OPER{assem = "cmpq %'s0, %'s1", src=[munchExp e1, munchExp e2], dst=[], jump=NONE});
+			(emit(OPER{assem = "cmpq %'s0, %'s1", src=[munchExp e2, munchExp e1], dst=[], jump=NONE});
             emit(OPER{assem = (salto rop) ^ " 'j0", src = [], dst = [], jump = SOME [l1,l2]}))
         | munchStm (EXP (CALL (NAME lab,args))) = 
 			let (* val _ = emit(OPER{assem="xorq %'d0, %'d0", src=[], dst=[tigerframe.rax], jump=NONE}) (*Hace falta?? d0 no debia tener sempre 0?*)
