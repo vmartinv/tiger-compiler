@@ -60,3 +60,34 @@ qué pasa si:
 u -> v
 v -> w
 ?
+
+
+
+Bitacora bugs resueltos
+=============
+1. codegen: faltaban poner los % para algunas instrucciones
+2. codegen: los argumentos estaban al reves para la inst. cmp
+3. codegen: la division no admitia constantes, la reformatie, introduje un error, la volvi a arreglar
+4. codegen: para referenciar strings se hace de una forma rara que busque en google
+5. coloreo: le reste los precolored a initial adentro de la funcion build
+6. assem: la forma de almacenar strings quedo de x86, lo pase a 64
+7. frame: los registros seguian la convencion de microsoft en lugar de la de linux (System V AMD64 ABI)
+8. runtime.c: la funcion runtime llamaba al main del tiger pero tenia mal el nombre
+9. utils: small fix en la función endswith.
+10. include: arreglo bug en funcionalidad include: agregaba : en las etiquetas y a gcc no le gustaba
+11. frame: faltaban poner los argregs como callersaves
+
+
+
+Bugs a solucionar
+=============
+- ajenos/good/test30.tig, ir/subscriptvar.tig inicializacion/referencia de arrays no funciona
+- ir/record2.tig inicializacion de records no anda
+- ajenos/good/three-name-spaces.tig, tira error, problemente error de records
+- good/2listas.tig, prob error de records
+- ajenos/good/test42.tig, hace muchas asignaciones, tira error
+- hacer que ir/assign.tig retorne ls.elem: entra en bucle infinito la compilacion
+- ajenos/good/test06.tig falla por un error de llamada y no por recursion infinita como debería (creo)
+- liveness/function.tig, arreglar casos funcion factorial, estan fallando
+- testear merge ajenos/good/merge.tig, arreglar (a lo ultimo)
+- ajenos/good/queens.tig falla (a lo ultimo)
