@@ -1,0 +1,18 @@
+let
+    var s := concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat((
+		"Objetivo:\n"),
+		"    Sokoban se origino en Japon. El objetivo del juego es usar la menor cantidad\n"),
+		"    de pasos para llevar las cajas a las posiciones marcadas. Las cajas solo\n"),
+		"    pueden ser empujadas hacia adelante. Solo se puede empujar una sola caja al\n"),
+		"    mismo tiempo. Sokoban es un juego con reglas simples pero con muchos niveles\n"),
+		"    de dificultad, algunos niveles puede tardarte varias horas o incluso dias.\n"),
+		"Controles:\n"),
+		"    Arriba, derecha, abajo, izquierda: movimiento\n"),
+		"    D, Delete, Supr: deshacer ultimo movimiento\n"),
+		"    R: reiniciar nivel\n"),
+		"    Esc/Q: salir\n"),
+		"")
+in
+    print(s);
+    0
+end

@@ -1,0 +1,14 @@
+bien!
+yes!!
+Objetivo:
+    Sokoban se origino en Japon. El objetivo del juego es usar la menor cantidad    de pasos para llevar las cajas a las posiciones marcadas. Las cajas solo
+    pueden ser empujadas hacia adelante. Solo se puede empujar una sola caja al
+    mismo tiempo. Sokoban es un juego con reglas simples pero con muchos niveles
+    de dificultad, algunos niveles puede tardarte varias horas o incluso dias.
+Controles:
+    Arriba, derecha, abajo, izquierda: movimiento
+    D, Delete, Supr: deshacer ultimo movimiento
+    R: reiniciar nivel
+    Esc/Q: salir
+    Esc/Q: salir
+Return code: 0

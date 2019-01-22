@@ -8,7 +8,7 @@ Lautaro
 
 Martin
 =======
-- ya toy
+- reportar cualquier bug que surga de hacer andar el juego
 
 
 
@@ -77,6 +77,7 @@ Bitacora bugs resueltos
 Bugs a solucionar
 =============
 1. ajenos/good/test06.tig falla por un error de llamada y no por recursion infinita como debería (creo)
-2. cuando se corren los tests en algunos aparece: ../tests/test: line 166: warning: command substitution: ignored null byte in input. Arreglarlo.
+2. Las strings se imprimen raro. Ej: abrir tests/ajenos/good/queens.out con geany hay un montón de carácteres "STX" y "EOT" que no deberían estar ahí. A su vez agregue un caso tests/asm/concat.tig donde se imprimen caracteres de más.
+3. cuando se corren los tests en algunos aparece: ../tests/test: line 166: warning: command substitution: ignored null byte in input. Arreglarlo.
 
 
