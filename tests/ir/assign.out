@@ -3,28 +3,29 @@ LetExp{decs=[TypeDec([{name=l,
                   escape=falsetyp=NameTy(l)}])}])
              VarDec{name=ls,escape=false,typ=l,
               init=RecordExp{fields=[(elem,15)(next,NilExp)],typ=l}}],
- body=SeqExp([AssignExp{var=FieldVar(SimpleVar(ls),elem),exp=3}0])}
+ body=SeqExp([AssignExp{var=FieldVar(SimpleVar(ls),elem),exp=3}
+      VarExp(FieldVar(SimpleVar(ls),elem))])}
 bien!
 ;;-PROC-L0__tigermain_0--:
 SEQ(
  MOVE(
-  TEMP T4,
+  TEMP T6,
   TEMP rbx),
  SEQ(
   MOVE(
-   TEMP T5,
+   TEMP T7,
    TEMP r12),
   SEQ(
    MOVE(
-    TEMP T6,
+    TEMP T8,
     TEMP r13),
    SEQ(
     MOVE(
-     TEMP T7,
+     TEMP T9,
      TEMP r14),
     SEQ(
      MOVE(
-      TEMP T8,
+      TEMP T10,
       TEMP r15),
      SEQ(
       MOVE(
@@ -74,25 +75,45 @@ SEQ(
               TEMP T2,
               CONST 0))),
            CONST 3),
-          CONST 0))),
+          ESEQ(
+           SEQ(
+            MOVE(
+             TEMP T4,
+             TEMP T1),
+            EXP(
+             ESEQ(
+              SEQ(
+               EXP(
+                CALL(
+                 NAME _checkNil,
+                  TEMP T4)),
+               MOVE(
+                TEMP T5,
+                TEMP rax)),
+              TEMP T5))),
+           MEM(
+            BINOP(PLUS,
+             TEMP T4,
+             CONST 0)))))),
        SEQ(
         MOVE(
          TEMP rbx,
-         TEMP T4),
+         TEMP T6),
         SEQ(
          MOVE(
           TEMP r12,
-          TEMP T5),
+          TEMP T7),
          SEQ(
           MOVE(
            TEMP r13,
-           TEMP T6),
+           TEMP T8),
           SEQ(
            MOVE(
             TEMP r14,
-            TEMP T7),
+            TEMP T9),
            MOVE(
             TEMP r15,
-            TEMP T8))))))))))))
+            TEMP T10))))))))))))
 ;;-END-PROC--:
 yes!!
+Return code: 3

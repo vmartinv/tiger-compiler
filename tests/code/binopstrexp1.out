@@ -94,7 +94,6 @@ MOVE: movq %'s0, %'d0 D:T3 S:T12
 MOVE: movq %'s0, %'d0 D:rdi S:T1
 MOVE: movq %'s0, %'d0 D:rsi S:T0
 OPER: call _stringCompare D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]
-OPER: addq $16, %'d0 D:[rsp] S:[rsp]
 MOVE: movq %'s0, %'d0 D:T2 S:rax
 OPER: movq $0, %'d0 D:[T13] S:[]
 OPER: cmpq %'s0, %'s1 D:[] S:[T13,T2]

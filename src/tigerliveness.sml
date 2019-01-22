@@ -43,7 +43,7 @@ fun livenessCalc (FGRAPH {control, def, use, ismove}) =
             in
                 flatten (map runDfs nodes)
             end
-        fun ArrayToList vec = Array.foldl (fn (e, ac) => e::ac) [] vec
+        fun ArrayToList vec = Array.foldr (fn (e, ac) => e::ac) [] vec
 		(* auxiliar values *)
         val nodes:(node list) = List.rev (dfsAll (nodes control))
         val (invNodes, _) = List.foldl (fn (n, (dict, i)) => (Splaymap.insert(dict, n, i), i+1)) (Splaymap.mkDict(cmp), 0) nodes

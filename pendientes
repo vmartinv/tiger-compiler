@@ -1,22 +1,14 @@
 Aldana
 =======
-- simpleregalloc OK
-- leer y agregar coloreo OK
 - debug coloreo
 
 Lautaro
 =======
-- procExit1
-- procExit2
-- format
+- Bugs a solucionar
 
 Martin
 =======
-- esperar simpleregalloc OK
-- leer coloreo OK
-- esperar procExits
-- procExit3
-- debuggear coloreo
+- ya toy
 
 
 
@@ -77,16 +69,14 @@ Bitacora bugs resueltos
 10. include: arreglo bug en funcionalidad include: agregaba : en las etiquetas y a gcc no le gustaba
 11. frame: faltaban poner los argregs como callersaves
 12. codegen: faltaban unos parentesis en MEM(e1)
-
+13. codegen: CALL tenía codigo de x86 (no tenia en cuenta los argumentos en registro cuando limpiaba la pila)
+14. liveness: ArrayToList armaba la lista al reves, no se como funciono liveness si armaba todo al reves.
+15. regalloc: el rewrite no tenia en cuenta que algunas veces en las OPER{src,dst,..} src y dst podian no ser disjuntos (ej: addq $5, %rdx)
 
 
 Bugs a solucionar
 =============
-- ajenos/good/test30.tig, ir/subscriptvar.tig inicializacion/referencia de arrays no funciona
-- ajenos/good/three-name-spaces.tig, tira error, problemente error de records
-- good/2listas.tig, prob error de records
-- ajenos/good/test42.tig, hace muchas asignaciones, tira error
-- hacer que ir/assign.tig retorne ls.elem: entra en bucle infinito la compilacion
-- ajenos/good/test06.tig falla por un error de llamada y no por recursion infinita como debería (creo)
-- testear merge ajenos/good/merge.tig, arreglar (a lo ultimo)
-- ajenos/good/queens.tig falla (a lo ultimo)
+1. ajenos/good/test06.tig falla por un error de llamada y no por recursion infinita como debería (creo)
+2. cuando se corren los tests en algunos aparece: ../tests/test: line 166: warning: command substitution: ignored null byte in input. Arreglarlo.
+
+

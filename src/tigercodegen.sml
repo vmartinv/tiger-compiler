@@ -86,8 +86,7 @@ fun codegen frame stm =
 			let (* val _ = emit(OPER{assem="xorq %'d0, %'d0", src=[], dst=[tigerframe.rax], jump=NONE}) (*Hace falta?? d0 no debia tener sempre 0?*)
 				*)
 				val _ =emit(OPER{assem="call "^(makeString lab), src=munchArgs args, dst=tigerframe.calldefs, jump=NONE})
-			    val spoffset = List.length args * tigerframe.wSz (* vamos a recuperar el sp en caso de haber hecho pushq antes del call*)
-			    (* de mariano (List.length args - List.length tigerframe.argregs)*tigerframe.wSz *)
+			    val spoffset = (List.length args - List.length tigerframe.argregs) * tigerframe.wSz (* vamos a recuperar el sp en caso de haber hecho pushq antes del call*)
             in
 				if spoffset>0
 					then emit(OPER{assem = "addq $"^(toString spoffset)^", %'d0", src = [tigerframe.sp], dst = [tigerframe.sp], jump = NONE})

@@ -3,5 +3,5 @@ let
     type l = {elem:int, next:l}
     var ls:l := l{elem=15, next=nil}
 in
-    ls.elem:=3; 0
+    ls.elem:=3; ls.elem
 end

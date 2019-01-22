@@ -25,9 +25,11 @@ fun spill spillList frame instrs = (let
 
     (* function that actually transforms the code *)
     fun oneinstr (OPER{src,dst,assem,jump}) = let
-        fun auxf x = Option.map (fn k=>(k,newt())) (peek x)
-        val auxsrc = List.map auxf src
-        val auxdst = List.map auxf dst
+        (* src and dst could share temps, we use auxs to avoid creating aditional temps for that case *)
+        val auxs: (tigertemp.temp, (int * temp) option) tigermap.map = tigermap.empty String.compare
+        val _ = List.app (fn x => tigermap.insert auxs x (Option.map (fn k => (k, newt())) (peek x))) (src@dst)
+        val auxsrc = List.map (fn x => tigermap.get auxs x "45345") src
+        val auxdst = List.map (fn x => tigermap.get auxs x "64562") dst
         fun newf aux old = List.map (fn(x,y) => Option.getOpt(Option.map #2 x,y)) (ListPair.zip( aux, old ))
         val newsrc = newf auxsrc src
         val newdst = newf auxdst dst

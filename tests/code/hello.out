@@ -13,7 +13,6 @@ OPER: leaq L1(%rip), %'d0 D:[T8] S:[]
 MOVE: movq %'s0, %'d0 D:T0 S:T8
 MOVE: movq %'s0, %'d0 D:rdi S:T0
 OPER: call print D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi]
-OPER: addq $8, %'d0 D:[rsp] S:[rsp]
 OPER: movq $0, %'d0 D:[T9] S:[]
 MOVE: movq %'s0, %'d0 D:rax S:T9
 MOVE: movq %'s0, %'d0 D:rbx S:T2
