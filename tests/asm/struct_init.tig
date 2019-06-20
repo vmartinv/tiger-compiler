@@ -1,0 +1,8 @@
+let
+    type Level = {width:int, height:int, objs_init:string}
+    var l := Level{
+        width=4, height=4, objs_init=""
+	}
+in
+    l.height
+end
