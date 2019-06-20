@@ -128,7 +128,7 @@ typedef struct {
 
 string *toString(long a){
 	static char buf[64];
-	sprintf(buf+sizeof(long), "%d", a);
+	sprintf(buf+sizeof(long), "%ld", a);
 	*(long*)buf = strlen(buf+sizeof(long));
 	return (string*)buf;
 }
