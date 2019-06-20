@@ -194,7 +194,7 @@ string *concat(string *a, string *b)
     else if (b->length == 0)
 		return a;
     else {
-		int i, n = a->length + b->length;
+		long i, n = a->length + b->length;
 		string *t = malloc(sizeof(long) + n);
 		t->length = n;
 		for (i = 0; i < a->length; i++)

@@ -44,7 +44,6 @@ printCode : instr list -> string
 *)
 fun printCode instrs = concat (map (fn instr => printInstr instr^"\n") instrs)
 
-fun formatString(l, "") = l ^ ":\n"
-	| formatString(l, s) = l^":\t.quad "^tigerutils.toString (size s)^"\n"^"\t.string \"" ^ s ^ "\"\n"
+fun formatString(l, s) = l^":\t.quad "^tigerutils.toString (size (Option.valOf (String.fromCString s)))^"\n"^"\t.string \"" ^ s ^ "\"\n"
 
 end

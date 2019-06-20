@@ -72,12 +72,10 @@ Bitacora bugs resueltos
 13. codegen: CALL tenía codigo de x86 (no tenia en cuenta los argumentos en registro cuando limpiaba la pila)
 14. liveness: ArrayToList armaba la lista al reves, no se como funciono liveness si armaba todo al reves.
 15. regalloc: el rewrite no tenia en cuenta que algunas veces en las OPER{src,dst,..} src y dst podian no ser disjuntos (ej: addq $5, %rdx)
-
+16. ajenos/good/test06.tig falla por un error de llamada y no por recursion infinita como debería (creo) (No fallaba)
+17. cuando se corren los tests en algunos aparece: ../tests/test: line 166: warning: command substitution: ignored null byte in input.
+18. Las strings se imprimen raro. Ej: abrir tests/ajenos/good/queens.out con geany hay un montón de carácteres "STX" y "EOT" que no deberían estar ahí. A su vez agregue un caso tests/asm/concat.tig donde se imprimen caracteres de más.
 
 Bugs a solucionar
 =============
-1. ajenos/good/test06.tig falla por un error de llamada y no por recursion infinita como debería (creo)
-2. Las strings se imprimen raro. Ej: abrir tests/ajenos/good/queens.out con geany hay un montón de carácteres "STX" y "EOT" que no deberían estar ahí. A su vez agregue un caso tests/asm/concat.tig donde se imprimen caracteres de más.
-3. cuando se corren los tests en algunos aparece: ../tests/test: line 166: warning: command substitution: ignored null byte in input. Arreglarlo.
-
 

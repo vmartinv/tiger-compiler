@@ -11,7 +11,7 @@ L1:	.quad 11
 	.string "son iguales"
 L2:	.quad 14
 	.string "son diferentes"
-L6:	.quad 4
+L6:	.quad 1
 	.string "\x0a"
 ;;-PROC-L0__tigermain_0--:
 SEQ(
@@ -112,7 +112,7 @@ SEQ(
             TEMP T11))))))))))))
 ;;-END-PROC--:
 ------Canon------
-L6:	.quad 4
+L6:	.quad 1
 	.string "\x0a"
 L2:	.quad 14
 	.string "son diferentes"
@@ -199,4 +199,4 @@ LABEL L7
 ;;-END-FRAME-:
 yes!!
 son diferentes
-Return code: 0
+Return code: 0

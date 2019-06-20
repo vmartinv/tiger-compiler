@@ -1,0 +1,7 @@
+let
+    var s := concat(
+		"a", "")
+in
+    print(s);
+    0
+end
