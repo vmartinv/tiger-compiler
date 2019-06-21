@@ -1,0 +1,6 @@
+let
+    type Pto = {x:int, y:int}
+    var pto := Pto{x=3, y=4/2}
+in
+    pto.y
+end

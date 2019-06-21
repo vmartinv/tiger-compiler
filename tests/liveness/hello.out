@@ -12,7 +12,7 @@ OPER: movq %'s0, (%'s1) D:[] S:[rdi,T7]
 OPER: leaq L1(%rip), %'d0 D:[T8] S:[]
 MOVE: movq %'s0, %'d0 D:T0 S:T8
 MOVE: movq %'s0, %'d0 D:rdi S:T0
-MOVE: movq %'s0, %'d0 D:rsi S:T0
+MOVE: movq %'s0, %'d0 D:rsi S:rsp
 OPER: call print D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]
 OPER: movq $0, %'d0 D:[T9] S:[]
 MOVE: movq %'s0, %'d0 D:rax S:T9
@@ -39,7 +39,7 @@ def:
 	n9(OPER: leaq L1(%rip), %'d0 D:[T8] S:[]): T8
 	n10(MOVE: movq %'s0, %'d0 D:T0 S:T8): T0
 	n11(MOVE: movq %'s0, %'d0 D:rdi S:T0): rdi
-	n12(MOVE: movq %'s0, %'d0 D:rsi S:T0): rsi
+	n12(MOVE: movq %'s0, %'d0 D:rsi S:rsp): rsi
 	n13(OPER: call print D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]): r10, r11, r8, r9, rax, rcx, rdi, rdx, rsi
 	n14(OPER: movq $0, %'d0 D:[T9] S:[]): T9
 	n15(MOVE: movq %'s0, %'d0 D:rax S:T9): rax
@@ -64,7 +64,7 @@ use:
 	n9(OPER: leaq L1(%rip), %'d0 D:[T8] S:[]): 
 	n10(MOVE: movq %'s0, %'d0 D:T0 S:T8): T8
 	n11(MOVE: movq %'s0, %'d0 D:rdi S:T0): T0
-	n12(MOVE: movq %'s0, %'d0 D:rsi S:T0): T0
+	n12(MOVE: movq %'s0, %'d0 D:rsi S:rsp): rsp
 	n13(OPER: call print D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]): rdi, rsi
 	n14(OPER: movq $0, %'d0 D:[T9] S:[]): 
 	n15(MOVE: movq %'s0, %'d0 D:rax S:T9): T9
@@ -89,7 +89,7 @@ ismove:
 	n9(OPER: leaq L1(%rip), %'d0 D:[T8] S:[]): false
 	n10(MOVE: movq %'s0, %'d0 D:T0 S:T8): true
 	n11(MOVE: movq %'s0, %'d0 D:rdi S:T0): true
-	n12(MOVE: movq %'s0, %'d0 D:rsi S:T0): true
+	n12(MOVE: movq %'s0, %'d0 D:rsi S:rsp): true
 	n13(OPER: call print D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]): false
 	n14(OPER: movq $0, %'d0 D:[T9] S:[]): false
 	n15(MOVE: movq %'s0, %'d0 D:rax S:T9): true
@@ -114,7 +114,7 @@ succesors:
 	n9(OPER: leaq L1(%rip), %'d0 D:[T8] S:[]): n10
 	n10(MOVE: movq %'s0, %'d0 D:T0 S:T8): n11
 	n11(MOVE: movq %'s0, %'d0 D:rdi S:T0): n12
-	n12(MOVE: movq %'s0, %'d0 D:rsi S:T0): n13
+	n12(MOVE: movq %'s0, %'d0 D:rsi S:rsp): n13
 	n13(OPER: call print D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]): n14
 	n14(OPER: movq $0, %'d0 D:[T9] S:[]): n15
 	n15(MOVE: movq %'s0, %'d0 D:rax S:T9): n16

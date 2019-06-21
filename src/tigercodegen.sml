@@ -88,7 +88,7 @@ fun codegen frame stm =
 			    val spoffset = (List.length args - List.length tigerframe.argregs) * tigerframe.wSz (* vamos a recuperar el sp en caso de haber hecho pushq antes del call*)
                 val spoffset_aligned = ((spoffset+15) div 16) * 16 (* el stack tiene que estar alineado a 16 bytes *)
                 val args' = if spoffset <> spoffset_aligned (* para respetar eso duplicamos el ultimo argumento en caso de ser necesario *)
-                    then args @ [List.last args]
+                    then args @ [TEMP tigerframe.sp]
                     else args
                 val srcArgs = munchArgs args'
 				val _ =emit(OPER{assem="call "^(makeString lab), src=srcArgs, dst=tigerframe.calldefs, jump=NONE})
