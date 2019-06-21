@@ -5,70 +5,8 @@ let
     type AAAint = array of AAint
 	type Pointer = {v:int}
     type Pto = {x:int, y:int}
-	/****************SDL LIBRARY*******************************/
-	type SDL_Window = {}
-	type SDL_Renderer = {}
-	type SDL_Surface = {}
-	type SDL_Texture = {}
-	type SDL_Rect = {x:int, y:int, w:int, h:int}
-	type SDL_Point = {}
-	type TTF_Font = {}
-	type SDL_Color = {r:int, g:int, b:int, a:int}
-	type SDL_RendererFlip = int
-	type SDL_Keysym = {scancode:int, sym:int, mod:int}
-	type SDL_KeyboardEvent = {timestamp:int, windowID:int, state:int, repeat:int, keysym:SDL_Keysym}
-	type SDL_Event = {tipo:int, key:SDL_KeyboardEvent}
-	type SDL_DisplayMode = {format:int, w:int, h:int, refresh_rate:int, driverdata:Pointer}
-    extern function printSDL_Consts()
-    extern function SDL_Init(x:int):int
-    extern function SDL_CreateWindow_Tig(name:string, x:int, y:int, w:int, h:int, flags:int):SDL_Window
-    extern function SDL_CreateRenderer(win:SDL_Window, w:int, h:int):SDL_Renderer
-    extern function IMG_LoadTexture_Tig(ren:SDL_Renderer, name:string):SDL_Texture
-    extern function SDL_CreateTextureFromSurface(ren:SDL_Renderer, sur:SDL_Surface):SDL_Texture
-    extern function SDL_FreeSurface(sur:SDL_Surface)
-    extern function SDL_GetWindowSurface(win:SDL_Window):SDL_Surface
-    extern function SDL_RenderClear(sur:SDL_Renderer)
-    extern function SDL_RenderCopy_Tig(sur:SDL_Renderer, tex:SDL_Texture, srcrect:SDL_Rect, dstrect:SDL_Rect)
-    extern function SDL_BlitSurface_Tig(src:SDL_Surface, srcrect:SDL_Rect, dst:SDL_Surface, dstrect:SDL_Rect):int
-    extern function SDL_RenderPresent(sur:SDL_Renderer)
-    extern function SDL_GetDesktopDisplayMode_Tig(displayIndex:int, dm:SDL_DisplayMode):int
-    extern function SDL_Delay(d:int)
-    extern function SDL_DestroyTexture(d:SDL_Texture)
-    extern function SDL_DestroyRenderer(d:SDL_Renderer)
-    extern function SDL_DestroyWindow(d:SDL_Window)
-    extern function SDL_PollEvent_Tig():SDL_Event
-    extern function SDL_GetError_Tig():string
-    extern function SDL_Quit()
-    extern function TTF_Init()
-    extern function TTF_Quit()
-    extern function TTF_OpenFont_Tig(file:string, size:int):TTF_Font
-    extern function TTF_RenderText_Blended_Wrapped_Tig(font:TTF_Font, txt:string, color:SDL_Color, wraplength:int):SDL_Surface
-    extern function TTF_CloseFont(font:TTF_Font)
-    extern function toString(x:int):string
-    extern function SDL_GetSurfaceSize(sur:SDL_Surface):Pto
-    extern function SDL_RenderSetLogicalSize_Tig(ren:SDL_Renderer, w:int, h:int):int
-    extern function SDL_GetWindowSize(win:SDL_Window, w:Pointer, h:Pointer)
-    extern function SDL_RenderFillRect_Tig(ren:SDL_Renderer, rect:SDL_Rect):int
-    extern function SDL_SetRenderDrawColor_Tig(ren:SDL_Renderer, r:int, g:int, b:int, a:int):int
+    include "sdl.tigd"
     extern function atoi_Tig(s:string):int
-    var SDL_INIT_VIDEO := 32
-    var SDL_RENDERER_ACCELERATED := 2
-    var SDL_RENDERER_PRESENTVSYNC := 4
-    var SDL_WINDOW_SHOWN := 4
-    var SDL_WINDOWPOS_CENTERED := 805240832
-    var SDL_FLIP_NONE := 0
-    var SDL_QUIT := 256
-    var SDL_KEYDOWN := 768
-    var SDLK_ESCAPE := 27
-    var SDLK_LEFT := 1073741904
-    var SDLK_RIGHT := 1073741903
-    var SDLK_UP  := 1073741906
-    var SDLK_DOWN := 1073741905
-    var SDLK_BACKSPACE := 8
-    var SDLK_DELETE  := 127
-    var SDLK_d := 100
-    var SDLK_r := 114
-    var SDLK_q := 113
 	
     var VACIO := ord("0")
 	var AGUJERO := ord("1")
@@ -442,7 +380,7 @@ let
 			clrs[3] := SDL_Color{r=255, g=255, b=255, a=255};
 			clrs[4] := SDL_Color{r=0, g=142, b=14, a=255};
 			SDL_RenderClear(ren);
-			drawRect(screen, clrs[3]);
+			drawRect(screen, SDL_Color{r=90, g=25, b=25, a=255});
 			for i:= 0 to 23 do (
 				for j:= 0 to 23 do (
 					drawRect(createRect(i, j), clrs[ord(substring(DRW, i*24+j, 1))-ord("0")])
@@ -498,7 +436,7 @@ let
 in
 	/*printSDL_Consts();*/
 	print(help());
-	print("Ingrese nivel o presione enter para comenzar...\n");
+	print("Presione enter para comenzar...\n");
 	firstidxlevel := atoi_Tig(get_string())-1;
 	if firstidxlevel<0 | firstidxlevel>=sz_list_level(LEVELS) then firstidxlevel := 0
 	else ();

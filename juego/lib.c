@@ -27,7 +27,7 @@ string *SDL_GetError_Tig() {
 	
 }
 
-char *to_c_str(string *str){
+char *to_c_str(const string *str){
     char *buf = (char *)malloc(str->length+1);
     long i;
     for(i=0; i<str->length; i++){
