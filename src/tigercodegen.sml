@@ -85,23 +85,31 @@ fun codegen frame stm =
         | munchStm (EXP (CALL (NAME lab,args))) = 
 			let (* val _ = emit(OPER{assem="xorq %'d0, %'d0", src=[], dst=[tigerframe.rax], jump=NONE}) (*Hace falta?? d0 no debia tener sempre 0?*)
 				*)
-				val _ =emit(OPER{assem="call "^(makeString lab), src=munchArgs args, dst=tigerframe.calldefs, jump=NONE})
 			    val spoffset = (List.length args - List.length tigerframe.argregs) * tigerframe.wSz (* vamos a recuperar el sp en caso de haber hecho pushq antes del call*)
+                val spoffset_aligned = ((spoffset+15) div 16) * 16 (* el stack tiene que estar alineado a 16 bytes *)
+                val args' = if spoffset <> spoffset_aligned (* para respetar eso duplicamos el ultimo argumento en caso de ser necesario *)
+                    then args @ [List.last args]
+                    else args
+                val srcArgs = munchArgs args'
+				val _ =emit(OPER{assem="call "^(makeString lab), src=srcArgs, dst=tigerframe.calldefs, jump=NONE})
             in
 				if spoffset>0
-					then emit(OPER{assem = "addq $"^(toString spoffset)^", %'d0", src = [tigerframe.sp], dst = [tigerframe.sp], jump = NONE})
+					then emit(OPER{assem = "addq $"^(toString spoffset_aligned)^", %'d0", src = [tigerframe.sp], dst = [tigerframe.sp], jump = NONE})
 					else ()
 				end
 		| munchStm (EXP e) = (munchExp e ; ())
 		| munchStm stm = raise Fail "Casos no cubiertos en tigercodegen.munchStm"
         and munchArgs zs =
             let
-                fun aux(_,[]) = []
-                | aux(r::rs,x::xs) =
-                    ( emit(MOV{assem = "movq %'s0, %'d0", src=munchExp x, dst=r}) ; r :: aux(rs,xs) )
-                | aux([], x::xs) =
-                    ( emit(OPER{assem = "pushq %'s0", src=[ munchExp x] , dst=[], jump=NONE}) ; aux([],xs) )
-            in aux (tigerframe.argregs, zs) end
+                fun consume_stack [] = []
+                |   consume_stack (x::xs) = 
+                    ( emit(OPER{assem = "pushq %'s0", src=[ munchExp x] , dst=[], jump=NONE}) ; consume_stack(xs) )
+                fun consume_regs(_,[]) = []
+                | consume_regs(r::rs,x::xs) =
+                    ( emit(MOV{assem = "movq %'s0, %'d0", src=munchExp x, dst=r}) ; r :: consume_regs(rs,xs) )
+                | consume_regs([], xs) =
+                    consume_stack(List.rev(xs))
+            in consume_regs (tigerframe.argregs, zs) end
     in
 		munchStm stm;
 		rev(!ilist)

@@ -78,7 +78,7 @@ fun compile arbol escapes ir canon code flow inter color asm rest source_filenam
 				val _ = TextIO.output (outAssem, asm_code)
 				val _ = TextIO.closeOut (outAssem)
                 val gcc_params = concat (List.map (fn s=>" "^s) rest)
-                val run_args = "gcc runtime.c -o "^exe_file^" "^asm_file^gcc_params
+                val run_args = "gcc runtime.c -g -o "^exe_file^" "^asm_file^gcc_params
 				val _ = if OS.Process.isSuccess (OS.Process.system (run_args))
 					then ()
 					else raise Fail "Error al ejecutar gcc"

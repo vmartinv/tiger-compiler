@@ -1,0 +1,8 @@
+let
+    type Rec = {a:int, b:int, c:int, d:int, e:int, f:int}
+    var rec := Rec{
+        a=1, b=2, c=3, d=4, e=5, f=6
+	}
+in
+    rec.f
+end
