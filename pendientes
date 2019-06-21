@@ -75,6 +75,8 @@ Bitacora bugs resueltos
 16. ajenos/good/test06.tig falla por un error de llamada y no por recursion infinita como debería (creo) (No fallaba)
 17. cuando se corren los tests en algunos aparece: ../tests/test: line 166: warning: command substitution: ignored null byte in input.
 18. Las strings se imprimen raro. Ej: abrir tests/ajenos/good/queens.out con geany hay un montón de carácteres "STX" y "EOT" que no deberían estar ahí. A su vez agregue un caso tests/asm/concat.tig donde se imprimen caracteres de más.
+19. En la inicialización de records (RecordExp de seman) los argumentos se mandaban en orden alfabetico y no en el orden que indicaba la estructura.
+20. En la implementación de call (codegen) las llamadas no respetaban la alineacion a 16 bytes del stack por lo que había problemas al interactuar con codigo C. En particular esto pasaba cuando se quería inicializar un record con mas de 6 campos (tests/asm/big_record.tig), porque se llama a allocRecord que esta en C.
 
 Bugs a solucionar
 =============
