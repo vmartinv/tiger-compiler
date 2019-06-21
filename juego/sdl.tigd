@@ -12,6 +12,7 @@ type SDL_Keysym = {scancode:int, sym:int, mod:int}
 type SDL_KeyboardEvent = {timestamp:int, windowID:int, state:int, repeat:int, keysym:SDL_Keysym}
 type SDL_Event = {tipo:int, key:SDL_KeyboardEvent}
 type SDL_DisplayMode = {format:int, w:int, h:int, refresh_rate:int, driverdata:Pointer}
+type Mix_Chunk = {}
 extern function printSDL_Consts()
 extern function SDL_Init(x:int):int
 extern function SDL_CreateWindow_Tig(name:string, x:int, y:int, w:int, h:int, flags:int):SDL_Window
@@ -42,6 +43,15 @@ extern function SDL_RenderSetLogicalSize_Tig(ren:SDL_Renderer, w:int, h:int):int
 extern function SDL_GetWindowSize(win:SDL_Window, w:Pointer, h:Pointer)
 extern function SDL_RenderFillRect_Tig(ren:SDL_Renderer, rect:SDL_Rect):int
 extern function SDL_SetRenderDrawColor_Tig(ren:SDL_Renderer, r:int, g:int, b:int, a:int):int
+extern function Mix_OpenAudio(frequency:int, format:int, channels:int, chunksize:int):int
+extern function Mix_LoadWAV_Tig(path:string):Mix_Chunk
+extern function Mix_PlayChannelTimed(channel:int, chunk:Mix_Chunk, loops:int, ticks:int):int
+extern function Mix_FreeChunk(chunk:Mix_Chunk)
+extern function Mix_CloseAudio()
+var AUDIO_S16LSB := 32784
+var AUDIO_S16MSB := 36880
+var MIX_DEFAULT_FORMAT := AUDIO_S16LSB
+var SDL_INIT_AUDIO := 16
 var SDL_INIT_VIDEO := 32
 var SDL_RENDERER_ACCELERATED := 2
 var SDL_RENDERER_PRESENTVSYNC := 4

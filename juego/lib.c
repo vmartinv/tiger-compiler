@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 
 #define DEBUG
 
@@ -162,6 +163,13 @@ SDL_Event_Tig *SDL_PollEvent_Tig(){
 		event_tig.key->keysym->mod = event.key.keysym.mod;
 	}
 	return &event_tig;
+}
+
+Mix_Chunk *Mix_LoadWAV_Tig(const string *file){
+    char *name = to_c_str(file);
+	Mix_Chunk *wav = Mix_LoadWAV(name);
+    free(name);
+    return wav;
 }
 
 TTF_Font *TTF_OpenFont_Tig(const string *file, const long size){

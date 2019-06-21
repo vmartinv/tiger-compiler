@@ -6,6 +6,7 @@ let
 	type Pointer = {v:int}
     type Pto = {x:int, y:int}
     include "sdl.tigd"
+    include "sounds.tigd"
     extern function atoi_Tig(s:string):int
 	
     var VACIO := ord("0")
@@ -97,7 +98,7 @@ let
 	var font:TTF_Font := nil
 	var WHITE := SDL_Color{r=255, g=255, b=255, a=255}
     function init() =
-		let var x_ := SDL_Init(SDL_INIT_VIDEO)
+		let var x_ := SDL_Init(SDL_INIT_VIDEO + SDL_INIT_AUDIO)
 			var dm := SDL_DisplayMode{format=0, w=0, h=0, refresh_rate=0, driverdata=nil}
 		in (
 			SDL_GetDesktopDisplayMode_Tig(0, dm);
@@ -108,7 +109,6 @@ let
 			TTF_Init();
 			init_resources()
 		) end
-
      function toString (i : int):string =
        let function f (i : int):string =
             if i > 0
@@ -120,12 +120,14 @@ let
        end
     function destroy() = (
 		destroy_resources();
+        destroy_sounds();
 		TTF_Quit();
 		SDL_DestroyRenderer(ren);
 		SDL_DestroyWindow(win);
 		SDL_Quit()
     )
 	function init_resources() = (
+        setup_sounds();
 		tiles := IMG_LoadTexture_Tig(ren, "tiles_packed.png");
 		font := TTF_OpenFont_Tig("yoster.ttf", (SCREEN_WIDTH*4)/100);
 		tilespos[ord("1")] := Pto{x = 17, y = 7}; /*Agujero*/
@@ -272,6 +274,8 @@ let
 				if objs[2][np.y][np.x]=VACIO then (
 					playerpos := np;
 					movhistory := ListMov{dir=d, pushed=0, next=movhistory};
+                    play_walking_sound();
+                    SDL_Delay(100);
 					render_gamestatus();
 					ST_CONTINUE
 				)
@@ -279,10 +283,15 @@ let
 					if (objs[2][np.y][np.x]=CAJA | objs[2][np.y][np.x]=CAJA_ACTIVADA) & is_valid_pos(nb) & objs[2][nb.y][nb.x]=VACIO then (
 						playerpos := np;
 						objs[2][nb.y][nb.x] := objs[2][np.y][np.x];
-						if objs[1][nb.y][nb.x]<>VACIO then
-							objs[2][nb.y][nb.x] := CAJA_ACTIVADA
-						else
+						if objs[1][nb.y][nb.x]<>VACIO then (
+							objs[2][nb.y][nb.x] := CAJA_ACTIVADA;
+                            play_activate_sound()
+						)
+                        else (
 							objs[2][nb.y][nb.x] := CAJA;
+                            play_push_sound()
+                        );
+                        SDL_Delay(100);
 						objs[2][np.y][np.x] := VACIO;
 						movhistory := ListMov{dir=d, pushed=1, next=movhistory};
 						render_gamestatus();
@@ -424,6 +433,7 @@ let
 	function game_runner(idx:int) = (
 		set_level(get_level(idx, LEVELS), idx);
 		if game_loop()=ST_WON then (
+            play_win_sound();
 			SDL_Delay(2000);
 			if idx+1>=sz_list_level(LEVELS) then
 				idx := 0
