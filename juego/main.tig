@@ -152,6 +152,16 @@ let
 			TTF_Init();
 			init_resources()
 		) end
+
+     function toString (i : int):string =
+       let function f (i : int):string =
+            if i > 0
+        then concat(f (i/10),chr (i-i/10*10+ord ("0")))
+        else ""
+       in if i < 0 then concat("-", f (-i))
+          else if i>0 then f (i)
+          else "0"
+       end
     function destroy() = (
 		destroy_resources();
 		TTF_Quit();

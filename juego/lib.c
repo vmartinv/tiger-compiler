@@ -27,8 +27,21 @@ string *SDL_GetError_Tig() {
 	
 }
 
+char *to_c_str(string *str){
+    char *buf = (char *)malloc(str->length+1);
+    long i;
+    for(i=0; i<str->length; i++){
+        buf[i]=str->chars[i];
+    }
+    buf[str->length] = '\0';
+    return buf;
+}
+
 long atoi_Tig(string *s){
-	return atoi(s->chars);
+    char *str = to_c_str(s);
+	long ret = atoi(str);
+    free(str);
+    return ret;
 }
 
 typedef struct {
@@ -48,11 +61,14 @@ long SDL_GetDesktopDisplayMode_Tig(const long displayIndex, SDL_DisplayMode_Tig 
 }
 
 SDL_Window *SDL_CreateWindow_Tig(const string *name, const long x, const long y, const long w, const long h, const long flags){
-	return SDL_CreateWindow(name->chars, x, y, w, h, flags);
+	return SDL_CreateWindow(to_c_str(name), x, y, w, h, flags);
 }
 
 SDL_Texture *IMG_LoadTexture_Tig(SDL_Renderer *ren, const string *file){
-	return IMG_LoadTexture(ren, file->chars);
+    char *name = to_c_str(file);
+	SDL_Texture *texture = IMG_LoadTexture(ren, name);
+    free(name);
+    return texture;
 }
 
 typedef struct {
@@ -126,13 +142,6 @@ typedef struct {
 	SDL_KeyboardEvent_Tig *key;
 } SDL_Event_Tig;
 
-string *toString(long a){
-	static char buf[64];
-	sprintf(buf+sizeof(long), "%ld", a);
-	*(long*)buf = strlen(buf+sizeof(long));
-	return (string*)buf;
-}
-
 SDL_Event_Tig *SDL_PollEvent_Tig(){
 	SDL_Event event;
 	static SDL_Event_Tig event_tig;
@@ -156,7 +165,10 @@ SDL_Event_Tig *SDL_PollEvent_Tig(){
 }
 
 TTF_Font *TTF_OpenFont_Tig(const string *file, const long size){
-	return TTF_OpenFont(file->chars, size);
+    char *name = to_c_str(file);
+	TTF_Font *font = TTF_OpenFont(name, size);
+    free(name);
+    return font;
 }
 
 typedef struct{
@@ -169,7 +181,10 @@ SDL_Surface *TTF_RenderText_Blended_Wrapped_Tig(TTF_Font *font, const string *te
 	color.g = color_tig->g;
 	color.b = color_tig->b;
 	color.a = color_tig->a;
-	return TTF_RenderText_Blended_Wrapped(font, text->chars, color, wraplength);
+    char *text_c = to_c_str(text);
+	SDL_Surface *surface = TTF_RenderText_Blended_Wrapped(font, text_c, color, wraplength);
+    free(text_c);
+    return surface;
 }
 
 long SDL_RenderSetLogicalSize_Tig(SDL_Renderer *ren, const long w, const long h){
