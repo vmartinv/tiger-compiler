@@ -12,24 +12,10 @@ let
 	var AGUJERO := ord("1")
 	var CAJA := ord("2")
 	var CAJA_ACTIVADA := ord("3")
-    type Level = {width:int, height:int, zoom:int, player_init:Pto, objs_init:string}
+    type Level = {width:int, height:int, zoom:int, player_init:Pto, objs_init:string, best:int}
     type ListLevel = {l:Level, next:ListLevel}
     var LEVELS := ListLevel{
-		l=Level{player_init=Pto{x=0, y=2}, zoom=5,
-			width=4, height=4, objs_init=concat(concat(concat(concat(concat(concat(concat(concat((
-			"4559"), /*Layer 0: Terrain*/
-			"6EED"),
-			"788A"),
-			"0000"),
-			
-			"3311"), /*Layer 1: Objects*/
-			"0223"),
-			"0000"),
-			"BFFG"),
-			"")
-		},
-		next=ListLevel{
-		l=Level{player_init=Pto{x=2, y=1}, zoom=5,
+		l=Level{player_init=Pto{x=2, y=1}, zoom=5, best=18,
 			width=5, height=4, objs_init=concat(concat(concat(concat(concat(concat(concat(concat((
 			"45559"), /*Layer 0: Terrain*/
 			"6EEED"),
@@ -42,8 +28,22 @@ let
 			"BFFFG"),
 			"")
 		},
+		next=ListLevel{
+		l=Level{player_init=Pto{x=0, y=2}, zoom=5, best=13,
+			width=4, height=4, objs_init=concat(concat(concat(concat(concat(concat(concat(concat((
+			"4559"), /*Layer 0: Terrain*/
+			"6EED"),
+			"788A"),
+			"0000"),
+			
+			"3311"), /*Layer 1: Objects*/
+			"0223"),
+			"0000"),
+			"BFFG"),
+			"")
+		},
         next=ListLevel{
-		l=Level{player_init=Pto{x=3, y=0}, zoom=5,
+		l=Level{player_init=Pto{x=3, y=0}, zoom=5, best=76,
 			width=7, height=5, objs_init=concat(concat(concat(concat(concat(concat(concat(concat(concat(concat((
 			"4555559"), /*Layer 0: Terrain*/
 			"6EEEEED"),
@@ -159,7 +159,8 @@ let
 	function render_gamestatus() =
 		let var niveltxt := concat("Nivel ", toString(idxlevel+1))
 			var movstxt := concat("Movimientos ", toString(sz_list_movs(movhistory)))
-			var text := concat(concat(niveltxt, "\n"), movstxt)
+			var besttxt := concat("Mejor ", toString(curlevel.best))
+			var text := concat(concat(concat(niveltxt, "\n"), concat(movstxt, "\n")), concat(besttxt, "\n"))
 			var sur := TTF_RenderText_Blended_Wrapped_Tig(font, text, WHITE, SCREEN_WIDTH)
 			var tam := SDL_GetSurfaceSize(sur)
 			var margin := tam.y/4
