@@ -42,7 +42,25 @@ let
 			"BFFFG"),
 			"")
 		},
-		next=nil}
+        next=ListLevel{
+		l=Level{player_init=Pto{x=3, y=0}, zoom=5,
+			width=7, height=5, objs_init=concat(concat(concat(concat(concat(concat(concat(concat(concat(concat((
+			"4555559"), /*Layer 0: Terrain*/
+			"6EEEEED"),
+			"6EEEEED"),
+			"788888A"),
+			"0000000"),
+			
+			"II000II"), /*Layer 1: Objects*/
+			"0222220"),
+			"0111110"),
+			"000I000"),
+			"BFFFFFG"),
+			"")
+		},
+		next=nil
+        }
+        }
 	}
     type APto = array of Pto
 	var PLAYER_TILE := 300
@@ -125,6 +143,7 @@ let
 		tilespos[ord("G")] := Pto{x = 16, y = 4};  /*Pico Abajo Derecha*/
 		tilespos[ord("D")] := Pto{x = 5, y = 1};
 		tilespos[ord("E")] := Pto{x = 4, y = 2};
+		tilespos[ord("I")] := Pto{x = 10, y = 7};
 		tilespos[PLAYER_TILE] := Pto{x = 22, y = 6}; /*Jugador arriba*/
 		tilespos[PLAYER_TILE+1] := Pto{x = 20, y = 6}; /*Jugador derecha*/
 		tilespos[PLAYER_TILE+2] := Pto{x = 14, y = 6}; /*Jugador abajo*/
@@ -256,7 +275,7 @@ let
 					ST_CONTINUE
 				)
 				else (
-					if is_valid_pos(nb) & objs[2][nb.y][nb.x]=VACIO then (
+					if (objs[2][np.y][np.x]=CAJA | objs[2][np.y][np.x]=CAJA_ACTIVADA) & is_valid_pos(nb) & objs[2][nb.y][nb.x]=VACIO then (
 						playerpos := np;
 						objs[2][nb.y][nb.x] := objs[2][np.y][np.x];
 						if objs[1][nb.y][nb.x]<>VACIO then
@@ -420,8 +439,8 @@ let
 	function help():string = concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat((
 		"Objetivo:\n"),
 		"    Sokoban se origino en Japon. El objetivo del juego es usar la menor cantidad\n"),
-		"    de pasos para llevar las cajas a las posiciones marcadas. Las cajas solo\n"),
-		"    pueden ser empujadas hacia adelante. Solo se puede empujar una sola caja al\n"),
+		"    de pasos para llevar las piedras a las posiciones con lambda. Las piedras solo\n"),
+		"    pueden ser empujadas hacia adelante. Solo se puede empujar una sola piedra al\n"),
 		"    mismo tiempo. Sokoban es un juego con reglas simples pero con muchos niveles\n"),
 		"    de dificultad, algunos niveles puede tardarte varias horas o incluso dias.\n"),
 		"Controles:\n"),
