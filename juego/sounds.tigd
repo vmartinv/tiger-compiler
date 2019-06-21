@@ -1,0 +1,31 @@
+var n_sounds := 1
+var walking_sound:Mix_Chunk := nil
+var push_sound:Mix_Chunk := nil
+var activate_sound:Mix_Chunk := nil
+var win_sound:Mix_Chunk := nil
+
+function play_sound(chunk:Mix_Chunk) = (
+    Mix_PlayChannelTimed(-1, chunk, 0, -1);
+    ()
+)
+
+function setup_sounds() = (
+    Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 );
+    walking_sound := Mix_LoadWAV_Tig("walking.wav");
+    push_sound := Mix_LoadWAV_Tig("push.wav");
+    activate_sound := Mix_LoadWAV_Tig("activate.wav");
+    win_sound := Mix_LoadWAV_Tig("win.wav")
+)
+
+function play_walking_sound() = play_sound(walking_sound)
+
+function play_push_sound() = play_sound(push_sound)
+
+function play_activate_sound() = play_sound(activate_sound)
+
+function play_win_sound() = play_sound(win_sound)
+
+function destroy_sounds() = (
+    Mix_FreeChunk(walking_sound);
+    Mix_CloseAudio()
+)
