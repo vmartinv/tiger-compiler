@@ -178,7 +178,7 @@ We have chosen the architecture i386.
 
 Control Flow & Liveness   (BACK-END - ENTREGA 3)
 -----------------------
-We have used an unbounded number of temporaries, but the real machine has a bounded number of registers. Two temporaries a and b can fit into the same register if a and b are never in used at the same time.
+We have used an unbounded number of temporaries, but the real machine has a bounded number of registers. Two temporaries a and b can fit into the same register if a and b are never in use at the same time. If they don't all fit, the excess temporaries can be kept in memory.
 A variable is live if it holds a value that may be needed in the future.
 To perform liveness analysis on a program it is useful to make a control-flow graph.
 The flow analysis for the Tiger compiler is done in two stages:

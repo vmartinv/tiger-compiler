@@ -1,0 +1,13 @@
+/*TIGER_ARGS=-code -asm*/
+let
+    function f(n:int) : int =
+        let
+            function g(x:int):int = h(x)
+            function h(y:int):int = y+2
+	in
+            g(n)
+        end
+in
+    f(5)
+end
+/* Caso 1 de static link: nivel_llamada = nivel_llamante */

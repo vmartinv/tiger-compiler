@@ -1,0 +1,6 @@
+/*TIGER_ARGS=-code -asm*/
+let
+    function f() : int = 5
+in f()
+end
+/* Caso simple de static link */
