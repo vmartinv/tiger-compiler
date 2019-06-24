@@ -1,0 +1,288 @@
+bien!
+;;--FRAME--L0__tigermain_0:
+LABEL: L11
+MOVE: movq %'s0, %'d0 D:T26 S:rbx
+MOVE: movq %'s0, %'d0 D:T27 S:r12
+MOVE: movq %'s0, %'d0 D:T28 S:r13
+MOVE: movq %'s0, %'d0 D:T29 S:r14
+MOVE: movq %'s0, %'d0 D:T30 S:r15
+MOVE: movq %'s0, %'d0 D:T31 S:rbp
+OPER: addq $-8, %'d0 D:[T31] S:[T31]
+OPER: movq %'s0, (%'s1) D:[] S:[rdi,T31]
+MOVE: movq %'s0, %'d0 D:T23 S:rbp
+OPER: movq $2, %'d0 D:[T32] S:[]
+MOVE: movq %'s0, %'d0 D:T24 S:T32
+MOVE: movq %'s0, %'d0 D:rdi S:T23
+MOVE: movq %'s0, %'d0 D:rsi S:T24
+OPER: call L1_f_14 D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]
+MOVE: movq %'s0, %'d0 D:T25 S:rax
+MOVE: movq %'s0, %'d0 D:rax S:T25
+MOVE: movq %'s0, %'d0 D:rbx S:T26
+MOVE: movq %'s0, %'d0 D:r12 S:T27
+MOVE: movq %'s0, %'d0 D:r13 S:T28
+MOVE: movq %'s0, %'d0 D:r14 S:T29
+MOVE: movq %'s0, %'d0 D:r15 S:T30
+OPER: jmp 'j0 D:[] S:[] J:[L10]
+LABEL: L10
+OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
+;;-END-FRAME-:
+;;--FRAME--L1_f_14:
+LABEL: L9
+MOVE: movq %'s0, %'d0 D:T18 S:rbx
+MOVE: movq %'s0, %'d0 D:T19 S:r12
+MOVE: movq %'s0, %'d0 D:T20 S:r13
+MOVE: movq %'s0, %'d0 D:T21 S:r14
+MOVE: movq %'s0, %'d0 D:T22 S:r15
+MOVE: movq %'s0, %'d0 D:T33 S:rbp
+OPER: addq $-8, %'d0 D:[T33] S:[T33]
+OPER: movq %'s0, (%'s1) D:[] S:[rdi,T33]
+MOVE: movq %'s0, %'d0 D:T0 S:rsi
+MOVE: movq %'s0, %'d0 D:T15 S:rbp
+MOVE: movq %'s0, %'d0 D:T34 S:T0
+OPER: addq $1, %'d0 D:[T34] S:[T34]
+MOVE: movq %'s0, %'d0 D:T16 S:T34
+MOVE: movq %'s0, %'d0 D:rdi S:T15
+MOVE: movq %'s0, %'d0 D:rsi S:T16
+OPER: call L2_g_11 D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]
+MOVE: movq %'s0, %'d0 D:T17 S:rax
+MOVE: movq %'s0, %'d0 D:rax S:T17
+MOVE: movq %'s0, %'d0 D:rbx S:T18
+MOVE: movq %'s0, %'d0 D:r12 S:T19
+MOVE: movq %'s0, %'d0 D:r13 S:T20
+MOVE: movq %'s0, %'d0 D:r14 S:T21
+MOVE: movq %'s0, %'d0 D:r15 S:T22
+OPER: jmp 'j0 D:[] S:[] J:[L8]
+LABEL: L8
+OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
+;;-END-FRAME-:
+;;--FRAME--L2_g_11:
+LABEL: L7
+MOVE: movq %'s0, %'d0 D:T10 S:rbx
+MOVE: movq %'s0, %'d0 D:T11 S:r12
+MOVE: movq %'s0, %'d0 D:T12 S:r13
+MOVE: movq %'s0, %'d0 D:T13 S:r14
+MOVE: movq %'s0, %'d0 D:T14 S:r15
+MOVE: movq %'s0, %'d0 D:T35 S:rbp
+OPER: addq $-8, %'d0 D:[T35] S:[T35]
+OPER: movq %'s0, (%'s1) D:[] S:[rdi,T35]
+MOVE: movq %'s0, %'d0 D:T36 S:rbp
+OPER: addq $-16, %'d0 D:[T36] S:[T36]
+OPER: movq %'s0, (%'s1) D:[] S:[rsi,T36]
+MOVE: movq %'s0, %'d0 D:T7 S:rbp
+OPER: movq $3, %'d0 D:[T37] S:[]
+MOVE: movq %'s0, %'d0 D:T8 S:T37
+MOVE: movq %'s0, %'d0 D:rdi S:T7
+MOVE: movq %'s0, %'d0 D:rsi S:T8
+OPER: call L3_h_8 D:[rax,r10,r11,rdi,rsi,rdx,rcx,r8,r9] S:[rdi,rsi]
+MOVE: movq %'s0, %'d0 D:T9 S:rax
+MOVE: movq %'s0, %'d0 D:rax S:T9
+MOVE: movq %'s0, %'d0 D:rbx S:T10
+MOVE: movq %'s0, %'d0 D:r12 S:T11
+MOVE: movq %'s0, %'d0 D:r13 S:T12
+MOVE: movq %'s0, %'d0 D:r14 S:T13
+MOVE: movq %'s0, %'d0 D:r15 S:T14
+OPER: jmp 'j0 D:[] S:[] J:[L6]
+LABEL: L6
+OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
+;;-END-FRAME-:
+;;--FRAME--L3_h_8:
+LABEL: L5
+MOVE: movq %'s0, %'d0 D:T2 S:rbx
+MOVE: movq %'s0, %'d0 D:T3 S:r12
+MOVE: movq %'s0, %'d0 D:T4 S:r13
+MOVE: movq %'s0, %'d0 D:T5 S:r14
+MOVE: movq %'s0, %'d0 D:T6 S:r15
+MOVE: movq %'s0, %'d0 D:T38 S:rbp
+OPER: addq $-8, %'d0 D:[T38] S:[T38]
+OPER: movq %'s0, (%'s1) D:[] S:[rdi,T38]
+MOVE: movq %'s0, %'d0 D:T1 S:rsi
+MOVE: movq %'s0, %'d0 D:T39 S:T1
+MOVE: movq %'s0, %'d0 D:T43 S:rbp
+OPER: addq $-8, %'d0 D:[T43] S:[T43]
+OPER: movq (%'s0), %'d0 D:[T42] S:[T43]
+MOVE: movq %'s0, %'d0 D:T41 S:T42
+OPER: addq $-16, %'d0 D:[T41] S:[T41]
+OPER: movq (%'s0), %'d0 D:[T40] S:[T41]
+OPER: addq %'s1, %'d0 D:[T39] S:[T39,T40]
+MOVE: movq %'s0, %'d0 D:rax S:T39
+MOVE: movq %'s0, %'d0 D:rbx S:T2
+MOVE: movq %'s0, %'d0 D:r12 S:T3
+MOVE: movq %'s0, %'d0 D:r13 S:T4
+MOVE: movq %'s0, %'d0 D:r14 S:T5
+MOVE: movq %'s0, %'d0 D:r15 S:T6
+OPER: jmp 'j0 D:[] S:[] J:[L4]
+LABEL: L4
+OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]
+;;-END-FRAME-:
+------Assembler------
+.data
+.text
+.global L0__tigermain_0
+	L0__tigermain_0:
+	#prologo:
+	pushq %rbp
+	movq %rsp, %rbp
+	addq $-16, %rsp
+
+
+L11:
+
+
+
+
+
+	movq %rbp, %rsi
+	addq $-8, %rsi
+	movq %rdi, (%rsi)
+	movq %rbp, %rdi
+	movq $2, %rsi
+
+
+
+	call L1_f_14
+
+
+
+
+
+
+
+	jmp L10
+L10:
+	
+
+	#END L0__tigermain_0
+	movq %rbp,%rsp
+	popq %rbp
+	ret
+
+
+.global L1_f_14
+	L1_f_14:
+	#prologo:
+	pushq %rbp
+	movq %rsp, %rbp
+	addq $-16, %rsp
+
+
+L9:
+
+
+
+
+
+	movq %rbp, %rdx
+	addq $-8, %rdx
+	movq %rdi, (%rdx)
+
+	movq %rbp, %rdi
+
+	addq $1, %rsi
+
+
+
+	call L2_g_11
+
+
+
+
+
+
+
+	jmp L8
+L8:
+	
+
+	#END L1_f_14
+	movq %rbp,%rsp
+	popq %rbp
+	ret
+
+
+.global L2_g_11
+	L2_g_11:
+	#prologo:
+	pushq %rbp
+	movq %rsp, %rbp
+	addq $-16, %rsp
+
+
+L7:
+
+
+
+
+
+	movq %rbp, %rdx
+	addq $-8, %rdx
+	movq %rdi, (%rdx)
+	movq %rbp, %rdx
+	addq $-16, %rdx
+	movq %rsi, (%rdx)
+	movq %rbp, %rdi
+	movq $3, %rsi
+
+
+
+	call L3_h_8
+
+
+
+
+
+
+
+	jmp L6
+L6:
+	
+
+	#END L2_g_11
+	movq %rbp,%rsp
+	popq %rbp
+	ret
+
+
+.global L3_h_8
+	L3_h_8:
+	#prologo:
+	pushq %rbp
+	movq %rsp, %rbp
+	addq $-16, %rsp
+
+
+L5:
+
+
+
+
+
+	movq %rbp, %rdx
+	addq $-8, %rdx
+	movq %rdi, (%rdx)
+
+
+	movq %rbp, %rdx
+	addq $-8, %rdx
+	movq (%rdx), %rdx
+
+	addq $-16, %rdx
+	movq (%rdx), %rdx
+	addq %rdx, %rsi
+	movq %rsi, %rax
+
+
+
+
+
+	jmp L4
+L4:
+	
+
+	#END L3_h_8
+	movq %rbp,%rsp
+	popq %rbp
+	ret
+
+
+yes!!
+Return code: 6

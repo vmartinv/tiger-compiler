@@ -1,0 +1,18 @@
+/*TIGER_ARGS=-code -asm*/
+let
+    function f(m:int) : int =
+        let
+            function g(n:int):int =
+            let
+                function h(p:int):int =
+                    if p>5 then g(p-2) else p
+            in
+                h(n+1)
+            end
+	in
+            g(m)
+        end
+in
+    f(5)
+end
+/* Caso 3 de static link: nivel_llamada < nivel_llamante */
