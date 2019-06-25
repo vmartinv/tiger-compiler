@@ -1,4 +1,3 @@
-/*TIGER_ARGS=-arbol -ir*/
 let 
     type tree = {key:string, left:tree, right:tree}
     var sample_tree := tree{key="root", left=tree{key="left", left=nil, right=nil}, right=tree{key="right", left=nil, right=nil}}
@@ -22,7 +21,7 @@ let
            end
      in show(0,tree); output
      end
-in prettyprint(sample_tree); 0
+in print(prettyprint(sample_tree)); 0
 end
 /*
 show es llamante de indent.

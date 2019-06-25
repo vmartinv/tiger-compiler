@@ -1,0 +1,26 @@
+let
+    function f(n:int) : int =
+        let
+            var x:=2
+            var x2:=7
+            function g(x:int):int =
+                let
+                    var w:=3
+                in
+                    print("llama g\n");
+                    h(x+w+x2)
+                end
+            function h(y:int):int =
+                let
+                    var z:=1
+                in
+                    print("llama h\n");
+                    y+x+z
+                end
+	in
+            print("llama f\n"); g(n)
+        end
+in
+    f(5)
+end
+/* Caso 1 de static link: nivel_llamada = nivel_llamante */
