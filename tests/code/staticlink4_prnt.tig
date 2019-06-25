@@ -1,0 +1,26 @@
+let
+    function int(n:int):string =
+        if n=0 then "0"
+        else let function int2(n:int):string =
+                    if n<=0 then "" else concat(int2(n/10),chr(ord("0")+mod(n,10)))
+                 function mod(m:int, n:int):int =
+                    m-m/n*n
+             in if n<0 then concat("-", int2((-1)*n)) else int2(n)
+             end
+    function f(m:int) : int =
+        let
+            function g(n:int):int =
+            let
+                function h(p:int):int =
+                    (print("En h con p = "); print(concat(int(p), "\n"));
+                     if p>5 then g(p-2) else p)
+            in
+                print("En g con n = "); print(concat(int(n), "\n")); h(n+1)
+            end
+	in
+            print("En f con m = "); print(concat(int(m), "\n")); g(m)
+        end
+in
+    f(5)
+end
+/* Caso 3 de static link: nivel_llamada < nivel_llamante */

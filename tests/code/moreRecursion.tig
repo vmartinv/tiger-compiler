@@ -1,0 +1,25 @@
+let
+  
+  /* define a tree */
+  type tree ={key : int, children : treelist}
+  type treelist = {hd : tree, tl : treelist}
+  
+  /* sum tree */
+  function treeSum(t:tree) : int =
+    if t=nil then 0
+    else t.key + treelistSum(t.children)
+
+  function treelistSum(l:treelist) : int =
+    if l=nil then 0
+    else treeSum(l.hd)+treelistSum(l.tl)
+
+  /* sample tree */
+  var t1 : tree := tree { key = 1, children = nil }
+  var t2 : tree := tree { key = 3, children = nil }
+  var l2 : treelist := treelist { hd = t2, tl = nil}
+  var l1 : treelist := treelist { hd = t1, tl = l2}
+  var t : tree := tree { key = 5, children = l1 }
+
+in
+  treeSum(t)
+end

@@ -1,0 +1,17 @@
+let
+    function f(n:int) : int =
+        let
+            var t := n+1
+            function g(x:int):int =
+                let
+                    function h(y:int):int = (print("En h\n"); y+x+t)
+                in
+                    print("En g\n"); h(3)
+                end
+	in
+            print("En f\n"); g(n+1)
+        end
+in
+    f(2)
+end
+/* Caso 2 de static link: nivel_llamada > nivel_llamante */
