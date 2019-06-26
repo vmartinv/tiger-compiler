@@ -17,7 +17,7 @@ function setup_sounds() = (
     win_sound := Mix_LoadWAV_Tig("win.wav")
 )
 
-function play_walking_sound() = play_sound(walking_sound)
+function play_walking_sound() = ()
 
 function play_push_sound() = play_sound(push_sound)
 
