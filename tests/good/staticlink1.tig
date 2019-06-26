@@ -1,4 +1,0 @@
-let
-    function f() : int = 5
-in print(int(f()))
-end
