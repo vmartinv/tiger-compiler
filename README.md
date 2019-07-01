@@ -53,7 +53,7 @@ By using some of the features implemented small game was programmed. You can run
    
   For Arch Linux:
   
-    > sudo pacman -S sdl2 sdl2_image sdl2_mixer sdl2_ttf
+    sudo pacman -S sdl2 sdl2_image sdl2_mixer sdl2_ttf
   
 2. Running:
   > cd juego
