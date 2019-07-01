@@ -37,15 +37,15 @@ It was implemented by only editing the parser (tigergrm.y) as the compiler was a
 All unrecognized flags are passed to gcc, which generates the executable code on the last stage. This enables passing parameters to the linking process, which is specially useful for projects requiring libraries.
 
 
-### Optimization 1: Representation of Sets
+### optimization 1: Representation of sets
 During liveness analysis, following the suggestion from the book on page 216, we represent sets as ordered lists which drastically reduced the time of that step. This can be seen on `tigerliveness.sml`
 
 
-### Optimization 2: Ordering the nodes
+### optimization 2: Ordering the nodes
 During liveness analysis, we implemented the optimization mentioned in the book on page 389. This greatly reduces compilation time by topological sorting the flow graph and use the order to process the nodes, thus reaching the fixed point much faster.
 
 
-### Sokoban Game
+### sokoban game
 By using some of the features implemented small game was programmed. You can run it by:
 1. Installing SDL2 (with image, mixer and TTF libs).
   For Ubuntu:
@@ -75,8 +75,12 @@ Run in a terminal:
 * mosml (ML compiler)
 
   For Ubuntu:
-    follow this link https://gist.github.com/BoredBored/3187339a99f7786c25075d4d9c80fad5
-   
+    > wget https://github.com/kfl/mosml/archive/ver-2.10.1.tar.gz
+    > tar zxf ver-2.10.1.tar.gz
+    > cd mosml-ver-2.10.1/src
+    > make
+    > sudo make install
+  
   For Arch Linux:
     > sudo pacman -S mosml
 
