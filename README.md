@@ -135,6 +135,8 @@ source_filename >>= abreArchivo >>=
    prntOk (*si llega hasta aca esta todo ok*)
 ```
 
+Implemented on `tigermain.sml`.
+
 
 ### file opener
 All source files start with `tiger` and there are many files with the same name but different extensions (some come from compilation subproducts). For this reason we found ourselves spending a lot of time looking for the specific files we wanted to open. For this reason we made a small script to list and open the sources files easily. Implementation is in `src/e` and is written in Bash.
