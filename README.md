@@ -57,7 +57,9 @@ During liveness analysis, we implemented the optimization mentioned in the book 
 
 
 ### test automatization
-We developed a simple script to run a test suite. Each test was added manually, it consists of a code and the expected output of the compiler and its execution. We do a small parsing of the first line of the code of the test in order to embed what parameters should be passed to the compiler (for example to print intermediate trees). This enables to create and mantain the test suite even when not all stages of the compiler are finishied. It has saved us a lot of time by detecing bugs early and avoid introducing new ones. The script is `tests/test` and is written in Bash.
+We developed a simple script to run and maintain a test suite. Each test was added manually, it consists of a code and the expected output of the compiler and its execution. We do a small parsing of the first line of the code of the test in order to embed what parameters should be passed to the compiler (for example to print intermediate trees). This enables to create and maintain the test suite even when not all stages of the compiler are finished. It has saved us a lot of time by detecing bugs early and to avoid introducing new ones. The script is `tests/test` and is written in Bash.
+
+We ended up with 164 tests for the tiger compiler.
 
 Example test:
 
@@ -108,6 +110,31 @@ By using some of the features implemented small game was programmed. It uses `SD
 Screenshot:
 
 ![Screenshot of first level of the game](https://raw.githubusercontent.com/vmartinv/compiler/master/screenshots/juego.png)
+
+### compiler pipeline
+We encapsulated each stage of the compiler in a function and by defining the operator `>>=` we are able to write the entire compiler as a series of steps in a very clear way:
+
+```
+fun perFragment fragment = 
+    fragment >>= instructionSel >>= prntCode >>=
+        debugLivenessAnalysis
+        >>= coloreo
+        >>= prntColor
+        >>= procExit3
+        >>= formatter
+
+source_filename >>= abreArchivo >>=
+   lexer >>= parser >>= (*de ASCII al arbol tigerabs.exp*)
+   expIncludes >>=  (*etapa agregada para que funcionen los includes*)
+   escap >>= prntArbol >>= 
+   seman >>= prntIr >>= (*chequeo de tipos y generacion de fragmentos*)
+   canonize >>= prntCanon >>=
+   (fn (stringList, frags) => (stringList, map perFragment frags)) >>=
+   serializer >>= prntAsm >>=
+   compileAsm >>=
+   prntOk (*si llega hasta aca esta todo ok*)
+```
+
 
 ### file opener
 All source files start with `tiger` and there are many files with the same name but different extensions (some come from compilation subproducts). For this reason we found ourselves spending a lot of time looking for the specific files we wanted to open. For this reason we made a small script to list and open the sources files easily. Implementation is in `src/e` and is written in Bash.
