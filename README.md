@@ -90,6 +90,7 @@ Screenshot:
 ### sokoban game
 By using some of the features implemented small game was programmed. It uses `SDL 2` C library and function wrappers in `juego/lib.c` has been written to call functions with strings (as C strings are diferent from Tiger strings). You can run it by:
 1. Installing SDL2 (with image, mixer and TTF libs).
+
   For Ubuntu:
   
     follow this link https://gist.github.com/BoredBored/3187339a99f7786c25075d4d9c80fad5
