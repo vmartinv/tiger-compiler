@@ -78,9 +78,13 @@ Run in a terminal:
 
   For Ubuntu:
     > wget https://github.com/kfl/mosml/archive/ver-2.10.1.tar.gz
+    
     > tar zxf ver-2.10.1.tar.gz
+    
     > cd mosml-ver-2.10.1/src
+    
     > make
+    
     > sudo make install
   
   For Arch Linux:
