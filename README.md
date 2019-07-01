@@ -52,7 +52,9 @@ By using some of the features implemented small game was programmed. You can run
     follow this link https://gist.github.com/BoredBored/3187339a99f7786c25075d4d9c80fad5
    
   For Arch Linux:
+  
     > sudo pacman -S sdl2 sdl2_image sdl2_mixer sdl2_ttf
+  
 2. Running:
   > cd juego
   > cd make run
