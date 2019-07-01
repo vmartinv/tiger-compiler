@@ -57,6 +57,7 @@ By using some of the features implemented small game was programmed. You can run
   
 2. Running:
   > cd juego
+  
   > cd make run
 
 
