@@ -49,6 +49,7 @@ During liveness analysis, we implemented the optimization mentioned in the book 
 By using some of the features implemented small game was programmed. You can run it by:
 1. Installing SDL2 (with image, mixer and TTF libs).
   For Ubuntu:
+  
     follow this link https://gist.github.com/BoredBored/3187339a99f7786c25075d4d9c80fad5
    
   For Arch Linux:
