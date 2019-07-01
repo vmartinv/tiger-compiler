@@ -77,6 +77,8 @@ Run in a terminal:
 * mosml (ML compiler)
 
   For Ubuntu:
+    > sudo apt-get install libgmp-dev
+    
     > wget https://github.com/kfl/mosml/archive/ver-2.10.1.tar.gz
     
     > tar zxf ver-2.10.1.tar.gz
@@ -88,7 +90,7 @@ Run in a terminal:
     > sudo make install
   
   For Arch Linux:
-    > sudo pacman -S mosml
+    > sudo yaourt -S mosml
 
 
 
