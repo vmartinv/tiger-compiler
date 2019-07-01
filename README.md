@@ -45,8 +45,9 @@ During liveness analysis, following the suggestion from the book on page 216, we
 During liveness analysis, we implemented the optimization mentioned in the book on page 389. This greatly reduces compilation time by topological sorting the flow graph and use the order to process the nodes, thus reaching the fixed point much faster.
 
 
-### Test automatization
+### test automatization
 We developed a simple script to run a test suite. Each test was added manually, it consists of a code and the expected output of the compiler and its execution. We do a small parsing of the first line of the code of the test in order to embed what parameters should be passed to the compiler (for example to print intermediate trees). This enables to create and mantain the test suite even when not all stages of the compiler are finishied. It has saved us a lot of time by detecing bugs early and avoid introducing new ones.
+![Screenshot of tests running](https://raw.githubusercontent.com/vmartinv/compiler/master/screenshots/test_script.png)
 
 
 ### sokoban game
@@ -65,10 +66,16 @@ By using some of the features implemented small game was programmed. You can run
   
   > cd make run
 
+Screenshot:
+![Screenshot of first level of the game](https://raw.githubusercontent.com/vmartinv/compiler/master/screenshots/juego.png)
 
+### file opener
+All source files start with `tiger` and there are many files with the same name but different extensions (some come from compilation subproducts). For this reason we found ourselves spending a lot of time looking for the specific files we wanted to open. For this reason we made a small script to list and open the sources files easily.
+Screenshot:
+![Screenshot of file opener](https://raw.githubusercontent.com/vmartinv/compiler/master/screenshots/e_script.png)
 
 ## Compiler stages
-  This diagram shows the main stages of the compiler.
+  A diagram was created showing the main stages of the compiler.
   https://drive.google.com/file/d/0ByI9GfoY63_aTDFaUjVLRjVwM1k/view?usp=sharing
 
 
