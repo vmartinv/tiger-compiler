@@ -15,7 +15,7 @@ in
   0
 end
 ```
-This feature was implemented by adding an extra stage just after parsing, where includes are replaced for the contents of the included files. Extra care was taken for detecting include loops.
+This feature was implemented by adding an extra stage just after parsing, where includes are replaced for the contents of the included files. Extra care was taken for detecting include loops. Implementation lives on `tigerinclude.sml`.
 
 
 ### extern
@@ -30,28 +30,59 @@ in
   0
 end
 ```
-It was implemented by only editing the parser (tigergrm.y) as the compiler was already handling `extern` functions.
+It was implemented by only editing the parser (`tigergrm.y`) as the compiler was already handling `extern` functions.
 
 
 ### gcc flags
-All unrecognized flags are passed to gcc, which generates the executable code on the last stage. This enables passing parameters to the linking process, which is specially useful for projects requiring libraries.
+All unrecognized flags are passed to gcc, which generates the executable code on the last stage. This enables passing parameters to the linking process, which is specially useful for projects requiring libraries. This is implemented in `tigermain.sml`.
+
+Example:
+```
+./tiger ../juego/main.tig -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer ../juego/lib.c
+```
 
 
 ### optimization 1: Representation of sets
-During liveness analysis, following the suggestion from the book on page 216, we represent sets as ordered lists which drastically reduced the time of that step. This can be seen on `tigerliveness.sml`
+During liveness analysis, following the suggestion from the book on page 216, we represent sets as ordered lists which drastically reduced the time of that step. This can be seen on `tigerliveness.sml`.
 
 
 ### optimization 2: Ordering the nodes
-During liveness analysis, we implemented the optimization mentioned in the book on page 389. This greatly reduces compilation time by topological sorting the flow graph and use the order to process the nodes, thus reaching the fixed point much faster.
+During liveness analysis, we implemented the optimization mentioned in the book on page 389. This greatly reduces compilation time by topological sorting the flow graph and use the order to process the nodes, thus reaching the fixed point much faster. Implemented on `tigerliveness.sml`.
 
 
 ### test automatization
-We developed a simple script to run a test suite. Each test was added manually, it consists of a code and the expected output of the compiler and its execution. We do a small parsing of the first line of the code of the test in order to embed what parameters should be passed to the compiler (for example to print intermediate trees). This enables to create and mantain the test suite even when not all stages of the compiler are finishied. It has saved us a lot of time by detecing bugs early and avoid introducing new ones.
+We developed a simple script to run a test suite. Each test was added manually, it consists of a code and the expected output of the compiler and its execution. We do a small parsing of the first line of the code of the test in order to embed what parameters should be passed to the compiler (for example to print intermediate trees). This enables to create and mantain the test suite even when not all stages of the compiler are finishied. It has saved us a lot of time by detecing bugs early and avoid introducing new ones. The script is `tests/test` and is written in Bash.
+
+Example test:
+
+> liveness/hello.tig
+```
+/*TIGER_ARGS=-code -flow*/
+(print ("Hello World");0)
+```
+
+> liveness/hello.out
+```bien!
+;;--FRAME--L0__tigermain_0:
+LABEL: L3
+MOVE: movq %'s0, %'d0 D:T2 S:rbx
+MOVE: movq %'s0, %'d0 D:T3 S:r12
+...
+	n22(LABEL: L2): n23
+	n23(OPER:  D:[] S:[rax,rsp,rbp,rbx,r12,r13,r14,r15]): 
+;;-END-FLOW-:
+yes!!
+Hello World
+Return code: 0
+```
+
+Screenshot:
+
 ![Screenshot of tests running](https://raw.githubusercontent.com/vmartinv/compiler/master/screenshots/test_script.png)
 
 
 ### sokoban game
-By using some of the features implemented small game was programmed. You can run it by:
+By using some of the features implemented small game was programmed. It uses `SDL 2` C library and function wrappers in `juego/lib.c` has been written to call functions with strings (as C strings are diferent from Tiger strings). You can run it by:
 1. Installing SDL2 (with image, mixer and TTF libs).
   For Ubuntu:
   
@@ -61,17 +92,21 @@ By using some of the features implemented small game was programmed. You can run
   
     sudo pacman -S sdl2 sdl2_image sdl2_mixer sdl2_ttf
   
-2. Running:
+2. Run in a terminal:
   > cd juego
   
   > cd make run
 
+
 Screenshot:
+
 ![Screenshot of first level of the game](https://raw.githubusercontent.com/vmartinv/compiler/master/screenshots/juego.png)
 
 ### file opener
-All source files start with `tiger` and there are many files with the same name but different extensions (some come from compilation subproducts). For this reason we found ourselves spending a lot of time looking for the specific files we wanted to open. For this reason we made a small script to list and open the sources files easily.
+All source files start with `tiger` and there are many files with the same name but different extensions (some come from compilation subproducts). For this reason we found ourselves spending a lot of time looking for the specific files we wanted to open. For this reason we made a small script to list and open the sources files easily. Implementation is in `src/e` and is written in Bash.
+
 Screenshot:
+
 ![Screenshot of file opener](https://raw.githubusercontent.com/vmartinv/compiler/master/screenshots/e_script.png)
 
 ## Compiler stages
