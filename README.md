@@ -137,6 +137,16 @@ source_filename >>= abreArchivo >>=
 
 Implemented on `tigermain.sml`.
 
+### compiler diagram
+A diagram was created showing the main stages of the compiler.
+
+Original document:
+
+  https://drive.google.com/file/d/0ByI9GfoY63_aTDFaUjVLRjVwM1k/view?usp=sharing
+  
+Image preview:
+
+![Diagram of the compiler](https://raw.githubusercontent.com/vmartinv/compiler/master/screenshots/etapas.png)
 
 ### file opener
 All source files start with `tiger` and there are many files with the same name but different extensions (some come from compilation subproducts). For this reason we found ourselves spending a lot of time looking for the specific files we wanted to open. For this reason we made a small script to list and open the sources files easily. Implementation is in `src/e` and is written in Bash.
@@ -145,11 +155,11 @@ Screenshot:
 
 ![Screenshot of file opener](https://raw.githubusercontent.com/vmartinv/compiler/master/screenshots/e_script.png)
 
-## Compiler stages
-  A diagram was created showing the main stages of the compiler.
-  https://drive.google.com/file/d/0ByI9GfoY63_aTDFaUjVLRjVwM1k/view?usp=sharing
+### open source
 
+Full code of the compiler, tests, game, class notes and presentation are available at:
 
+    https://github.com/vmartinv/compiler
 
 ## Geany extensions (for coloring ML files):
 Run in a terminal:
