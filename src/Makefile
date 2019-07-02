@@ -35,7 +35,7 @@ GRALOBJS= tigerabs.uo tigergrm.uo tigerlex.uo tigermain.uo \
  	tigernlin.uo tigerpp.uo tigerescap.uo tigertab.uo tigerseman.uo tigertemp.uo tigertopsort.uo tigerutils.uo tigertree.uo \
  	tigerframe.uo tigertrans.uo tigerit.uo tigerpila.uo tigerinclude.uo tigercanon.uo \
  	tigerassem.uo \ tigercodegen.uo \
- 	tigergraph.uo tigerflow.uo tigerliveness.uo tigersimpleregalloc.uo tigerregalloc.uo tigercolor.uo \
+ 	tigergraph.uo tigerflow.uo tigerliveness.uo tigerregalloc.uo tigercolor.uo \
 	tigerset.uo tigermap.uo
 
 all: tiger
@@ -71,7 +71,7 @@ clean:
 depend: tigerabs.sml tigergrm.sml tigerlex.sml tigermain.sml \
 	tigernlin.sml tigerpp.sml tigertopsort.sml tigerutils.sml tigerinclude.sml \
 	tigerassem.sml \
-	tigergraph.sml tigerflow.sml tigerliveness.sml tigersimpleregalloc.sml
+	tigergraph.sml tigerflow.sml tigerliveness.sml
 	$(REMOVE) Makefile.bak
 	$(MOVE) Makefile Makefile.bak
 	$(MOSMLTOOLS)/cutdeps < Makefile.bak > Makefile
@@ -99,7 +99,6 @@ tigerseman.uo: tigerseman.ui tigersres.uo tigertab.ui tigerpila.ui \
     tigerpp.uo 
 tigerliveness.uo: tigerliveness.ui tigergraph.ui tigertemp.ui tigerutils.ui \
     tigerflow.ui 
-tigersimpleregalloc.uo: tigersimpleregalloc.ui 
 tigerliveness.ui: tigergraph.ui tigertemp.ui tigerflow.ui 
 tigerpila.uo: tigerpila.ui 
 tigergrm.ui: tigerabs.uo 

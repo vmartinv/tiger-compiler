@@ -1,57 +1,14 @@
 Aldana
 =======
-- test cases static link: caso1, caso2,caso3 (ya habia algunos dando vuelta pero para etapas intermedias), hacer casos mutuamente recursivos de cada uno. que impriman cosas asi sabemos que se corren bien.
+-
 
 Lautaro
 =======
-
+-
 
 Martin
 =======
-- reportar cualquier bug que surga del juego
-
-
-
-
-
-Dudas Coloreo
-=============
-
-* Funciones coloreo:
-
-GetDegree		OK
-GetAdj			OK
-Init			OK, duda menor
-AddEgde			OK, duda
-Build			duda pseudo
-NodeMoves		OK
-MoveRelated		OK
-MakeWorklist	OK
-Adjacent		OK
-EnableMoves		OK
-DecrementDegree	OK
-Simplify		OK
-GetAlias		OK
-AddWorkList		OK, duda
-Briggs			OK, duda
-George			OK
-Combine			OK, agregué una línea
-Coalesce		OK
-FreezeMoves		OK
-Freeze			OK
-SelectSpill		OK, falta heurística mejor
-AssignColors	dudas
-
-
-* Otras dudas:
-
-1) Checkear que la implementacion de conjuntos sea conjuntos y no multiconjuntos.
-
-2) Funciona bien el alias?
-qué pasa si:
-u -> v
-v -> w
-?
+-
 
 
 
@@ -80,4 +37,4 @@ Bitacora bugs resueltos
 21. En la implementacion de call (codegen) los argumentos se pusheaban en la pila al revés
 Bugs a solucionar
 =============
-
+-

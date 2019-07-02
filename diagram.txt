@@ -1,0 +1,30 @@
+* Cosito verde siguiente a canonización:
+Código intermedio canonizado
+
+* Selección de instrucciones:
+tigercodegen.sig/sml
+
+* Cosito verde siguiente:
+Instrucciones
+tigerassem.sig/sml
+
+* Análisis de Flujo:
+tigerflow.sig/sml
+
+* Cosito verde siguiente:
+Grafo de flujo
+tigergraph.sig/sml
+
+* Grafo de interferencia: (yo acá cambiaría esta etiqueta de flecha por análisis de interferencia)
+tigerliveness.sig/sml
+
+* Cosito verde siguiente:
+Grafo de interferencia
+tigergraph.sig/sml
+
+* Alocación de Regs:
+tigercolor.sig/sml
+tigerregalloc.sig/sml
+
+* Cosito verde siguiente:
+No sé si poner un título acá. Sería algo como map de temps a regs, aunque en realidad es más que eso.
