@@ -44,6 +44,26 @@ let
 			"")
 		},
         next=ListLevel{
+		l=Level{player_init=Pto{x=7, y=3}, zoom=5, best=120,
+			width=8, height=7, objs_init=concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat((
+			"45555559"), /*Layer 0: Terrain*/
+			"6EEEEEED"),
+			"6EEEEEED"),
+			"6EEEEEED"),
+			"6EEEEEED"),
+			"7888888A"),
+			"00000000"),
+			
+			"00IIIIII"), /*Layer 1: Objects*/
+			"00IIIIII"),
+			"00IIIIII"),
+			"12202020"),
+			"00101010"),
+			"00IIIIII"),
+			"BFFFFFFG"),
+			"")
+		},
+		next=ListLevel{
 		l=Level{player_init=Pto{x=3, y=0}, zoom=5, best=76,
 			width=7, height=5, objs_init=concat(concat(concat(concat(concat(concat(concat(concat(concat(concat((
 			"4555559"), /*Layer 0: Terrain*/
@@ -60,6 +80,7 @@ let
 			"")
 		},
 		next=nil
+        }
         }
         }
 	}
