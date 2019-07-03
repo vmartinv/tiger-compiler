@@ -44,7 +44,7 @@ let
 			"")
 		},
         next=ListLevel{
-		l=Level{player_init=Pto{x=7, y=3}, zoom=5, best=120,
+		l=Level{player_init=Pto{x=7, y=3}, zoom=5, best=112,
 			width=8, height=7, objs_init=concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat(concat((
 			"45555559"), /*Layer 0: Terrain*/
 			"6EEEEEED"),
