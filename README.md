@@ -159,7 +159,7 @@ Screenshot:
 
 Full code of the compiler, tests, game, class notes and presentation are available at:
 
-    https://github.com/vmartinv/compiler
+    https://github.com/vmartinv/tiger-compiler
 
 ## Geany extensions (for coloring ML files):
 Run in a terminal:
