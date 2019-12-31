@@ -1,6 +1,8 @@
 # compiler
 This is an implementation of a Tiger compiler following the book "Modern Compiler Implementation in ML" by Andrew W. Appel and the instructions of Guido Macchi (and assistance from Guillermo Grinblat and Martín Ceresa) for a Computer Science course. Tiger is a simple, statically-typed programming language with nested functions first introduced in the aforementioned book.
 
+Build for x86-64 architecture it uses GCC compiler, tested in Linux.
+
 ## Authors
 * Aldana Ramirez
 * Lautaro Rinaldi
